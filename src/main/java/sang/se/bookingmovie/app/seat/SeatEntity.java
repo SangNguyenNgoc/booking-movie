@@ -1,8 +1,8 @@
-package sang.se.bookingmovie.app.role;
+package sang.se.bookingmovie.app.seat;
 
 import jakarta.persistence.*;
 import lombok.*;
-import sang.se.bookingmovie.app.user.UserEntity;
+import sang.se.bookingmovie.app.seat_room.SeatRoomEntity;
 
 import java.util.Set;
 
@@ -12,19 +12,19 @@ import java.util.Set;
 @Setter
 @Getter
 @Entity
-@Table(name = "roles")
-public class RoleEntity {
+@Table(name = "seats")
+public class SeatEntity {
+
     @Id
-    @Column(name = "role_id")
+    @Column(name = "seat_id")
     private String id;
 
-    @Column(name = "role_name")
     private String name;
 
     @OneToMany(
-            mappedBy = "role",
+            mappedBy = "seat",
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL
     )
-    private Set<UserEntity> users;
+    private Set<SeatRoomEntity> rooms;
 }

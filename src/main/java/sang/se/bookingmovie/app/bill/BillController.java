@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/bill")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class BillController {
     private final BillService billService;

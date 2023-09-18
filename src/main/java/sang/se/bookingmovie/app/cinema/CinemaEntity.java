@@ -1,10 +1,10 @@
 package sang.se.bookingmovie.app.cinema;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+import sang.se.bookingmovie.app.room.RoomEntity;
+
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,4 +23,11 @@ public class CinemaEntity {
     private String city;
 
     private  String district;
+
+    @OneToMany(
+            mappedBy = "cinema",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
+    )
+    private Set<RoomEntity> rooms;
 }
