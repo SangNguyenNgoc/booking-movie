@@ -19,7 +19,11 @@ public class SeatEntity {
     @Column(name = "seat_id")
     private String id;
 
-    private String name;
+    @Column(name = "position_x")
+    private Integer positionX;
+
+    @Column(name = "position_y")
+    private Integer positionY;
 
     @OneToMany(
             mappedBy = "seat",
