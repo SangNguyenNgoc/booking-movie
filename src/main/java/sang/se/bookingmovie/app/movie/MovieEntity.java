@@ -46,6 +46,8 @@ public class MovieEntity {
 
     private String description;
 
+    private String poster;
+
     private String trailer;
 
     private String rated;
