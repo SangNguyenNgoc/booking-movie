@@ -1,12 +1,12 @@
-package sang.se.bookingmovie.app.user;
+package sang.se.bookingmovie.app.movie;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping(value = "/api/v1")
 @RequiredArgsConstructor
-public class UserController {
-    private final UserService userService;
+public class MovieController {
+    private final MovieService movieService;
 }

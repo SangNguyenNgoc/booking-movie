@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CinemaService {
+public class CinemaService implements ICinemaService {
     @Autowired
     private final CinemaRepository cinemaRepository;
 }

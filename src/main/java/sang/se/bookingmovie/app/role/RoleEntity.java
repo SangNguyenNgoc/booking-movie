@@ -1,10 +1,10 @@
 package sang.se.bookingmovie.app.role;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+import sang.se.bookingmovie.app.user.UserEntity;
+
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,4 +20,11 @@ public class RoleEntity {
 
     @Column(name = "role_name")
     private String name;
+
+    @OneToMany(
+            mappedBy = "role",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
+    )
+    private Set<UserEntity> users;
 }

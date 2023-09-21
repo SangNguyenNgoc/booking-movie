@@ -4,10 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import sang.se.bookingmovie.app.ticket.TicketEntity;
 import sang.se.bookingmovie.app.user.UserEntity;
-import sang.se.bookingmovie.app.user.UserService;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -29,12 +27,12 @@ public class BillEntity {
 
     @OneToMany(
             mappedBy = "bill",
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL
     )
     private Set<TicketEntity> tickets ;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(
             name = "user_id",
             nullable = false,

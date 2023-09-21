@@ -5,6 +5,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class TicketService {
+public class TicketService implements ITicketService {
     private final TicketRepository ticketRepository;
 }
