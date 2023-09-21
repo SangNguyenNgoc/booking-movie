@@ -1,4 +1,4 @@
-package sang.se.bookingmovie.app.movie_genre;
+package sang.se.bookingmovie.app.movie_status;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -7,21 +7,21 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sang.se.bookingmovie.app.movie_genre.MovieGenre;
+import sang.se.bookingmovie.app.movie_genre.MovieGenreService;
 import sang.se.bookingmovie.error.ErrorResponse;
 import sang.se.bookingmovie.response.ListResponse;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1")
 @RequiredArgsConstructor
-public class MovieGenreController {
+public class MovieStatusController {
 
-    private final MovieGenreService movieGenreService;
+    private final MovieStatusService movieStatusService;
 
     @Operation(
-            description = "Tạo thể loại phim và thêm vào cơ sở dữ liệu",
-            summary = "Api thêm thể loại phim",
+            description = "Tạo trạng thái phim và thêm vào cơ sở dữ liệu",
+            summary = "Api thêm trạng thái phim",
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -41,15 +41,15 @@ public class MovieGenreController {
             }
     )
     @PostMapping(value = "/movie-genre")
-    public ResponseEntity<?> create(@RequestBody MovieGenre movieGenre) {
+    public ResponseEntity<?> create(@RequestBody MovieStatus movieStatus) {
         return ResponseEntity.status(201)
-                .body(movieGenreService.create(movieGenre));
+                .body(movieStatusService.create(movieStatus));
     }
 
 
     @Operation(
-            description = "Lấy tất cả thể loại phim từ sơ sở dữ liệu",
-            summary = "Api lấy thể loại phim",
+            description = "Lấy tất cả trạng thái phim từ sơ sở dữ liệu",
+            summary = "Api lấy trạng thái phim",
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -63,8 +63,6 @@ public class MovieGenreController {
     )
     @GetMapping(value = "/movie-genres")
     public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(movieGenreService.getAll());
+        return ResponseEntity.ok(movieStatusService.getAll());
     }
-
-
 }

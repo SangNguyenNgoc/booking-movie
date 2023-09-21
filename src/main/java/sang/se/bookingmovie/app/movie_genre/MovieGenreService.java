@@ -2,6 +2,7 @@ package sang.se.bookingmovie.app.movie_genre;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import sang.se.bookingmovie.response.ListResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,11 +23,14 @@ public class MovieGenreService implements IMovieGenreService{
     }
 
     @Override
-    public List<MovieGenre> getAll() {
+    public ListResponse getAll() {
         List<MovieGenreEntity> movieGenreEntities = movieGenreRepository.findAll();
-        return movieGenreEntities.stream()
-                .map(mapper::entityToResponse)
-                .collect(Collectors.toList());
+        return ListResponse.builder()
+                .total(movieGenreEntities.size())
+                .data(movieGenreEntities.stream()
+                        .map(mapper::entityToResponse)
+                        .collect(Collectors.toList()))
+                .build();
     }
 
 
