@@ -51,7 +51,7 @@ public class SeatRoomEntity {
     private SeatTypeEntity type;
 
     @OneToMany(
-            mappedBy = "seatroom",
+            mappedBy = "seatRoom",
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL
     )
