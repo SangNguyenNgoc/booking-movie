@@ -16,8 +16,9 @@ import java.util.Set;
 public class FormatEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "format_id")
-    private String id;
+    private Integer id;
 
     private String caption;
 
