@@ -5,6 +5,9 @@ import lombok.*;
 import sang.se.bookingmovie.app.room.RoomEntity;
 import sang.se.bookingmovie.app.seat.SeatEntity;
 import sang.se.bookingmovie.app.seat_type.SeatTypeEntity;
+import sang.se.bookingmovie.app.ticket.TicketEntity;
+
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -46,4 +49,11 @@ public class SeatRoomEntity {
             nullable = false
     )
     private SeatTypeEntity type;
+
+    @OneToMany(
+            mappedBy = "seatroom",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
+    )
+    private Set<TicketEntity> tickets;
 }

@@ -3,6 +3,7 @@ package sang.se.bookingmovie.app.ticket;
 import jakarta.persistence.*;
 import lombok.*;
 import sang.se.bookingmovie.app.bill.BillEntity;
+import sang.se.bookingmovie.app.seat_room.SeatRoomEntity;
 import sang.se.bookingmovie.app.showtime.ShowtimeEntity;
 
 @NoArgsConstructor
@@ -36,4 +37,12 @@ public class TicketEntity {
             nullable = false
     )
     private ShowtimeEntity showtime;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(
+            name = "seat_room",
+            referencedColumnName = "seat_room_id",
+            nullable = false
+    )
+    private SeatRoomEntity seatRoom;
 }
