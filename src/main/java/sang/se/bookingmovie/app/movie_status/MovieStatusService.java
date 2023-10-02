@@ -8,6 +8,7 @@ import sang.se.bookingmovie.app.movie_genre.MovieGenreRepository;
 import sang.se.bookingmovie.response.ListResponse;
 import sang.se.bookingmovie.utils.ApplicationUtil;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,8 @@ public class MovieStatusService implements IMovieStatusService{
     @Override
     public ListResponse getAll() {
         List<MovieStatusEntity> movieStatusEntities = movieStatusRepository.findAll();
+        movieStatusEntities
+                .forEach(movieStatusEntity -> movieStatusEntity.setMovies(new HashSet<>()));
         return ListResponse.builder()
                 .total(movieStatusEntities.size())
                 .data(movieStatusEntities.stream()

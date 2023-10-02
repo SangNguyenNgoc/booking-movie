@@ -2,6 +2,7 @@ package sang.se.bookingmovie.app.format;
 
 import jakarta.persistence.*;
 import lombok.*;
+import sang.se.bookingmovie.app.movie.MovieEntity;
 import sang.se.bookingmovie.app.showtime.ShowtimeEntity;
 
 import java.util.Set;
@@ -30,4 +31,11 @@ public class FormatEntity {
             cascade = CascadeType.ALL
     )
     private Set<ShowtimeEntity> showtimes;
+
+    @ManyToMany(
+            mappedBy = "formats",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
+    )
+    private Set<MovieEntity> movies;
 }

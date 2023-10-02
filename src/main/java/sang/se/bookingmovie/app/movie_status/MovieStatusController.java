@@ -7,9 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sang.se.bookingmovie.app.movie_genre.MovieGenre;
-import sang.se.bookingmovie.app.movie_genre.MovieGenreService;
-import sang.se.bookingmovie.error.ErrorResponse;
+import sang.se.bookingmovie.response.ErrorResponse;
 import sang.se.bookingmovie.response.ListResponse;
 
 @RestController
@@ -20,8 +18,8 @@ public class MovieStatusController {
     private final MovieStatusService movieStatusService;
 
     @Operation(
-            description = "Tạo trạng thái phim và thêm vào cơ sở dữ liệu",
             summary = "Api thêm trạng thái phim",
+            description = "Tạo trạng thái phim và thêm vào cơ sở dữ liệu",
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -48,8 +46,8 @@ public class MovieStatusController {
 
 
     @Operation(
-            description = "Lấy tất cả trạng thái phim từ sơ sở dữ liệu",
             summary = "Api lấy trạng thái phim",
+            description = "Lấy tất cả trạng thái phim từ sơ sở dữ liệu",
             responses = {
                     @ApiResponse(
                             description = "Success",

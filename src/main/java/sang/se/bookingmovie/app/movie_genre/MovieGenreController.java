@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sang.se.bookingmovie.error.ErrorResponse;
+import sang.se.bookingmovie.response.ErrorResponse;
 import sang.se.bookingmovie.response.ListResponse;
 
 import java.util.List;
@@ -20,8 +20,8 @@ public class MovieGenreController {
     private final MovieGenreService movieGenreService;
 
     @Operation(
-            description = "Tạo thể loại phim và thêm vào cơ sở dữ liệu",
             summary = "Api thêm thể loại phim",
+            description = "Tạo thể loại phim và thêm vào cơ sở dữ liệu",
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -48,8 +48,8 @@ public class MovieGenreController {
 
 
     @Operation(
-            description = "Lấy tất cả thể loại phim từ sơ sở dữ liệu",
             summary = "Api lấy thể loại phim",
+            description = "Lấy tất cả thể loại phim từ sơ sở dữ liệu",
             responses = {
                     @ApiResponse(
                             description = "Success",
