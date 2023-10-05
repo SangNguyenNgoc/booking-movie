@@ -20,4 +20,8 @@ public class ApplicationUtil {
 
         return slug;
     }
+
+    public String addZeros(long number, int desiredLength) {
+        return String.format("%0" + desiredLength + "d", number);
+    }
 }

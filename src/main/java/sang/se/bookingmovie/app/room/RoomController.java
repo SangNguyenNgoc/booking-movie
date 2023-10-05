@@ -1,4 +1,4 @@
-package sang.se.bookingmovie.app.cinema;
+package sang.se.bookingmovie.app.room;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,14 +11,14 @@ import sang.se.bookingmovie.error.ErrorResponse;
 import sang.se.bookingmovie.response.ListResponse;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping(value = "/api/v1")
 @RequiredArgsConstructor
-public class CinemaController {
-    private final CinemaService cinemaService;
+public class RoomController {
+    private final RoomService roomService;
 
     @Operation(
-            description = "Tạo rạp phim và thêm vào cơ sở dữ liệu",
-            summary = "Api thêm thể rạp phim",
+            description = "Tạo phòng phim và thêm vào cơ sở dữ liệu",
+            summary = "Api thêm phòng phim",
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -37,15 +37,16 @@ public class CinemaController {
                     )
             }
     )
-    @PostMapping("/cinema")
-    public ResponseEntity<?> create(@RequestBody Cinema cinema){
+    @PostMapping(value = "/cinema/{cinemaId}/room")
+    public ResponseEntity<?> create(@RequestBody RoomReq roomRequest, @PathVariable(name = "cinemaId") String cinemaId) {
         return ResponseEntity.status(201)
-                .body(cinemaService.create(cinema));
+                .body(roomService.create(roomRequest, cinemaId));
     }
 
+
     @Operation(
-            description = "Lấy tất cả rạp phim từ sơ sở dữ liệu",
-            summary = "Api lấy tất cả rạp phim",
+            description = "Lấy tất cả phòng chiếu phim từ sơ sở dữ liệu",
+            summary = "Api lấy phòng chiếu phim",
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -57,8 +58,8 @@ public class CinemaController {
                     )
             }
     )
-    @GetMapping(value = "/cinemas")
+    @GetMapping(value = "/rooms")
     public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(cinemaService.getAll());
+        return ResponseEntity.ok(roomService.getAll());
     }
 }

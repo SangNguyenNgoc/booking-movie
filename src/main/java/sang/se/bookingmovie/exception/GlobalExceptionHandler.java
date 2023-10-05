@@ -24,6 +24,17 @@ public class GlobalExceptionHandler {
         );
     }
 
+
+    @ExceptionHandler(AllException.class)
+    public ResponseEntity<?> handleAllException(AllException e) {
+        return ResponseEntity.status(e.getStatus()).body(
+                ErrorResponse.builder()
+                        .timestamp(new Timestamp(System.currentTimeMillis()))
+                        .httpStatus(HttpStatus.valueOf(e.getStatus()))
+                        .statusCode(e.getStatus())
+                        .error(e.getError())
+                        .messages(e.getMessages())
+          
     @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<?> handleException(DataNotFoundException e) {
         return ResponseEntity.status(404).body(
