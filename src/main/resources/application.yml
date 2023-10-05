@@ -7,11 +7,13 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+      enable_lazy_load_no_trans: false
     show-sql: true
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
         dialect: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: true
 
 server:
   port: 8080

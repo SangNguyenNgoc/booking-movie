@@ -30,4 +30,5 @@ public class MovieStatusEntity {
             cascade = CascadeType.ALL
     )
     private Set<MovieEntity> movies;
+
 }

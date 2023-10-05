@@ -27,6 +27,9 @@ public class MovieEntity {
 
     private String name;
 
+    @Column(name = "sub_name")
+    private String subName;
+
     private String director;
 
     private String cast;
@@ -69,9 +72,9 @@ public class MovieEntity {
             joinColumns = @JoinColumn(name = "movie_id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "format_id", nullable = false)
     )
-    private Set<FormatEntity> format;
+    private Set<FormatEntity> formats;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(
             name = "genre_id",
             referencedColumnName = "movie_genre_id",
@@ -86,7 +89,7 @@ public class MovieEntity {
     )
     private Set<MovieImageEntity> images;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(
             name = "status_id",
             referencedColumnName = "movie_status_id",

@@ -15,7 +15,8 @@ public class MovieImageEntity {
 
     @Id
     @Column(name = "image_id")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     private String path;
 
