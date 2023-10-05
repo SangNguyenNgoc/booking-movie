@@ -34,6 +34,9 @@ public class GlobalExceptionHandler {
                         .statusCode(e.getStatus())
                         .error(e.getError())
                         .messages(e.getMessages())
+                        .build()
+        );
+    }
           
     @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<?> handleException(DataNotFoundException e) {
