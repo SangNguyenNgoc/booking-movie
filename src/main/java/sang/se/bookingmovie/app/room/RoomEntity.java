@@ -2,6 +2,7 @@ package sang.se.bookingmovie.app.room;
 
 import jakarta.persistence.*;
 import lombok.*;
+import sang.se.bookingmovie.app.cinema.Cinema;
 import sang.se.bookingmovie.app.cinema.CinemaEntity;
 import sang.se.bookingmovie.app.seat_room.SeatRoomEntity;
 import sang.se.bookingmovie.app.showtime.ShowtimeEntity;
@@ -48,5 +49,12 @@ public class RoomEntity {
             cascade = CascadeType.ALL
     )
     private Set<SeatRoomEntity> seats;
+
+    public RoomEntity(String id, Integer totalSeats, Integer availableSeats){
+        this.id = id;
+        this.totalSeats = totalSeats;
+        this.availableSeats = availableSeats;
+
+    }
 
 }

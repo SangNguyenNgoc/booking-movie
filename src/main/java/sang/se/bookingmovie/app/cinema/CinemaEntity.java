@@ -18,6 +18,9 @@ public class CinemaEntity {
     @Column(name = "cinema_id")
     private String id;
 
+    @Column(name = "cinema_name")
+    private String name;
+
     private String address;
 
     private String city;
@@ -30,4 +33,5 @@ public class CinemaEntity {
             cascade = CascadeType.ALL
     )
     private Set<RoomEntity> rooms;
+
 }

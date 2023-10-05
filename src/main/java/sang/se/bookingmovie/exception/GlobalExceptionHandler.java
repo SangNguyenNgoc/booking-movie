@@ -22,4 +22,17 @@ public class GlobalExceptionHandler {
                         .build()
         );
     }
+
+    @ExceptionHandler(AllException.class)
+    public ResponseEntity<?> handleAllException(AllException e) {
+        return ResponseEntity.status(e.getStatus()).body(
+                ErrorResponse.builder()
+                        .timestamp(new Timestamp(System.currentTimeMillis()))
+                        .httpStatus(HttpStatus.valueOf(e.getStatus()))
+                        .statusCode(e.getStatus())
+                        .error(e.getError())
+                        .messages(e.getMessages())
+                        .build()
+        );
+    }
 }
