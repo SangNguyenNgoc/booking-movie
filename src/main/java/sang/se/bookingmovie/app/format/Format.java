@@ -16,7 +16,6 @@ import java.util.List;
 @Builder
 public class Format {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer id;
 
     @NotBlank(message = "Caption MUST not be blank")

@@ -19,3 +19,11 @@ server:
   port: 8080
   error:
     include-message: always
+
+discord:
+  token: MTE1Njg1Njg2NTYyNDQzMjcwMA.G1jMKr.cdJmTgMASZgcwiLcvGzY3I4fRxtD-45q55ieWs
+  poster_channel: test
+  image_channel: test
+
+client:
+  host: http://localhost:3000

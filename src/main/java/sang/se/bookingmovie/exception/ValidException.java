@@ -4,11 +4,9 @@ import lombok.*;
 
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class ValidException extends RuntimeException{
-    private String error;
-    private List<String> messages;
+
+public class ValidException extends AbstractException{
+    public ValidException(String error, List<String> messages) {
+        super(error, messages);
+    }
 }

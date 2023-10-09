@@ -37,23 +37,27 @@ public class MovieEntity {
     @Column(name = "release_date")
     private Date releaseDate;
 
+    @Column(name = "end_date")
+    private Date endDate;
+
     @Column(name = "running_time")
     private Integer runningTime;
 
     private String language;
 
-    private Double rating;
+    private Double rating = 0.0;
 
     @Column(name = "number_of_ratings")
-    private Integer numberOfRatings;
+    private Integer numberOfRatings = 0;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     private String poster;
 
     private String trailer;
 
-    private String rated;
+    private Integer rated;
 
     private String producer;
 

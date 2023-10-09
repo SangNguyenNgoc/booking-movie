@@ -14,5 +14,8 @@ public interface MovieStatusRepository extends JpaRepository<MovieStatusEntity, 
     @Query("SELECT ms FROM MovieStatusEntity ms " +
             "LEFT JOIN FETCH ms.movies " +
             "WHERE ms.slug = :slug")
-    Optional<MovieStatusEntity> findBySlug(@Param("slug") String slug);
+    Optional<MovieStatusEntity> findStatusAndMovieBySlug(@Param("slug") String slug);
+
+    Optional<MovieStatusEntity> findBySlug(String slug);
+
 }

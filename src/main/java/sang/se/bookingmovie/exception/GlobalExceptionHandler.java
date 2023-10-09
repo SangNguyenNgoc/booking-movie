@@ -50,4 +50,17 @@ public class GlobalExceptionHandler {
                         .build()
         );
     }
+
+    @ExceptionHandler(JsonException.class)
+    public ResponseEntity<?> handleException(JsonException e) {
+        return ResponseEntity.status(400).body(
+                ErrorResponse.builder()
+                        .timestamp(new Timestamp(System.currentTimeMillis()))
+                        .httpStatus(HttpStatus.BAD_REQUEST)
+                        .statusCode(400)
+                        .error(e.getError())
+                        .messages(List.of(e.getMessage()))
+                        .build()
+        );
+    }
 }
