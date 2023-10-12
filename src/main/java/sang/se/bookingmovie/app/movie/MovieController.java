@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -84,8 +86,8 @@ public class MovieController {
                     )
             }
     )
-    @GetMapping(value = "/admin/movie")
-    public ResponseEntity<?> getDetailMovie(@RequestParam(value = "movie") String slug) {
+    @GetMapping(value = "/admin/movie/{movieSlug}")
+    public ResponseEntity<?> getDetailMovie(@PathVariable(value = "movieSlug") String slug) {
         return ResponseEntity.status(200)
                 .body(movieService.getMovieBySlug(slug));
     }
@@ -111,12 +113,20 @@ public class MovieController {
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = ErrorResponse.class)
                             )
+                    ),
+                    @ApiResponse(
+                            description = "Data not found",
+                            responseCode = "404",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
                     )
             }
     )
     @PostMapping(value = "/admin/movie")
     public ResponseEntity<?> create(
-            @RequestParam(name = "movie") String movieJson,
+            @RequestParam(value = "movie") String movieJson,
             @RequestParam(value = "poster") MultipartFile poster,
             @RequestParam(value = "images") List<MultipartFile> images
     ) {
@@ -124,10 +134,148 @@ public class MovieController {
                 .body(movieService.create(movieJson, poster, images));
     }
 
-    @PostMapping(value = "/test")
-    public ResponseEntity<?> test() {
-        throw new ValidException("error", List.of("message"));
+
+    @Operation(
+            summary = "Chỉnh sửa trạng thái của phim",
+            description = "API thay đổi trạng thái của phim. " +
+                    "API này chỉ dành cho trang admin.",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "201",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = String.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            description = "Data not found",
+                            responseCode = "404",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
+                    )
+            }
+    )
+    @PutMapping(value = "/admin/movie/{movieId}/status/{statusId}")
+    public ResponseEntity<?> updateStatus(
+            @PathVariable(value = "movieId") String movieId,
+            @PathVariable(value = "statusId") Integer statusId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(movieService.updateStatusOfMovie(movieId, statusId));
     }
 
+
+    @Operation(
+            summary = "Chỉnh sửa thuộc tính của phim",
+            description = "API thay đổi thuộc tính của phim, API chỉ chỉnh sửa các thuộc tính cơ bản, " +
+                    "`genre` và `formats`, không bao gồm hình ảnh và các thuộc tính quan hệ. " +
+                    "API này chỉ dành cho trang admin.",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = String.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            description = "Data not found",
+                            responseCode = "404",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            description = "Data invalid",
+                            responseCode = "400",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
+                    )
+            }
+    )
+    @PutMapping(value = "/admin/movie/{movieId}")
+    public ResponseEntity<?> updateMovie(
+            @PathVariable(value = "movieId") String movieId,
+            @RequestBody Movie movie
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(movieService.updateMovie(movieId, movie));
+    }
+
+
+    @Operation(
+            summary = "Thay poster mới cho phim",
+            description = "API thay đổi poster của phim. " +
+                    "API này chỉ dành cho trang admin.",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = String.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            description = "Data not found",
+                            responseCode = "404",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
+                    )
+            }
+    )
+    @PutMapping(value = "/admin/movie/{movieId}/poster")
+    public ResponseEntity<?> updatePoster(
+            @PathVariable(value = "movieId") String movieId,
+            @RequestParam(value = "poster") MultipartFile poster
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(movieService.updatePoster(movieId, poster));
+    }
+
+
+    @Operation(
+            summary = "Thêm, xóa hình ảnh cho phim",
+            description = "API thêm, xóa hình ảnh của phim, `movieId`: id của phim cần thao tác, " +
+                    "`images`: mảng hình ảnh muốn thêm vào, " +
+                    "`imageIds`: mảng id của hình ảnh muốn xóa. " +
+                    "API này chỉ dành cho trang admin.",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = String.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            description = "Data not found",
+                            responseCode = "404",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
+                    )
+            }
+    )
+    @PutMapping(value = "/admin/movie/{movieId}/images")
+    public ResponseEntity<?> updateImages(
+            @PathVariable(value = "movieId") String movieId,
+            @RequestParam(value = "images", required = false) List<MultipartFile> images,
+            @RequestParam(value = "imageIds", required = false) List<Integer> imageIds
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(movieService.updateImages(movieId, images, imageIds));
+    }
 
 }

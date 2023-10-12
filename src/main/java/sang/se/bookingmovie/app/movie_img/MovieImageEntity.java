@@ -22,7 +22,7 @@ public class MovieImageEntity {
 
     private String extension;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "movie_id",
             referencedColumnName = "movie_id",

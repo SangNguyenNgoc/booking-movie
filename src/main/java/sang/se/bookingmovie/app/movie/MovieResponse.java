@@ -21,6 +21,7 @@ import sang.se.bookingmovie.app.movie_status.MovieStatus;
 import sang.se.bookingmovie.app.showtime.ShowtimeEntity;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 @Builder
 @NoArgsConstructor
@@ -32,7 +33,8 @@ public class MovieResponse{
         @JsonProperty("sub_name") private String subName;
         private String director;
         private String cast;
-        @JsonProperty("release_date") private Date releaseDate;
+        @JsonProperty("release_date") private String releaseDate;
+        @JsonProperty("end_date") private String endDate;
         @JsonProperty("running_time") private Integer runningTime;
         private Double rating;
         @JsonProperty("number_of_ratings") private Integer numberOfRatings;

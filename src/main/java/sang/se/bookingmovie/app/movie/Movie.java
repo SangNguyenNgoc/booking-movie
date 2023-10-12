@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import sang.se.bookingmovie.app.format.Format;
 import sang.se.bookingmovie.app.movie_genre.MovieGenre;
+import sang.se.bookingmovie.app.movie_status.MovieStatus;
 
 import java.sql.Date;
 import java.util.Calendar;

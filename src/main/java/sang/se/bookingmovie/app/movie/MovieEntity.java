@@ -10,6 +10,7 @@ import sang.se.bookingmovie.app.movie_status.MovieStatusEntity;
 import sang.se.bookingmovie.app.showtime.ShowtimeEntity;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -70,7 +71,7 @@ public class MovieEntity {
     )
     private Set<ShowtimeEntity> showtimes;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "movie_format",
             joinColumns = @JoinColumn(name = "movie_id", nullable = false),
@@ -78,7 +79,7 @@ public class MovieEntity {
     )
     private Set<FormatEntity> formats;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "genre_id",
             referencedColumnName = "movie_genre_id",
@@ -89,11 +90,11 @@ public class MovieEntity {
     @OneToMany(
             mappedBy = "movie",
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
+            cascade = CascadeType.PERSIST
     )
     private Set<MovieImageEntity> images;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "status_id",
             referencedColumnName = "movie_status_id",

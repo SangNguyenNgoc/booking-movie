@@ -2,12 +2,13 @@ package sang.se.bookingmovie.app.movie;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import sang.se.bookingmovie.app.movie_genre.MovieGenre;
-import sang.se.bookingmovie.app.movie_genre.MovieGenreEntity;
+import sang.se.bookingmovie.app.format.FormatRepository;
 import sang.se.bookingmovie.app.movie_genre.MovieGenreRepository;
 import sang.se.bookingmovie.app.movie_img.MovieImage;
 import sang.se.bookingmovie.app.movie_img.MovieImageEntity;
+import sang.se.bookingmovie.app.movie_img.MovieImageRepository;
 import sang.se.bookingmovie.app.movie_status.MovieStatus;
 import sang.se.bookingmovie.app.movie_status.MovieStatusEntity;
 import sang.se.bookingmovie.app.movie_status.MovieStatusMapper;
@@ -17,6 +18,8 @@ import sang.se.bookingmovie.response.ListResponse;
 import sang.se.bookingmovie.utils.ApplicationUtil;
 import sang.se.bookingmovie.utils.DiscordService;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,6 +32,10 @@ public class MovieService implements IMovieService {
     private final MovieStatusRepository movieStatusRepository;
 
     private final MovieGenreRepository movieGenreRepository;
+
+    private final FormatRepository formatRepository;
+
+    private final MovieImageRepository movieImageRepository;
 
     private final MovieMapper movieMapper;
 
@@ -64,11 +71,22 @@ public class MovieService implements IMovieService {
         MovieStatusEntity movieStatusEntity = movieStatusRepository.findBySlug("coming-soon")
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("status is not exist")));
         movieEntity.setStatus(movieStatusEntity);
+        movieGenreRepository.findById(movieEntity.getGenre().getId())
+                .orElseThrow(() -> new DataNotFoundException(
+                        "Data not found",
+                        List.of("genre with id: " + movieEntity.getGenre().getId() + " is not exist")
+                ));
+        movieEntity.getFormats().forEach(formatEntity -> {
+            formatRepository.findById(formatEntity.getId())
+                    .orElseThrow(() -> new DataNotFoundException(
+                            "Data not found",
+                            List.of("format with id: " + formatEntity.getId() + " is not exist")
+                    ));
+            formatEntity.setMovies(Set.of(movieEntity));
+        });
         movieEntity.setImages(createMovieImage(movieEntity, images));
-        movieEntity.getFormats()
-                .forEach(formatEntity -> formatEntity.setMovies(Set.of(movieEntity)));
         movieRepository.save(movieEntity);
-        return "success";
+        return "Success";
     }
 
     @Override
@@ -79,7 +97,11 @@ public class MovieService implements IMovieService {
                 .data(movieEntities.stream()
                         .peek(this::getFieldToAdmin)
                         .map(movieMapper::entityToResponse)
-                        .sorted(Comparator.comparing(MovieResponse::getReleaseDate))
+                        .sorted(Comparator.comparing(movieResponse -> Date.valueOf(movieResponse.getReleaseDate())))
+                        .peek(movieResponse -> movieResponse.setImages(movieResponse.getImages().stream()
+                                    .sorted(Comparator.comparing(MovieImage::getId))
+                                    .collect(Collectors.toList()))
+                        )
                         .collect(Collectors.toList()))
                 .build();
     }
@@ -96,7 +118,81 @@ public class MovieService implements IMovieService {
                         .collect(Collectors.toList())
         );
         return  movieResponse;
+    }
 
+    @Override
+    @Transactional
+    public String updateStatusOfMovie(String movieId, Integer statusId) {
+        MovieEntity movieEntity = findMovieById(movieId);
+        MovieStatusEntity movieStatusEntity = movieStatusRepository.findById(statusId)
+                .orElseThrow(() -> new DataNotFoundException(
+                        "Data not found",
+                        List.of("status with id "+ statusId +" is not exist")));
+        movieEntity.setStatus(movieStatusEntity);
+        return "Success";
+    }
+
+    @Override
+    public void updateStatusOfMovie(LocalDate currentDate) {
+        List<MovieEntity> movieEntities = movieRepository.findAll();
+        movieEntities.forEach(movieEntity -> {
+            LocalDate releaseDateMovie = movieEntity.getReleaseDate().toLocalDate();
+            if(currentDate.isAfter(releaseDateMovie) || currentDate.isEqual(releaseDateMovie)) {
+                updateStatusOfMovie(movieEntity.getId(), 2);
+            }
+            LocalDate endDateMovie = movieEntity.getEndDate().toLocalDate();
+            if(currentDate.isAfter(endDateMovie)) {
+                updateStatusOfMovie(movieEntity.getId(), 3);
+            }
+        });
+    }
+
+    @Override
+    public String updateMovie(String movieId, Movie movie) {
+        MovieEntity movieEntityAfter = movieMapper.requestToEntity(movie);
+        MovieEntity movieEntityBefore = findMovieById(movieId);
+        movieEntityAfter.setId(movieId);
+        movieEntityAfter.setStatus(movieEntityBefore.getStatus());
+        movieEntityAfter.setSlug(applicationUtil.toSlug(movieEntityAfter.getName()));
+        movieEntityAfter.setPoster(movieEntityBefore.getPoster());
+        movieGenreRepository.findById(movieEntityAfter.getGenre().getId())
+                .orElseThrow(() -> new DataNotFoundException(
+                        "Data not found",
+                        List.of("genre with id: " + movie.getGenre().getId() + " is not exist")
+                ));
+        movieEntityAfter.getFormats().forEach(formatEntity -> {
+            formatRepository.findById(formatEntity.getId())
+                    .orElseThrow(() -> new DataNotFoundException(
+                            "Data not found",
+                            List.of("format with id: " + formatEntity.getId() + " is not exist")
+                    ));
+            formatEntity.setMovies(Set.of(movieEntityAfter));
+        });
+        movieRepository.save(movieEntityAfter);
+        return "Success";
+    }
+
+    @Override
+    @Transactional
+    public String updatePoster(String movieId, MultipartFile poster) {
+        MovieEntity movieEntity = findMovieById(movieId);
+        movieEntity.setPoster(discordService.sendImage(poster, true));
+        return "Success";
+    }
+
+    @Override
+    @Transactional
+    public String updateImages(String movieId, List<MultipartFile> images, List<Integer> imageIds) {
+        if(imageIds != null && !imageIds.isEmpty()) {
+            movieImageRepository.deleteAllById(imageIds);
+        }
+        if(images!= null && !images.isEmpty()) {
+            MovieEntity movieEntity = findMovieById(movieId);
+            Set<MovieImageEntity> movieImageEntities = movieEntity.getImages();
+            movieImageEntities.addAll(createMovieImage(movieEntity, images));
+            movieEntity.setImages(movieImageEntities);
+        }
+        return "Success";
     }
 
     private List<MovieResponse> sortByReleaseDate(List<MovieResponse> movies) {
@@ -136,13 +232,17 @@ public class MovieService implements IMovieService {
     }
 
     private String createId() {
-        return "movie-" + applicationUtil.addZeros(movieRepository.count() + 1, 4);
+        return "mv-" + applicationUtil.addZeros(movieRepository.count() + 1, 4);
     }
 
-    public String test() {
-        discordService.sendMessage("I'm ready");
-        return "Success";
+    private MovieEntity findMovieById(String movieId) {
+        return movieRepository.findById(movieId)
+                .orElseThrow(() -> new DataNotFoundException(
+                        "Data not found",
+                        List.of("movie with id " + movieId + " is not exist")
+                ));
     }
+
 
 }
 

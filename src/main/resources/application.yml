@@ -25,5 +25,5 @@ discord:
   poster_channel: test
   image_channel: test
 
-client:
-  host: http://localhost:3000
+
+

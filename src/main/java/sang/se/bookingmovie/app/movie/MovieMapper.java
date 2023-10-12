@@ -17,6 +17,7 @@ import sang.se.bookingmovie.exception.JsonException;
 import sang.se.bookingmovie.utils.IMapper;
 import sang.se.bookingmovie.validate.ObjectsValidator;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +39,7 @@ public class MovieMapper implements IMapper<MovieEntity, Movie, MovieResponse> {
 
     @Override
     public MovieResponse entityToResponse(MovieEntity movieEntity) {
-        return  mapper.map(movieEntity, MovieResponse.class);
+        return mapper.map(movieEntity, MovieResponse.class);
     }
 
     public MovieEntity jsonToEntity(String movieJson) {
@@ -48,6 +49,7 @@ public class MovieMapper implements IMapper<MovieEntity, Movie, MovieResponse> {
         } catch (JsonProcessingException e) {
             throw new JsonException("Json error", List.of("Parse json failure"));
         }
-
     }
+
+
 }
