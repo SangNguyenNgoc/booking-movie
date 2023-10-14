@@ -37,7 +37,7 @@ public class CinemaController {
                     )
             }
     )
-    @PostMapping("/cinema")
+    @PostMapping("admin/cinema")
     public ResponseEntity<?> create(@RequestBody Cinema cinema){
         return ResponseEntity.status(201)
                 .body(cinemaService.create(cinema));
@@ -61,4 +61,60 @@ public class CinemaController {
     public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(cinemaService.getAll());
     }
+
+    @Operation(
+            description = "Lấy thông tin rạp phim từ sơ sở dữ liệu",
+            summary = "Api lấy thông tin rạp phim",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ListResponse.class)
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/cinema/{cinemaId}")
+    public ResponseEntity<?> getById(@PathVariable("cinemaId") String cinemaId) {
+        return ResponseEntity.ok(cinemaService.getById(cinemaId));
+    }
+
+    @Operation(
+            description = "Sửa thông tin rạp phim từ sơ sở dữ liệu",
+            summary = "Api sửa thông tin rạp phim",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ListResponse.class)
+                            )
+                    )
+            }
+    )
+    @PatchMapping("admin/cinema/{cinemaId}")
+    public ResponseEntity<?> update(@PathVariable("cinemaId") String cinemaId, @RequestBody Cinema cinemaRequest){
+        return ResponseEntity.ok(cinemaService.update(cinemaRequest, cinemaId));
+    }
+//    @Operation(
+//            description = "Lấy thông tin rạp phim có điều kiện từ sơ sở dữ liệu",
+//            summary = "Api lấy thông tin rạp phim có điều kiện",
+//            responses = {
+//                    @ApiResponse(
+//                            description = "Success",
+//                            responseCode = "200",
+//                            content = @Content(
+//                                    mediaType = "application/json",
+//                                    schema = @Schema(implementation = ListResponse.class)
+//                            )
+//                    )
+//            }
+//    )
+//    @GetMapping(value = "/cinemas")
+//    public ResponseEntity<?> getByField(@RequestParam("search") String search, @RequestParam()) {
+//        return ResponseEntity.ok("");
+//    }
 }

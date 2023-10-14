@@ -29,4 +29,6 @@ public class SeatTypeEntity {
     )
     private Set<SeatRoomEntity> seats;
 
+    private Double price;
+
 }

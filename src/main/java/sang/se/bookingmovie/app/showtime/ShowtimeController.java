@@ -1,4 +1,4 @@
-package sang.se.bookingmovie.app.seat_type;
+package sang.se.bookingmovie.app.showtime;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -6,19 +6,21 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import sang.se.bookingmovie.error.ErrorResponse;
-import sang.se.bookingmovie.response.ListResponse;
 
 @RestController
 @RequestMapping(value = "/api/v1")
 @RequiredArgsConstructor
-public class SeatTypeController {
-    private final SeatTypeService seatTypeService;
+public class ShowtimeController {
+    private final ShowtimeService showtimeService;
 
     @Operation(
-            description = "Thêm loại ghê ",
-            summary = "Api tạo thêm loại ghế",
+            description = "Thêm suất chiếu ghê ",
+            summary = "Api tạo thêm suất chiếu",
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -37,29 +39,9 @@ public class SeatTypeController {
                     )
             }
     )
-    @PostMapping("/admin/seat_type")
-    public ResponseEntity<?> create(SeatType seatType){
+    @PostMapping("/admin/showtime")
+    public ResponseEntity<?> createShowtime(@RequestBody ShowtimeRequest showtimeRequest){
         return ResponseEntity.status(201)
-                .body(seatTypeService.create(seatType));
-    }
-
-    @Operation(
-            description = "Lấy tất cả loại ghế từ sơ sở dữ liệu",
-            summary = "Api lấy loại ghế",
-            responses = {
-                    @ApiResponse(
-                            description = "Success",
-                            responseCode = "200",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = ListResponse.class)
-                            )
-                    )
-            }
-    )
-    @GetMapping("/seat_type")
-    public ResponseEntity<?> getAll(){
-        return ResponseEntity.status(200)
-                .body(seatTypeService.getAll());
+                .body(showtimeService.create(showtimeRequest));
     }
 }

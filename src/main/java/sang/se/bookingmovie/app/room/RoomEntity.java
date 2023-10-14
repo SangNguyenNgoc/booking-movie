@@ -20,7 +20,10 @@ public class RoomEntity {
 
     @Id
     @Column(name = "room_id")
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
+
+    private String name;
 
     @Column(name = "total_seats")
     private Integer totalSeats;
@@ -50,8 +53,8 @@ public class RoomEntity {
     )
     private Set<SeatRoomEntity> seats;
 
-    public RoomEntity(String id, Integer totalSeats, Integer availableSeats){
-        this.id = id;
+    public RoomEntity(String name, Integer totalSeats, Integer availableSeats){
+        this.name = name;
         this.totalSeats = totalSeats;
         this.availableSeats = availableSeats;
 

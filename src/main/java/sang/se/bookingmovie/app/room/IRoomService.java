@@ -3,7 +3,11 @@ package sang.se.bookingmovie.app.room;
 import sang.se.bookingmovie.response.ListResponse;
 
 public interface IRoomService {
-    RoomReq create(RoomReq roomReqRequest, String cinemaId);
+    String create(RoomReq roomReqRequest, String cinemaId);
 
     ListResponse getAll();
+
+    ListResponse getAllByCinema(String cinemaId);
+
+    ListResponse getAllByName(String cinemaId, String name);
 }

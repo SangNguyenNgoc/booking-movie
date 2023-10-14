@@ -11,8 +11,8 @@ import java.util.Set;
 @Builder
 @Setter
 @Getter
-@Entity
 @Table(name = "seats")
+@Entity
 public class SeatEntity {
 
     @Id
@@ -25,10 +25,10 @@ public class SeatEntity {
     @Column(name = "position_y")
     private Integer positionY;
 
-    @OneToMany(
-            mappedBy = "seat",
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
-    )
-    private Set<SeatRoomEntity> rooms;
+//    @OneToMany(
+//            mappedBy = "seat",
+//            fetch = FetchType.LAZY,
+//            cascade = CascadeType.ALL
+//    )
+//    private Set<SeatRoomEntity> rooms;
 }

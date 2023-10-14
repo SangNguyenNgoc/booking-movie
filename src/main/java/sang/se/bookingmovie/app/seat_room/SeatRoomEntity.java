@@ -2,6 +2,8 @@ package sang.se.bookingmovie.app.seat_room;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DialectOverride;
 import sang.se.bookingmovie.app.room.RoomEntity;
 import sang.se.bookingmovie.app.seat.SeatEntity;
 import sang.se.bookingmovie.app.seat_type.SeatTypeEntity;
@@ -19,12 +21,12 @@ import java.util.Set;
 public class SeatRoomEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "seat_room_id")
-    private String id;
+    private Integer id;
 
+    @Column(name = "status", columnDefinition = "boolean default true")
     private Boolean status;
-
-    private Double price;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(
@@ -34,13 +36,13 @@ public class SeatRoomEntity {
     )
     private RoomEntity room;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(
-            name = "seat_id",
-            referencedColumnName = "seat_id",
-            nullable = false
-    )
-    private SeatEntity seat;
+//    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    @JoinColumn(
+//            name = "seat_id",
+//            referencedColumnName = "seat_id",
+//            nullable = false
+//    )
+//    private SeatEntity seat;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(
@@ -56,4 +58,9 @@ public class SeatRoomEntity {
             cascade = CascadeType.ALL
     )
     private Set<TicketEntity> tickets;
+
+    private String row;
+
+    @Column(name = "row_index")
+    private String rowIndex;
 }

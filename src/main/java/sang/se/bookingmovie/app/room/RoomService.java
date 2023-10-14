@@ -6,6 +6,7 @@ import sang.se.bookingmovie.app.cinema.CinemaEntity;
 import sang.se.bookingmovie.app.cinema.CinemaRepository;
 import sang.se.bookingmovie.exception.AllException;
 import sang.se.bookingmovie.response.ListResponse;
+import sang.se.bookingmovie.utils.ApplicationUtil;
 import sang.se.bookingmovie.validate.ObjectsValidator;
 
 import java.util.List;
@@ -23,15 +24,18 @@ public class RoomService implements IRoomService {
 
     private final RoomMapper mapper;
 
+    private final ApplicationUtil applicationUtil;
+
     @Override
-    public RoomReq create(RoomReq roomRequest, String cinemaId) {
+    public String create(RoomReq roomRequest, String cinemaId) {
         validator.validate(roomRequest);
         CinemaEntity cinema = cinemaRepository.findById(cinemaId)
                 .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found id" + cinemaId)));
-        RoomEntity newRoom =  new RoomEntity(roomRequest.getId(), roomRequest.getTotalSeats(), roomRequest.getTotalSeats());
+        RoomEntity newRoom =  new RoomEntity(roomRequest.getName(), roomRequest.getTotalSeats(), roomRequest.getTotalSeats());
         newRoom.setCinema(cinema);
-
-        return mapper.entityToResponse(roomRepository.save(newRoom));
+        newRoom.setId(createRoomID());
+        roomRepository.save(newRoom);
+        return "success";
     }
 
     @Override
@@ -43,5 +47,34 @@ public class RoomService implements IRoomService {
                         .map(mapper::entityToResponse)
                         .collect(Collectors.toList()))
                 .build();
+    }
+
+    @Override
+    public ListResponse getAllByCinema(String cinemaId) {
+        cinemaRepository.findById(cinemaId).orElseThrow(() -> new AllException("Not found", 404, List.of(cinemaId + " not found")));
+        List<RoomEntity> roomEntities = roomRepository.findAllByCinemaId(cinemaId);
+        return ListResponse.builder()
+                .total(roomEntities.size())
+                .data(roomEntities.stream()
+                        .map(mapper::entityToResponse)
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    @Override
+    public ListResponse getAllByName(String cinemaId, String name) {
+        cinemaRepository.findById(cinemaId).orElseThrow(() -> new AllException("Not found", 404, List.of(cinemaId + " not found")));
+        List<RoomEntity> roomEntities = roomRepository.findByNameInCinema(cinemaId, name);
+        return ListResponse.builder()
+                .total(roomEntities.size())
+                .data(roomEntities.stream()
+                        .map(mapper::entityToResponse)
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    private String createRoomID(){
+        Long count = roomRepository.count() + 1;
+        return "Room" + applicationUtil.addZeros(count,3);
     }
 }

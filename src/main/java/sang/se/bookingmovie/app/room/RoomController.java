@@ -37,7 +37,7 @@ public class RoomController {
                     )
             }
     )
-    @PostMapping(value = "/cinema/{cinemaId}/room")
+    @PostMapping(value = "admin/cinema/{cinemaId}/room")
     public ResponseEntity<?> create(@RequestBody RoomReq roomRequest, @PathVariable(name = "cinemaId") String cinemaId) {
         return ResponseEntity.status(201)
                 .body(roomService.create(roomRequest, cinemaId));
@@ -61,5 +61,44 @@ public class RoomController {
     @GetMapping(value = "/rooms")
     public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(roomService.getAll());
+    }
+
+    @Operation(
+            description = "Lấy tất cả phòng chiếu phim từ sơ sở dữ liệu",
+            summary = "Api lấy phòng chiếu phim",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ListResponse.class)
+                            )
+                    )
+            }
+    )
+
+    @GetMapping(value = "cinema/{cinemaId}/rooms")
+    public ResponseEntity<?> getAllByCinema(@PathVariable(name = "cinemaId") String cinemaId){
+        return ResponseEntity.ok(roomService.getAllByCinema(cinemaId));
+    }
+
+    @Operation(
+            description = "Lấy tất cả phòng chiếu phim theo id từ sơ sở dữ liệu",
+            summary = "Api lấy phòng chiếu phim theo id",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ListResponse.class)
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "cinema/{cinemaId}/rooms/")
+    public ResponseEntity<?> getAllByName(@PathVariable(name = "cinemaId") String cinemaId, @RequestParam("name") String name){
+        return ResponseEntity.ok(roomService.getAllByName(cinemaId, name));
     }
 }
