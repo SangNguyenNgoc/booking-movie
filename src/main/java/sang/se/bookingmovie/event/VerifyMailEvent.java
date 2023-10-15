@@ -1,15 +1,15 @@
-package sang.se.bookingmovie.auth;
+package sang.se.bookingmovie.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Builder
-public class AuthResponse {
-    private String username;
-    private String token;
+public class VerifyMailEvent {
+    private String email;
+    private String userId;
 }

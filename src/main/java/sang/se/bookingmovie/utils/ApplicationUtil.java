@@ -1,12 +1,25 @@
 package sang.se.bookingmovie.utils;
 
 import org.springframework.stereotype.Service;
+import sang.se.bookingmovie.exception.CreateUUIDException;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Date;
 import java.text.Normalizer;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 @Service
 public class ApplicationUtil {
+
+    public LocalDateTime getDateNow() {
+        return LocalDateTime.now();
+    }
 
     public String toSlug(String input) {
         if (input == null) {
@@ -23,5 +36,17 @@ public class ApplicationUtil {
 
     public String addZeros(long number, int desiredLength) {
         return String.format("%0" + desiredLength + "d", number);
+    }
+
+    public String createUUID(String input) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+            UUID uuid = UUID.nameUUIDFromBytes(hash);
+
+            return uuid.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new CreateUUIDException("Server error", List.of("Create ID failure"));
+        }
     }
 }

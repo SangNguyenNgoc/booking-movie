@@ -66,4 +66,18 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(CreateUUIDException.class)
+    public ResponseEntity<?> handleException(CreateUUIDException e) {
+        return ResponseEntity.status(500).body(
+                ErrorResponse.builder()
+                        .timestamp(new Timestamp(System.currentTimeMillis()))
+                        .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .statusCode(500)
+                        .error(e.getError())
+                        .messages(e.getMessages())
+                        .build()
+        );
+    }
+
+
 }

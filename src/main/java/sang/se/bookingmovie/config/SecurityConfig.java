@@ -13,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import sang.se.bookingmovie.auth.SuccessHandler;
 import sang.se.bookingmovie.filter.AuthFilter;
 import sang.se.bookingmovie.filter.MyCorsFilter;
 
@@ -26,6 +27,8 @@ public class SecurityConfig {
     private final MyCorsFilter myCorsFilter;
 
     private final AuthenticationProvider authenticationProvider;
+
+    private final SuccessHandler successHandler;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -47,6 +50,14 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(myCorsFilter, ChannelProcessingFilter.class)
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+                .csrf().disable()
+                .oauth2Login()
+                .authorizationEndpoint().baseUri("/oauth2/authorization")
+                .and()
+                .redirectionEndpoint().baseUri("/oauth2/callback/*")
+                .and()
+                .successHandler(successHandler)
+                .and()
                 .build();
     }
 

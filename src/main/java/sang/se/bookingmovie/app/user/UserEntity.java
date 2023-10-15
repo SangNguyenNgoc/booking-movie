@@ -11,6 +11,7 @@ import sang.se.bookingmovie.app.format.FormatEntity;
 import sang.se.bookingmovie.app.role.RoleEntity;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,7 +28,6 @@ public class UserEntity implements UserDetails {
 
     @Id
     @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     private String username;
@@ -45,9 +45,13 @@ public class UserEntity implements UserDetails {
 
     private Boolean gender;
 
-    private Integer point;
+    private Integer point = 0;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Boolean verify;
+
+    private LocalDateTime createDate;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "role_id",
             referencedColumnName = "role_id",
@@ -78,7 +82,13 @@ public class UserEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return id;
+    }
+
+    public String getName() { return username; }
+
+    public Boolean getVerify() {
+        return verify;
     }
 
     @Override
