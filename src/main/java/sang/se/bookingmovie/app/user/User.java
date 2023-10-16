@@ -14,8 +14,8 @@ import java.sql.Date;
 @Builder
 public class User {
 
-    @NotBlank(message = "Username MUST not be blank")
-    private String username;
+    @NotBlank(message = "Name MUST not be blank")
+    private String fullName;
 
     @Email(message = "Invalid email")
     private String email;

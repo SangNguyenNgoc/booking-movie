@@ -30,7 +30,8 @@ public class UserEntity implements UserDetails {
     @Column(name = "user_id")
     private String id;
 
-    private String username;
+    @Column(name = "full_name")
+    private String fullName;
 
     @Column(unique = true)
     private String email;
@@ -45,9 +46,11 @@ public class UserEntity implements UserDetails {
 
     private Boolean gender;
 
-    private Integer point = 0;
+    private Integer point;
 
     private Boolean verify;
+
+    private String verifyCode;
 
     private LocalDateTime createDate;
 
@@ -83,12 +86,6 @@ public class UserEntity implements UserDetails {
     @Override
     public String getUsername() {
         return id;
-    }
-
-    public String getName() { return username; }
-
-    public Boolean getVerify() {
-        return verify;
     }
 
     @Override

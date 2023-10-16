@@ -57,14 +57,14 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         if (user == null) {
             RoleEntity roleEntity = roleRepository.findById(2).orElseThrow();
             var userRegister = UserEntity.builder()
-                    .username(userDetails.getAttribute("name"))
+                    .fullName(userDetails.getAttribute("name"))
                     .email(email)
                     .password(passwordEncoder.encode("booking-movie"))
                     .createDate(applicationUtil.getDateNow())
                     .id(applicationUtil.createUUID(email + applicationUtil.getDateNow()))
                     .role(roleEntity)
                     .point(0)
-                    .verify(true)
+                    .verify(null)
                     .build();
             userRepository.save(userRegister);
             return jwtService.generateToken(userRegister);

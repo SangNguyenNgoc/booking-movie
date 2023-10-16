@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class VerifyMailEvent {
     private String email;
-    private String userId;
+    private String verifyCode;
 }

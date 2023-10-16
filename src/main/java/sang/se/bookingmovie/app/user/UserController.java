@@ -25,9 +25,20 @@ public class UserController {
                 .body(userService.authenticate(authRequest));
     }
 
-    @PutMapping(value = "/auth/verify/{userId}")
-    public ResponseEntity<?> verify(@PathVariable(value = "userId") String userId) {
+    @PutMapping(value = "/guest/verify")
+    public ResponseEntity<?> verify(
+            @RequestHeader(value = "Authorization") String token,
+            @RequestParam(value = "verify") String verifyCode
+    ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(userService.verify(userId));
+                .body(userService.verify(token, verifyCode));
+    }
+
+    @PutMapping(value = "/guest/send-verify")
+    public ResponseEntity<?> verify(
+            @RequestHeader(value = "Authorization") String token
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(userService.sendEmailToVerify(token));
     }
 }
