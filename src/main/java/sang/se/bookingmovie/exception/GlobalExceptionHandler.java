@@ -1,13 +1,12 @@
 package sang.se.bookingmovie.exception;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import sang.se.bookingmovie.response.ErrorResponse;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -78,6 +77,29 @@ public class GlobalExceptionHandler {
                         .build()
         );
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<?> handleAppException(UserNotFoundException e) {
+        return ResponseEntity.status(409).body(
+                ErrorResponse.builder()
+                        .timestamp(new Timestamp(System.currentTimeMillis()))
+                        .httpStatus(HttpStatus.CONFLICT)
+                        .messages(List.of(e.getMessage()))
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<?> handleAppException(AuthenticationException e) {
+        return ResponseEntity.status(401).body(
+                ErrorResponse.builder()
+                        .timestamp(new Timestamp(System.currentTimeMillis()))
+                        .httpStatus(HttpStatus.UNAUTHORIZED)
+                        .messages(List.of(e.getMessage()))
+                        .build()
+        );
+    }
+
 
 
 }

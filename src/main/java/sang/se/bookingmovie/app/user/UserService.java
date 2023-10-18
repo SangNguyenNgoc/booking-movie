@@ -17,6 +17,7 @@ import sang.se.bookingmovie.auth.AuthResponse;
 import sang.se.bookingmovie.event.VerifyMailEvent;
 import sang.se.bookingmovie.exception.AllException;
 import sang.se.bookingmovie.exception.DataNotFoundException;
+import sang.se.bookingmovie.exception.UserNotFoundException;
 import sang.se.bookingmovie.utils.ApplicationUtil;
 import sang.se.bookingmovie.utils.EmailService;
 import sang.se.bookingmovie.utils.JwtService;
@@ -150,7 +151,7 @@ public class UserService implements IUserService {
         var user = userRepository.findByEmail(authRequest.getEmail())
                 .orElse(null);
         if (user == null) {
-            throw new DataNotFoundException("Data not found", List.of("User not exits"));
+            throw new UserNotFoundException("Conflict", List.of("User is not exits"));
         }
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -167,7 +168,7 @@ public class UserService implements IUserService {
 
     public void checkEmail(String email) {
         if(userRepository.findByEmail(email).isPresent()) {
-            throw new AllException("Invalid email",400,List.of("Email taken!"));
+            throw new AllException("Conflict", 409, List.of("Email taken!"));
         }
     }
 
