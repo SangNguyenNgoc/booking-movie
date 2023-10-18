@@ -1,7 +1,9 @@
 package sang.se.bookingmovie.app.showtime;
 
+import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sang.se.bookingmovie.app.cinema.CinemaEntity;
 import sang.se.bookingmovie.app.cinema.CinemaMapper2;
 import sang.se.bookingmovie.app.cinema.CinemaResponse;
@@ -18,7 +20,12 @@ import sang.se.bookingmovie.response.ListResponse;
 import sang.se.bookingmovie.utils.ApplicationUtil;
 
 import java.sql.Date;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +49,6 @@ public class ShowtimeService implements IShowtimeService {
 
     @Override
     public String create(List<ShowtimeRequest> showtimeRequests) {
-//        List<ShowtimeEntity> showtimeEntities = new ArrayList<>();
         for (ShowtimeRequest showtimeRequest: showtimeRequests) {
             RoomEntity roomEntity = roomRepository.findById(showtimeRequest.getRoom())
                     .orElseThrow(()->new AllException("Not Found", 404, List.of("Not found room id")));
@@ -63,23 +69,28 @@ public class ShowtimeService implements IShowtimeService {
     @Override
     public ListResponse getShowtimeByCinemaAndDate(Date date, String cinemaId) {
         List<MovieEntity> showtimeEntities = showtimeRepository.findByDateAndCinema(date, cinemaId);
-        ListResponse a = ListResponse.builder()
-                .total(showtimeEntities.size())
-                .data(showtimeEntities.stream()
-                        .map(movieMapper::entityToResponse)
-                        .collect(Collectors.toList())
-                )
+        List<MovieResponse> movieResponses = showtimeEntities.stream()
+                .map(movieMapper::entityToResponse)
+                .toList();
+        movieResponses.forEach(movieResponse -> {
+            movieResponse.setGenre(null);
+            movieResponse.setStatus(null);
+            movieResponse.setFormats(null);
+            movieResponse.setComments(null);
+        });
+        return ListResponse.builder()
+                .total(movieResponses.size())
+                .data(Collections.singletonList(movieResponses))
                 .build();
-        return a;
     }
 
     @Override
     public ListResponse getShowtimeByMovie(Date date, String movieId) {
         List<CinemaEntity> cinemaEntities = showtimeRepository.findByMovieAndDate(date, movieId);
         List<CinemaResponse> cinemaResponses = new ArrayList<>();
-        for (CinemaEntity a: cinemaEntities) {
-            List<ShowtimeEntity> showtimeEntities = showtimeRepository.findByCinemaId(date, a.getId());
-            CinemaResponse cinemaResponse = cinemaMapper2.entityToResponse(a);
+        for (CinemaEntity cinemaEntity: cinemaEntities) {
+            List<ShowtimeEntity> showtimeEntities = showtimeRepository.findByCinemaId(date, cinemaEntity.getId());
+            CinemaResponse cinemaResponse = cinemaMapper2.entityToResponse(cinemaEntity);
             cinemaResponse.setShowtime(showtimeEntities.stream()
                     .map(showtimeMapper::entityToResponse)
                     .collect(Collectors.toList()));
@@ -87,7 +98,24 @@ public class ShowtimeService implements IShowtimeService {
         }
         return ListResponse.builder()
                 .total(cinemaResponses.size())
-                .data(cinemaResponses.stream().collect(Collectors.toList()))
+                .data(new ArrayList<>(cinemaResponses))
                 .build();
     }
+
+    @Override
+    @Transactional
+    public void updateStatusOfShowtime(LocalDate currentDate, LocalTime currentTime) {
+        List<ShowtimeEntity> showtimeEntities = showtimeRepository.findAll();
+        showtimeEntities.forEach(showtimeEntity -> {
+            LocalDate startDate = showtimeEntity.getStartDate().toLocalDate();
+            if (startDate.equals(currentDate)){
+                LocalTime startTime = showtimeEntity.getStartTime().toLocalTime();
+                if (startTime.equals(currentTime) || currentTime.isAfter(startTime)) {
+                    showtimeEntity.setStatus(false);
+                }
+            }
+        });
+    }
+
+
 }

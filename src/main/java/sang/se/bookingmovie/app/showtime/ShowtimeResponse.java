@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Time;
 import java.sql.Date;
+import java.time.LocalDate;
 
 @Builder
 @NoArgsConstructor
@@ -17,7 +18,7 @@ public class ShowtimeResponse {
     private String id;
 
     @JsonProperty("start_date")
-    private Date startDate;
+    private String startDate;
 
     @JsonProperty("start_time")
     private Time startTime;
