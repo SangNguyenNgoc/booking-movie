@@ -21,6 +21,6 @@ public class ShowtimeMapper implements IMapper<ShowtimeEntity, ShowtimeRequest, 
 
     @Override
     public ShowtimeResponse entityToResponse(ShowtimeEntity showtimeEntity) {
-        return null;
+        return mapper.map(showtimeEntity, ShowtimeResponse.class);
     }
 }

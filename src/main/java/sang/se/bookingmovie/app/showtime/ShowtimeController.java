@@ -5,12 +5,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sang.se.bookingmovie.error.ErrorResponse;
+import sang.se.bookingmovie.response.ListResponse;
+
+import java.sql.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1")
@@ -40,8 +42,49 @@ public class ShowtimeController {
             }
     )
     @PostMapping("/admin/showtime")
-    public ResponseEntity<?> createShowtime(@RequestBody ShowtimeRequest showtimeRequest){
+    public ResponseEntity<?> createShowtime(@RequestBody List<ShowtimeRequest> showtimeRequests){
         return ResponseEntity.status(201)
-                .body(showtimeService.create(showtimeRequest));
+                .body(showtimeService.create(showtimeRequests));
+    }
+
+    @Operation(
+            description = "Lấy suất chiếu theo ngày và rạp từ sơ sở dữ liệu",
+            summary = "Api lấy suất chiếu theo ngày và rạp",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ListResponse.class)
+                            )
+                    )
+            }
+    )
+    @GetMapping("cinema/{cinemaId}/showtime")
+    public ResponseEntity<?> getByCinema(@RequestParam("date") Date date,
+                                                @PathVariable("cinemaId") String cinemaId){
+        return ResponseEntity.ok(showtimeService.getShowtimeByCinemaAndDate(date, cinemaId));
+    }
+
+    @Operation(
+            description = "Lấy suất chiếu cua phim theo ngày từ sơ sở dữ liệu",
+            summary = "Api lấy suất chiếu cua phim  theo ngày",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ListResponse.class)
+                            )
+                    )
+            }
+    )
+    @GetMapping("movie/{movieId}/showtime")
+    public ResponseEntity<?> getByMovie(@RequestParam("date") Date date,
+                                                @PathVariable("movieId") String movieId
+                                                ){
+        return ResponseEntity.ok(showtimeService.getShowtimeByMovie(date, movieId));
     }
 }

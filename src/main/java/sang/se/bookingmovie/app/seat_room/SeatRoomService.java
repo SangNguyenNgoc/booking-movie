@@ -27,7 +27,7 @@ public class SeatRoomService implements ISeatRoomService {
     public String create(List<SeatRoomRequest> seatRoomRequest, String roomId) {
         RoomEntity roomEntity = roomRepository.findById(roomId)
                 .orElseThrow(()->new AllException("Not found", 404, List.of("Not found room_id")));
-        System.out.println(roomEntity.getAvailableSeats());
+//        System.out.println(roomEntity.getAvailableSeats());
         List<SeatRoomEntity> seatRoomEntities = new ArrayList<>();
         seatRoomRequest.stream().map(seatRoomMapper::requestToEntity).forEach(seatRoomEntities::add);
         seatRoomEntities.forEach(e->e.setRoom(roomEntity));

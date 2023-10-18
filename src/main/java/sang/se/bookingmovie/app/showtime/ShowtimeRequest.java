@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
+import java.sql.Time;
 import java.util.Date;;
 
 @Builder
@@ -25,7 +26,7 @@ public class ShowtimeRequest {
     @JsonProperty("start_time")
     @Future(message = "The start time must be in the future")
     @NotNull(message = "Start time must not be null")
-    private Date startTime;
+    private Time startTime;
 
     @JsonProperty("running_time")
     @NotNull(message = "running time must not be null")
