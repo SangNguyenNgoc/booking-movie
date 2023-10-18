@@ -10,6 +10,7 @@ import sang.se.bookingmovie.app.movie_status.MovieStatusEntity;
 import sang.se.bookingmovie.app.showtime.ShowtimeEntity;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -37,23 +38,27 @@ public class MovieEntity {
     @Column(name = "release_date")
     private Date releaseDate;
 
+    @Column(name = "end_date")
+    private Date endDate;
+
     @Column(name = "running_time")
     private Integer runningTime;
 
     private String language;
 
-    private Double rating;
+    private Double rating = 0.0;
 
     @Column(name = "number_of_ratings")
-    private Integer numberOfRatings;
+    private Integer numberOfRatings = 0;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     private String poster;
 
     private String trailer;
 
-    private String rated;
+    private Integer rated;
 
     private String producer;
 
@@ -66,7 +71,7 @@ public class MovieEntity {
     )
     private Set<ShowtimeEntity> showtimes;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "movie_format",
             joinColumns = @JoinColumn(name = "movie_id", nullable = false),
@@ -74,7 +79,7 @@ public class MovieEntity {
     )
     private Set<FormatEntity> formats;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "genre_id",
             referencedColumnName = "movie_genre_id",
@@ -85,11 +90,11 @@ public class MovieEntity {
     @OneToMany(
             mappedBy = "movie",
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
+            cascade = CascadeType.PERSIST
     )
     private Set<MovieImageEntity> images;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "status_id",
             referencedColumnName = "movie_status_id",

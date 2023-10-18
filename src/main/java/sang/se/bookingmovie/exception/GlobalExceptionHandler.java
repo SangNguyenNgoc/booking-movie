@@ -1,11 +1,13 @@
 package sang.se.bookingmovie.exception;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import sang.se.bookingmovie.response.ErrorResponse;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -46,8 +48,22 @@ public class GlobalExceptionHandler {
                         .httpStatus(HttpStatus.NOT_FOUND)
                         .statusCode(404)
                         .error(e.getError())
-                        .messages(List.of(e.getMessage()))
+                        .messages(e.getMessages())
                         .build()
         );
     }
+
+    @ExceptionHandler(JsonException.class)
+    public ResponseEntity<?> handleException(JsonException e) {
+        return ResponseEntity.status(400).body(
+                ErrorResponse.builder()
+                        .timestamp(new Timestamp(System.currentTimeMillis()))
+                        .httpStatus(HttpStatus.BAD_REQUEST)
+                        .statusCode(400)
+                        .error(e.getError())
+                        .messages(e.getMessages())
+                        .build()
+        );
+    }
+
 }

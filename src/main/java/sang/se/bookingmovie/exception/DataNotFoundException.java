@@ -1,11 +1,9 @@
 package sang.se.bookingmovie.exception;
 
-import lombok.*;
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class DataNotFoundException extends RuntimeException{
-    private String error;
-    private String message;
+import java.util.List;
+
+public class DataNotFoundException extends AbstractException{
+    public DataNotFoundException(String error, List<String> messages) {
+        super(error, messages);
+    }
 }

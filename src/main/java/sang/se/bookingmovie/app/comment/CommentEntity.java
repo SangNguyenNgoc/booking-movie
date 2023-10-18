@@ -16,11 +16,11 @@ public class CommentEntity {
 
     @Id
     @Column(name = "comment_id")
-    private String id;
+    private Integer id;
 
     private String content;
 
-    private String status;
+    private Boolean status;
 
     @Column(name = "comment_rating")
     private String commentRating;

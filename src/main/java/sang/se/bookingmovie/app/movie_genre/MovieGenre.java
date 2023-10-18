@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MovieGenre {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer id;
 
     @NotBlank(message = "Genre name must not be blank")
