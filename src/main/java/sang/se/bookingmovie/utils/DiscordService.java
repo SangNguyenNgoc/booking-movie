@@ -7,6 +7,9 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.utils.FileUpload;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.ApplicationContextEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,7 +35,7 @@ public class DiscordService {
 
     private JDA jda;
 
-    @PostConstruct
+    @EventListener(ApplicationReadyEvent.class)
     private void loginDiscord() {
         try {
             jda = JDABuilder.createDefault(botToken).build();

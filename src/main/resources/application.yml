@@ -1,19 +1,40 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driverClassName: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/booking_movie
     username: root
     password:
   jpa:
     hibernate:
       ddl-auto: update
-      enable_lazy_load_no_trans: false
     show-sql: true
     properties:
       hibernate:
         format_sql: false
         dialect: org.hibernate.dialect.MySQL8Dialect
-    open-in-view: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: cinemaapp114@gmail.com
+    password: wqlncrnxzifxzriy
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: 310995540967-b9inrvsgfmsukraofttpjuhjs8dg2qbv.apps.googleusercontent.com
+            clientSecret: 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
+            redirect_uri: http://localhost:8080/oauth2/callback/google
+
+jwt:
+  secret_key: 5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437
+  auth_expiration: 259200000
 
 server:
   port: 8080
@@ -24,6 +45,10 @@ discord:
   token: MTE1Njg1Njg2NTYyNDQzMjcwMA.G1jMKr.cdJmTgMASZgcwiLcvGzY3I4fRxtD-45q55ieWs
   poster_channel: test
   image_channel: test
+
+verify:
+  url: http://localhost:3000
+  verify_expiration: 300000
 
 
 

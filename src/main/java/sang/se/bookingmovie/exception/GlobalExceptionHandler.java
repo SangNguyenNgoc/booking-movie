@@ -1,13 +1,12 @@
 package sang.se.bookingmovie.exception;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import sang.se.bookingmovie.response.ErrorResponse;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -65,5 +64,46 @@ public class GlobalExceptionHandler {
                         .build()
         );
     }
+
+    @ExceptionHandler(CreateUUIDException.class)
+    public ResponseEntity<?> handleException(CreateUUIDException e) {
+        return ResponseEntity.status(500).body(
+                ErrorResponse.builder()
+                        .timestamp(new Timestamp(System.currentTimeMillis()))
+                        .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .statusCode(500)
+                        .error(e.getError())
+                        .messages(e.getMessages())
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<?> handleException(UserNotFoundException e) {
+        return ResponseEntity.status(409).body(
+                ErrorResponse.builder()
+                        .timestamp(new Timestamp(System.currentTimeMillis()))
+                        .httpStatus(HttpStatus.CONFLICT)
+                        .statusCode(409)
+                        .error(e.getError())
+                        .messages(e.getMessages())
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<?> handleException(AuthenticationException e) {
+        return ResponseEntity.status(409).body(
+                ErrorResponse.builder()
+                        .timestamp(new Timestamp(System.currentTimeMillis()))
+                        .httpStatus(HttpStatus.CONFLICT)
+                        .statusCode(409)
+                        .error(e.getMessage())
+                        .messages(List.of(e.getMessage()))
+                        .build()
+        );
+    }
+
+
 
 }

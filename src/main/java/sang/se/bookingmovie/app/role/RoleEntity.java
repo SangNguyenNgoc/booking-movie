@@ -16,7 +16,7 @@ import java.util.Set;
 public class RoleEntity {
     @Id
     @Column(name = "role_id")
-    private String id;
+    private Integer id;
 
     @Column(name = "role_name")
     private String name;
