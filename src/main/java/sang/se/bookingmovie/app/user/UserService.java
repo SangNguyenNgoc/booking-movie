@@ -16,6 +16,7 @@ import sang.se.bookingmovie.auth.AuthRequest;
 import sang.se.bookingmovie.auth.AuthResponse;
 import sang.se.bookingmovie.event.VerifyAccountEvent;
 import sang.se.bookingmovie.event.VerifyMailEvent;
+import sang.se.bookingmovie.event.VerifyPassEvent;
 import sang.se.bookingmovie.exception.AllException;
 import sang.se.bookingmovie.exception.DataNotFoundException;
 import sang.se.bookingmovie.exception.UserNotFoundException;
@@ -24,6 +25,7 @@ import sang.se.bookingmovie.utils.ApplicationUtil;
 import sang.se.bookingmovie.utils.EmailService;
 import sang.se.bookingmovie.utils.JwtService;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -79,6 +81,7 @@ public class UserService implements IUserService {
 
     @Override
     public AuthResponse authenticate(AuthRequest authRequest) {
+        userMapper.validateAuth(authRequest);
         var user = userRepository.findByEmail(authRequest.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
         authenticationManager.authenticate(
@@ -121,7 +124,7 @@ public class UserService implements IUserService {
                         List.of("User is not exist")
                 ));
         if(userEntity.getVerifyAccount() == null) {
-            throw new AllException("Verification failure", 400, List.of("Past the confirmation period"));
+            throw new AllException("Verification failure", 404, List.of("Past the confirmation period"));
         }
         if(userEntity.getVerifyAccount().equals(verifyCode)) {
             userEntity.setVerify(true);
@@ -135,13 +138,12 @@ public class UserService implements IUserService {
             userEntity.setRole(roleEntity);
             return "Success";
         } else {
-            throw new AllException("Verification failure", 400, List.of("Invalid verification code"));
+            throw new AllException("Verification failure", 401, List.of("Invalid verification code"));
         }
 
     }
 
-    @Override
-    public void deleteVerifyAccountByEmail(String email) {
+    private void deleteVerifyAccountByEmail(String email) {
         var userEntity = userRepository.findByEmail(email).orElse(null);
         if(userEntity != null && userEntity.getVerifyAccount() != null) {
             userEntity.setVerifyAccount(null);
@@ -184,7 +186,7 @@ public class UserService implements IUserService {
     @Transactional
     public String sendToUpdateEmail(String token, String newEmail) {
         checkEmail(newEmail);
-        var userEntity = getUserById(jwtService.extractSubject(token));
+        var userEntity = getUserById(jwtService.extractSubject(validateToken(token)));
         userEntity.setVerifyMail(newEmail + "/" + applicationUtil.generateVerificationCode(6));
         applicationEventPublisher.publishEvent(
                 VerifyMailEvent.builder()
@@ -199,22 +201,22 @@ public class UserService implements IUserService {
     @Override
     @Transactional
     public UserResponse updateEmail(String token, String verifyMail) {
-        var userEntity = getUserById(jwtService.extractSubject(token));
+        var userEntity = getUserById(jwtService.extractSubject(validateToken(token)));
         if(userEntity.getVerifyMail() == null) {
-            throw new AllException("Verification failure", 400, List.of("Past the confirmation period"));
+            throw new AllException("Verification failure", 404, List.of("Past the confirmation period"));
         }
         if(verifyMail.equals(userEntity.getVerifyMail().split("/")[1])) {
             userEntity.setEmail(userEntity.getVerifyMail().split("/")[0]);
             userEntity.setVerifyMail(null);
             return userMapper.entityToResponse(userEntity);
         } else {
-            throw new AllException("Verification failure", 400, List.of("Invalid verification code"));
+            throw new AllException("Verification failure", 401, List.of("Invalid verification code"));
         }
 
     }
 
-    @Override
-    public void deleteVerifyMailByEmail(String email) {
+    @Transactional
+    private void deleteVerifyMailByEmail(String email) {
         var userEntity = userRepository.findByEmail(email).orElse(null);
         if(userEntity != null && userEntity.getVerifyMail() != null) {
             userEntity.setVerifyMail(null);
@@ -223,18 +225,79 @@ public class UserService implements IUserService {
 
     @Override
     public Boolean checkPassword(String token, String password) {
-        var userEntity = getUserById(jwtService.extractSubject(token));
+        validateToken(token);
+        var userEntity = getUserById(jwtService.extractSubject(validateToken(token)));
         return passwordEncoder.matches(password, userEntity.getPassword());
     }
 
     @Override
     @Transactional
     public String changePassword(String token, String oldPassword, String newPassword) {
-        var userEntity = getUserById(jwtService.extractSubject(token));
+        validateToken(token);
+        var userEntity = getUserById(jwtService.extractSubject(validateToken(token)));
         if(passwordEncoder.matches(oldPassword, userEntity.getPassword())) {
             userEntity.setPassword(passwordEncoder.encode(newPassword));
+            return "Success";
+        } else {
+            throw new AllException("Change failure", 400, List.of("Invalid password"));
         }
+
+    }
+
+    @Override
+    @Transactional
+    public String sendToResetPassword(String email) {
+        var userEntity = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AllException("Conflict", 409, List.of("User is not exits")));
+        userEntity.setVerifyPass(applicationUtil.generateVerificationCode(6));
+        applicationEventPublisher.publishEvent(
+                VerifyPassEvent.builder()
+                        .email(userEntity.getEmail())
+                        .verifyCode(userEntity.getVerifyPass())
+                        .build());
         return "Success";
+    }
+
+    @Override
+    @Transactional
+    public String resetPassword(String email, String verifyPass, String pass) {
+        var userEntity = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AllException("Conflict", 404, List.of("User is not exits")));
+        if(userEntity.getVerifyPass().equals(verifyPass)) {
+            userEntity.setPassword(passwordEncoder.encode(pass));
+            userEntity.setVerifyPass(null);
+            return "Success";
+        } else {
+            throw new AllException("Verification failure", 401, List.of("Invalid verification code"));
+        }
+    }
+
+    @Override
+    @Transactional
+    public UserResponse updateUser(String token, UserUpdate userUpdate) {
+        userMapper.validateUpdate(userUpdate);
+        UserEntity userEntity = getUserById(jwtService.extractSubject(validateToken(token)));
+        if(userUpdate.getFullName() != null) {
+            userEntity.setFullName(userUpdate.getFullName());
+        }
+        if(userUpdate.getDateOfBirth() != null) {
+            userEntity.setDateOfBirth(userUpdate.getDateOfBirth());
+        }
+        if(userUpdate.getGender() != null) {
+            userEntity.setGender(userUpdate.getGender());
+        }
+        if(userUpdate.getPhoneNumber() != null) {
+            userEntity.setPhoneNumber(userUpdate.getPhoneNumber());
+        }
+        return userMapper.entityToResponse(userEntity);
+    }
+
+    @Transactional
+    private void deleteVerifyPassByEmail(String email) {
+        var userEntity = userRepository.findByEmail(email).orElse(null);
+        if(userEntity != null && userEntity.getVerifyPass() != null) {
+            userEntity.setVerifyPass(null);
+        }
     }
 
     private void checkEmail(String email) {
@@ -245,7 +308,7 @@ public class UserService implements IUserService {
 
     private String validateToken(String token) {
         if(token == null || !token.startsWith("Bearer ")) {
-            throw new AllException("Forbidden", 403, List.of("Access denied"));
+            throw new AllException("Forbidden", 404, List.of("Access denied"));
         } else {
             token = token.substring(7);
             return token;
@@ -287,5 +350,19 @@ public class UserService implements IUserService {
         deleteVerifyMailByEmail(event.getOldEmail());
     }
 
+    @EventListener
+    @Async
+    @Transactional
+    public void sendToVerifyPass(VerifyPassEvent event)  {
+        emailService.sendEmail(event.getEmail(), "Mã xác nhận từ Cinema",
+                "Vui không cung cấp mã xác nhận cho bất kì ai, nhập mã sau để đặt lại mật khẩu mới, " +
+                        "mã có hiệu lực 5 phút: " + event.getVerifyCode());
+        try {
+            Thread.sleep(verifyExpiration);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        deleteVerifyPassByEmail(event.getEmail());
+    }
 
 }

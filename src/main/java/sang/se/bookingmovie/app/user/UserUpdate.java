@@ -12,26 +12,15 @@ import java.sql.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
-
-    @NotBlank(message = "Name MUST not be blank")
+public class UserUpdate {
+    @NotEmpty(message = "Name MUST not be blank")
     private String fullName;
 
-    @Email(message = "Invalid email")
-    private String email;
-
-    @NotBlank(message = "Password MUST not be blank")
-    private String password;
-
-    @NotNull(message = "Date of birth MUST not be null")
     @Past(message = "Date of birth MUST be past")
     private Date dateOfBirth;
 
     @Pattern(regexp = "^[0-9]+$", message = "Invalid number phone")
     private String phoneNumber;
 
-    @NotNull(message = "Gender MUST not be null")
     private Boolean gender;
-
-
 }
