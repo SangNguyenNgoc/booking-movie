@@ -7,7 +7,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import sang.se.bookingmovie.app.bill.BillEntity;
 import sang.se.bookingmovie.app.comment.CommentEntity;
-import sang.se.bookingmovie.app.format.FormatEntity;
 import sang.se.bookingmovie.app.role.RoleEntity;
 
 import java.sql.Date;
@@ -50,7 +49,14 @@ public class UserEntity implements UserDetails {
 
     private Boolean verify;
 
-    private String verifyCode;
+    @Column(name = "verify_account")
+    private String verifyAccount;
+
+    @Column(name = "verify_mail")
+    private String verifyMail;
+
+    @Column(name = "verify_pass")
+    private String verifyPass;
 
     private LocalDateTime createDate;
 

@@ -10,7 +10,7 @@ import sang.se.bookingmovie.validate.ObjectsValidator;
 
 @Service
 @RequiredArgsConstructor
-public class UserMapper implements IMapper<UserEntity, User, User> {
+public class UserMapper implements IMapper<UserEntity, User, UserResponse> {
 
     private final ModelMapper mapper;
 
@@ -23,7 +23,9 @@ public class UserMapper implements IMapper<UserEntity, User, User> {
     }
 
     @Override
-    public User entityToResponse(UserEntity userEntity) {
-        return null;
+    public UserResponse entityToResponse(UserEntity userEntity) {
+        UserResponse userResponse = mapper.map(userEntity, UserResponse.class);
+        userResponse.setRole(userEntity.getRole().getName());
+        return userResponse;
     }
 }

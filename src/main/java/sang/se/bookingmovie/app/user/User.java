@@ -14,7 +14,6 @@ import java.sql.Date;
 @Builder
 public class User {
 
-    @NotBlank(message = "Name MUST not be blank")
     private String fullName;
 
     @Email(message = "Invalid email")
@@ -32,4 +31,6 @@ public class User {
 
     @NotNull(message = "Gender MUST not be null")
     private Boolean gender;
+
+
 }

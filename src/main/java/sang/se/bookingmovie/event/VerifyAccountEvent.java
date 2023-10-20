@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class VerifyMailEvent {
-    private String oldEmail;
-    private String newMail;
+public class VerifyAccountEvent {
+    private String email;
     private String verifyCode;
 }

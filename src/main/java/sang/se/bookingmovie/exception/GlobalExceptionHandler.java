@@ -79,22 +79,26 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<?> handleAppException(UserNotFoundException e) {
+    public ResponseEntity<?> handleException(UserNotFoundException e) {
         return ResponseEntity.status(409).body(
                 ErrorResponse.builder()
                         .timestamp(new Timestamp(System.currentTimeMillis()))
                         .httpStatus(HttpStatus.CONFLICT)
-                        .messages(List.of(e.getMessage()))
+                        .statusCode(409)
+                        .error(e.getError())
+                        .messages(e.getMessages())
                         .build()
         );
     }
 
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<?> handleAppException(AuthenticationException e) {
-        return ResponseEntity.status(401).body(
+    public ResponseEntity<?> handleException(AuthenticationException e) {
+        return ResponseEntity.status(409).body(
                 ErrorResponse.builder()
                         .timestamp(new Timestamp(System.currentTimeMillis()))
-                        .httpStatus(HttpStatus.UNAUTHORIZED)
+                        .httpStatus(HttpStatus.CONFLICT)
+                        .statusCode(409)
+                        .error(e.getMessage())
                         .messages(List.of(e.getMessage()))
                         .build()
         );

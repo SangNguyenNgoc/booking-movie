@@ -85,6 +85,44 @@ public class UserController {
                 .body(userService.authenticate(authRequest));
     }
 
+    @Operation(
+            summary = "Xác minh tài khoản",
+            description = "API gưửi xác minh tài khoản người dùng. " +
+                    "Cần token của người dùng để tìm email và gửi mã. " +
+                    "API chỉ dành cho tài khoản chưa xác minh.",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = String.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            description = "Unauthorized",
+                            responseCode = "401",
+                            content = @Content(
+                                    mediaType = "application/json"
+                            )
+                    ),
+                    @ApiResponse(
+                            description = "Forbidden",
+                            responseCode = "403",
+                            content = @Content(
+                                    mediaType = "application/json"
+                            )
+                    )
+            }
+    )
+    @PutMapping(value = "/guest/sendToVerifyAccount")
+    public ResponseEntity<?> sendToVerifyAccount(
+            @RequestHeader(value = "Authorization") String token
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(userService.sendToVerifyAccount(token));
+    }
+
 
     @Operation(
             summary = "Xác minh tài khoản",
@@ -116,51 +154,60 @@ public class UserController {
                     )
             }
     )
-    @PutMapping(value = "/guest/verify")
-    public ResponseEntity<?> verify(
+    @PutMapping(value = "/guest/verifyAccount")
+    public ResponseEntity<?> verifyAccount(
             @RequestHeader(value = "Authorization") String token,
-            @RequestParam(value = "verify") String verifyCode
+            @RequestParam(value = "verify") String verifyAccount
     ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(userService.verify(token, verifyCode));
+                .body(userService.verify(token, verifyAccount));
     }
 
 
-    @Operation(
-            summary = "Xác minh tài khoản",
-            description = "API gưửi xác minh tài khoản người dùng. " +
-                    "Cần token của người dùng để tìm email và gửi mã. " +
-                    "API chỉ dành cho tài khoản chưa xác minh.",
-            responses = {
-                    @ApiResponse(
-                            description = "Success",
-                            responseCode = "200",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = String.class)
-                            )
-                    ),
-                    @ApiResponse(
-                            description = "Unauthorized",
-                            responseCode = "401",
-                            content = @Content(
-                                    mediaType = "application/json"
-                            )
-                    ),
-                    @ApiResponse(
-                            description = "Forbidden",
-                            responseCode = "403",
-                            content = @Content(
-                                    mediaType = "application/json"
-                            )
-                    )
-            }
-    )
-    @PutMapping(value = "/guest/send-verify")
-    public ResponseEntity<?> verify(
+    @PutMapping(value = "/guest/sendToUpdateMail")
+    public ResponseEntity<?> sendToUpdateMail(
+            @RequestHeader(value = "Authorization") String token,
+            @RequestParam(value = "email") String newMail
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(userService.sendToUpdateEmail(token, newMail));
+    }
+
+
+    @PutMapping(value = "/guest/updateMail")
+    public ResponseEntity<?> updateMail(
+            @RequestHeader(value = "Authorization") String token,
+            @RequestParam(value = "verify") String verifyMail
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(userService.updateEmail(token, verifyMail));
+    }
+
+
+    @GetMapping(value = "/guest/currentUser")
+    public ResponseEntity<?> getCurrentUser(
             @RequestHeader(value = "Authorization") String token
     ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(userService.sendEmailToVerify(token));
+                .body(userService.getCurrentUser(token, null));
     }
+
+
+    @GetMapping(value = "/admin/user")
+    public ResponseEntity<?> getCurrentUserAdmin(
+            @RequestParam(value = "email") String email
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(userService.getCurrentUser(null, email));
+    }
+
+
+    @GetMapping(value = "/admin/users")
+    public ResponseEntity<?> getAll() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(userService.getAll());
+    }
+
+
+
 }

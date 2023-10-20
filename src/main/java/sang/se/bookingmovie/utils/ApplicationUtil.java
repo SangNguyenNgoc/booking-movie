@@ -11,6 +11,7 @@ import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -48,5 +49,15 @@ public class ApplicationUtil {
         } catch (NoSuchAlgorithmException e) {
             throw new CreateUUIDException("Server error", List.of("Create ID failure"));
         }
+    }
+
+    public String generateVerificationCode(int length) {
+        Random random = new Random();
+        StringBuilder code = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int digit = random.nextInt(10);
+            code.append(digit);
+        }
+        return code.toString();
     }
 }
