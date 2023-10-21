@@ -59,7 +59,7 @@ public class MovieStatusController {
                     )
             }
     )
-    @GetMapping(value = "/movieStatus")
+    @GetMapping(value = "/landing/movieStatus")
     public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(movieStatusService.getAll());
     }
