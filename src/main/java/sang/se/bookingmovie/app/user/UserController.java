@@ -248,7 +248,7 @@ public class UserController {
                     )
             }
     )
-    @GetMapping(value = "/guest/currentUser")
+    @GetMapping(value = "/currentUser")
     public ResponseEntity<?> getCurrentUser(
             @RequestHeader(value = "Authorization") String token
     ) {
@@ -354,7 +354,7 @@ public class UserController {
 
             }
     )
-    @PutMapping(value = "/guest/checkPassword")
+    @PutMapping(value = "/checkPassword")
     public ResponseEntity<?> checkPassword(
             @RequestHeader(value = "Authorization") String token,
             @RequestParam(value = "password") String password
@@ -390,7 +390,7 @@ public class UserController {
 
             }
     )
-    @PutMapping(value = "/guest/changePassword")
+    @PutMapping(value = "/changePassword")
     public ResponseEntity<?> changePassword(
             @RequestHeader(value = "Authorization") String token,
             @RequestParam(value = "oldPassword") String oldPassword,
@@ -423,7 +423,7 @@ public class UserController {
 
             }
     )
-    @PutMapping(value = "/sendToResetPass")
+    @PutMapping(value = "/auth/sendToResetPass")
     public ResponseEntity<?> sendToResetPass(
             @RequestParam(value = "email") String email
     ) {
@@ -461,7 +461,7 @@ public class UserController {
 
             }
     )
-    @PutMapping(value = "/resetPass")
+    @PutMapping(value = "/auth/resetPass")
     public ResponseEntity<?> sendToRetPass(
             @RequestParam(value = "email") String email,
             @RequestParam(value = "verify") String verifyPass,
@@ -487,7 +487,7 @@ public class UserController {
                     )
             }
     )
-    @PutMapping(value = "/guest/user")
+    @PutMapping(value = "/user")
     public ResponseEntity<?> updateUser(
             @RequestHeader(value = "token") String token,
             @RequestBody UserUpdate userUpdate

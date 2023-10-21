@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -36,9 +37,12 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf().disable()
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("api/v1/admin/**").hasAnyAuthority("ROLE_ADMIN")
-                        .requestMatchers("api/v1/guest/**").hasAnyAuthority("ROLE_GUEST", "ROLE_ADMIN")
-                        .anyRequest().permitAll()
+                        .requestMatchers("api/v1/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("api/v1/customer/**").hasAnyAuthority("ROLE_CUSTOMER", "ROLE_ADMIN")
+                        .requestMatchers("api/v1/guest/**").hasAuthority("ROLE_GUEST")
+                        .requestMatchers("api/v1/landing/**", "api/v1/auth/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .exceptionHandling()
                 .authenticationEntryPoint((request, response, authException) -> {
@@ -61,5 +65,6 @@ public class SecurityConfig {
                 .and()
                 .build();
     }
+
 
 }

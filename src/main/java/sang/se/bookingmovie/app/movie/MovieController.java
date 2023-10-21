@@ -46,7 +46,7 @@ public class MovieController {
                     )
             }
     )
-    @GetMapping(value = "/status/movies")
+    @GetMapping(value = "/landing/status/movies")
     public ResponseEntity<?> getMovieByStatus(
             @RequestParam(value = "status", required = false) String slug
     ) {
@@ -68,7 +68,7 @@ public class MovieController {
                     )
             }
     )
-    @GetMapping(value = "admin/movies")
+    @GetMapping(value = "/admin/movies")
     public ResponseEntity<?> getAll() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(movieService.getAll());

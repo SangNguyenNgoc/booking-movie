@@ -40,7 +40,7 @@ public class MovieGenreController {
                     )
             }
     )
-    @PostMapping(value = "/movie-genre")
+    @PostMapping(value = "admin/movieGenre")
     public ResponseEntity<?> create(@RequestBody MovieGenre movieGenre) {
         return ResponseEntity.status(201)
                 .body(movieGenreService.create(movieGenre));
@@ -61,7 +61,7 @@ public class MovieGenreController {
                     )
             }
     )
-    @GetMapping(value = "/movie-genres")
+    @GetMapping(value = "/movieGenres")
     public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(movieGenreService.getAll());
     }
