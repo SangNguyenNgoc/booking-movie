@@ -58,7 +58,7 @@ public class RoomController {
                     )
             }
     )
-    @GetMapping(value = "/rooms")
+    @GetMapping(value = "/admin/rooms")
     public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(roomService.getAll());
     }
@@ -78,7 +78,7 @@ public class RoomController {
             }
     )
 
-    @GetMapping(value = "cinema/{cinemaId}/rooms")
+    @GetMapping(value = "/admin/cinema/{cinemaId}/rooms")
     public ResponseEntity<?> getAllByCinema(@PathVariable(name = "cinemaId") String cinemaId){
         return ResponseEntity.ok(roomService.getAllByCinema(cinemaId));
     }
@@ -97,7 +97,7 @@ public class RoomController {
                     )
             }
     )
-    @GetMapping(value = "cinema/{cinemaId}/rooms/")
+    @GetMapping(value = "/admin/cinema/{cinemaId}/rooms/")
     public ResponseEntity<?> getAllByName(@PathVariable(name = "cinemaId") String cinemaId, @RequestParam("name") String name){
         return ResponseEntity.ok(roomService.getAllByName(cinemaId, name));
     }

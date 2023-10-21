@@ -57,7 +57,7 @@ public class SeatTypeController {
                     )
             }
     )
-    @GetMapping("/seat_type")
+    @GetMapping("/admin/seat_type")
     public ResponseEntity<?> getAll(){
         return ResponseEntity.status(200)
                 .body(seatTypeService.getAll());

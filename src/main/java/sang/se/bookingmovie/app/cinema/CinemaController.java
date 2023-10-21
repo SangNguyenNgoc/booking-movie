@@ -18,7 +18,7 @@ public class CinemaController {
 
     @Operation(
             description = "Tạo rạp phim và thêm vào cơ sở dữ liệu",
-            summary = "Api thêm thể rạp phim",
+            summary = "Api thêm rạp phim",
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -57,7 +57,7 @@ public class CinemaController {
                     )
             }
     )
-    @GetMapping(value = "/cinemas")
+    @GetMapping(value = "/landing/cinemas")
     public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(cinemaService.getAll());
     }
@@ -76,7 +76,7 @@ public class CinemaController {
                     )
             }
     )
-    @GetMapping(value = "/cinema/{cinemaId}")
+    @GetMapping(value = "/landing/cinema/{cinemaId}")
     public ResponseEntity<?> getById(@PathVariable("cinemaId") String cinemaId) {
         return ResponseEntity.ok(cinemaService.getById(cinemaId));
     }

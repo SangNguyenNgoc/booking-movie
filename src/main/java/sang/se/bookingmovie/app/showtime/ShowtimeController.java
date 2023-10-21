@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sang.se.bookingmovie.error.ErrorResponse;
@@ -61,9 +63,11 @@ public class ShowtimeController {
                     )
             }
     )
-    @GetMapping("cinema/{cinemaId}/showtime")
-    public ResponseEntity<?> getByCinema(@RequestParam("date") Date date,
-                                                @PathVariable("cinemaId") String cinemaId){
+    @GetMapping(value = "landing/cinema/{cinemaId}/showtime")
+    public ResponseEntity<?> getByCinema(
+            @RequestParam("date") Date date,
+            @PathVariable("cinemaId") String cinemaId
+    ) {
         return ResponseEntity.ok(showtimeService.getShowtimeByCinemaAndDate(date, cinemaId));
     }
 
@@ -81,10 +85,19 @@ public class ShowtimeController {
                     )
             }
     )
-    @GetMapping("movie/{movieId}/showtime")
-    public ResponseEntity<?> getByMovie(@RequestParam("date") Date date,
-                                                @PathVariable("movieId") String movieId
-                                                ){
+    @GetMapping(value = "/landing/movie/{movieId}/showtime")
+    public ResponseEntity<?> getByMovie(
+            @RequestParam("date") Date date,
+            @PathVariable("movieId") String movieId
+    ) {
         return ResponseEntity.ok(showtimeService.getShowtimeByMovie(date, movieId));
     }
+
+
+    @GetMapping(value = "/landing/showtime/{showtimeId}/seats")
+    public ResponseEntity<?> getSeatInShowtime(@PathVariable(value = "showtimeId") String showtimeId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(showtimeService.getSeatInShowTime(showtimeId));
+    }
+
 }
