@@ -130,10 +130,11 @@ public class MovieController {
     public ResponseEntity<?> create(
             @RequestParam(value = "movie") String movieJson,
             @RequestParam(value = "poster") MultipartFile poster,
+            @RequestParam(value = "horPoster") MultipartFile horPoster,
             @RequestParam(value = "images") List<MultipartFile> images
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(movieService.create(movieJson, poster, images));
+                .body(movieService.create(movieJson, poster, horPoster, images));
     }
 
 

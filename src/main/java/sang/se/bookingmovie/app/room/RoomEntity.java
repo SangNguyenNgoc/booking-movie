@@ -20,7 +20,6 @@ public class RoomEntity {
 
     @Id
     @Column(name = "room_id")
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     private String name;
@@ -38,7 +37,7 @@ public class RoomEntity {
     )
     private Set<ShowtimeEntity> showtimes;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "cinema_id",
             referencedColumnName = "cinema_id",

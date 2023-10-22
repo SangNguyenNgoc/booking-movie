@@ -51,7 +51,7 @@ public class ShowtimeEntity {
     )
     private Set<TicketEntity> tickets;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "format_id",
             referencedColumnName = "format_id",
@@ -59,7 +59,7 @@ public class ShowtimeEntity {
     )
     private FormatEntity format;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "room_id",
             referencedColumnName = "room_id",

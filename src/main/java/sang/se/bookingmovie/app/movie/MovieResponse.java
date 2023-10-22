@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import sang.se.bookingmovie.app.cinema.CinemaResponse;
 import sang.se.bookingmovie.app.comment.Comment;
 import sang.se.bookingmovie.app.format.Format;
 import sang.se.bookingmovie.app.movie_genre.MovieGenre;
@@ -33,6 +34,7 @@ public class MovieResponse{
         private String description;
         private String trailer;
         private String poster;
+        @JsonProperty("horizontal_poster") private String horizontalPoster;
         private String producer;
         private String rated;
         @JsonInclude(JsonInclude.Include.NON_NULL) private MovieGenre genre;
@@ -41,4 +43,5 @@ public class MovieResponse{
         @JsonInclude(JsonInclude.Include.NON_EMPTY) private List<MovieImage> images;
         @JsonInclude(JsonInclude.Include.NON_EMPTY) private List<ShowtimeResponse> showtimes;
         @JsonInclude(JsonInclude.Include.NON_EMPTY) private List<Comment> comments;
+        @JsonInclude(JsonInclude.Include.NON_EMPTY) private List<CinemaResponse> cinemas;
 }

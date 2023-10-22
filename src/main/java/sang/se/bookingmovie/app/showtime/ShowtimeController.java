@@ -20,6 +20,7 @@ import java.util.List;
 @RequestMapping(value = "/api/v1")
 @RequiredArgsConstructor
 public class ShowtimeController {
+
     private final ShowtimeService showtimeService;
 
     @Operation(
@@ -49,6 +50,7 @@ public class ShowtimeController {
                 .body(showtimeService.create(showtimeRequests));
     }
 
+
     @Operation(
             description = "Lấy suất chiếu theo ngày và rạp từ sơ sở dữ liệu",
             summary = "Api lấy suất chiếu theo ngày và rạp",
@@ -70,6 +72,7 @@ public class ShowtimeController {
     ) {
         return ResponseEntity.ok(showtimeService.getShowtimeByCinemaAndDate(date, cinemaId));
     }
+
 
     @Operation(
             description = "Lấy suất chiếu cua phim theo ngày từ sơ sở dữ liệu",
@@ -94,6 +97,20 @@ public class ShowtimeController {
     }
 
 
+    @Operation(
+            summary = "Api lấy ghế của suất chiếu",
+            description = "Lấy ghế của suất chiếu, biến isReserved cho biết ghế đó đã được đặt hay chưa.",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ShowtimeResponse.class)
+                            )
+                    )
+            }
+    )
     @GetMapping(value = "/landing/showtime/{showtimeId}/seats")
     public ResponseEntity<?> getSeatInShowtime(@PathVariable(value = "showtimeId") String showtimeId) {
         return ResponseEntity.status(HttpStatus.OK)

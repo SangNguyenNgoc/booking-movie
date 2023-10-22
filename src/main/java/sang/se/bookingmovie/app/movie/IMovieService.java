@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface IMovieService {
 
-    String create(String movieJson, MultipartFile poster, List<MultipartFile> images);
+    String create(String movieJson, MultipartFile poster, MultipartFile horPoster, List<MultipartFile> images);
 
     List<MovieStatus> getMoviesByStatus(String slug);
 

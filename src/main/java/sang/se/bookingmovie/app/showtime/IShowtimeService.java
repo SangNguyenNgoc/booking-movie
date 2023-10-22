@@ -1,5 +1,6 @@
 package sang.se.bookingmovie.app.showtime;
 
+import sang.se.bookingmovie.app.movie.MovieResponse;
 import sang.se.bookingmovie.response.ListResponse;
 
 
@@ -15,7 +16,9 @@ public interface IShowtimeService {
 
     ListResponse getShowtimeByCinemaAndDate(Date date, String cinemaId);
 
-    ListResponse getShowtimeByMovie(Date date, String movieId);
+    MovieResponse getShowtimeByMovie(Date date, String movieId);
 
     void updateStatusOfShowtime (LocalDate currentDate, LocalTime currentTime);
+
+    ShowtimeResponse getSeatInShowTime(String showtimeId);
 }

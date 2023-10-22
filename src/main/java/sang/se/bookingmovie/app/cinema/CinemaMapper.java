@@ -8,7 +8,7 @@ import sang.se.bookingmovie.validate.ObjectsValidator;
 
 @Service
 @RequiredArgsConstructor
-public class CinemaMapper implements IMapper<CinemaEntity, Cinema, Cinema> {
+public class CinemaMapper implements IMapper<CinemaEntity, Cinema, CinemaResponse> {
     private final ModelMapper mapper;
 
     private final ObjectsValidator<Cinema> validator;
@@ -19,7 +19,11 @@ public class CinemaMapper implements IMapper<CinemaEntity, Cinema, Cinema> {
     }
 
     @Override
-    public Cinema entityToResponse(CinemaEntity cinemaEntity) {
+    public CinemaResponse entityToResponse(CinemaEntity cinemaEntity) {
+        return mapper.map(cinemaEntity, CinemaResponse.class);
+    }
+
+    public Cinema entityToCinema(CinemaEntity cinemaEntity) {
         return mapper.map(cinemaEntity, Cinema.class);
     }
 }

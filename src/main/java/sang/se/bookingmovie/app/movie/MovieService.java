@@ -63,11 +63,12 @@ public class MovieService implements IMovieService {
     }
 
     @Override
-    public String create(String movieJson, MultipartFile poster, List<MultipartFile> images) {
+    public String create(String movieJson, MultipartFile poster, MultipartFile horPoster, List<MultipartFile> images) {
         MovieEntity movieEntity = movieMapper.jsonToEntity(movieJson);
         movieEntity.setId(createId());
         movieEntity.setSlug(applicationUtil.toSlug(movieEntity.getName()));
         movieEntity.setPoster(discordService.sendImage(poster, true));
+        movieEntity.setHorizontalPoster(discordService.sendImage(horPoster, true));
         MovieStatusEntity movieStatusEntity = movieStatusRepository.findBySlug("coming-soon")
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("status is not exist")));
         movieEntity.setStatus(movieStatusEntity);

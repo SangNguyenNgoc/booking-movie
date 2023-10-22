@@ -44,7 +44,7 @@ public class CinemaService implements ICinemaService {
     public Cinema getById(String cinemaId) {
         CinemaEntity cinemaEntity = cinemaRepository.findById(cinemaId)
                 .orElseThrow(()-> new AllException("Not Found", 404, List.of("cinemaId not found")));
-        return mapper.entityToResponse(cinemaEntity);
+        return mapper.entityToCinema(cinemaEntity);
 
     }
 

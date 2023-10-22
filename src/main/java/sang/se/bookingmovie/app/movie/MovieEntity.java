@@ -56,6 +56,9 @@ public class MovieEntity {
 
     private String poster;
 
+    @Column(name = "horizontal_poster")
+    private String horizontalPoster;
+
     private String trailer;
 
     private Integer rated;

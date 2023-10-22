@@ -1,6 +1,7 @@
 package sang.se.bookingmovie.app.seat_room;
 
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DialectOverride;
@@ -28,7 +29,7 @@ public class SeatRoomEntity {
     @Column(name = "status", columnDefinition = "boolean default true")
     private Boolean status;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "room_id",
             referencedColumnName = "room_id",
@@ -44,7 +45,7 @@ public class SeatRoomEntity {
 //    )
 //    private SeatEntity seat;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "seat_type_id",
             referencedColumnName = "seat_type_id",
@@ -54,7 +55,7 @@ public class SeatRoomEntity {
 
     @OneToMany(
             mappedBy = "seatRoom",
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = CascadeType.ALL
     )
     private Set<TicketEntity> tickets;
@@ -62,5 +63,8 @@ public class SeatRoomEntity {
     private String row;
 
     @Column(name = "row_index")
-    private String rowIndex;
+    private Integer rowIndex;
+
+    @Transient
+    private Boolean isReserved;
 }

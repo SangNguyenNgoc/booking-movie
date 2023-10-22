@@ -18,11 +18,9 @@ public class TicketEntity {
     @Column(name = "ticket_id")
     private String id;
 
-    private Double discount;
-
     private Integer total;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn (
             name = "bill_id",
             referencedColumnName = "bill_id",
@@ -30,7 +28,7 @@ public class TicketEntity {
     )
     private BillEntity bill;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(
             name = "showtime_id",
             referencedColumnName = "showtime_id",
@@ -38,7 +36,7 @@ public class TicketEntity {
     )
     private ShowtimeEntity showtime;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(
             name = "seat_room",
             referencedColumnName = "seat_room_id",

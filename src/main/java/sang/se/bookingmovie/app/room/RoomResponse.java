@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import sang.se.bookingmovie.app.seat_room.SeatRoomResponse;
+
+import java.util.List;
 
 @Builder
 @NoArgsConstructor
@@ -11,4 +14,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class RoomResponse {
     private String name;
+
+    private List<SeatRoomResponse> seats;
 }
