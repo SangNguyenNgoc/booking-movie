@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -59,8 +60,11 @@ public class RoomController {
             }
     )
     @GetMapping(value = "/admin/rooms")
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(roomService.getAll());
+    public ResponseEntity<?> getAll(
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size
+    ) {
+        return ResponseEntity.ok(roomService.getAll(page, size));
     }
 
     @Operation(
@@ -79,8 +83,12 @@ public class RoomController {
     )
 
     @GetMapping(value = "/admin/cinema/{cinemaId}/rooms")
-    public ResponseEntity<?> getAllByCinema(@PathVariable(name = "cinemaId") String cinemaId){
-        return ResponseEntity.ok(roomService.getAllByCinema(cinemaId));
+    public ResponseEntity<?> getAllByCinema(
+            @PathVariable(name = "cinemaId") String cinemaId,
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size
+    ) {
+        return ResponseEntity.ok(roomService.getAllByCinema(cinemaId, page, size));
     }
 
     @Operation(
@@ -98,7 +106,12 @@ public class RoomController {
             }
     )
     @GetMapping(value = "/admin/cinema/{cinemaId}/rooms/")
-    public ResponseEntity<?> getAllByName(@PathVariable(name = "cinemaId") String cinemaId, @RequestParam("name") String name){
-        return ResponseEntity.ok(roomService.getAllByName(cinemaId, name));
+    public ResponseEntity<?> getAllByName(
+            @PathVariable(name = "cinemaId") String cinemaId,
+            @RequestParam(name = "name") String name,
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size
+    ) {
+        return ResponseEntity.ok(roomService.getAllByName(cinemaId, name, page, size));
     }
 }

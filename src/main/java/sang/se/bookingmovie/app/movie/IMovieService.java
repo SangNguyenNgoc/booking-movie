@@ -12,11 +12,11 @@ public interface IMovieService {
 
     String create(String movieJson, MultipartFile poster, MultipartFile horPoster, List<MultipartFile> images);
 
-    List<MovieStatus> getMoviesByStatus(String slug);
+    ListResponse getMoviesByStatus(String slug, Integer page, Integer size);
 
-    ListResponse getAll();
+    ListResponse getAll(Integer page, Integer size);
 
-    MovieResponse getMovieBySlug(String slug);
+    MovieResponse getMovieById(String movieId);
 
     String updateStatusOfMovie(String movieId, Integer statusId);
 
@@ -27,4 +27,6 @@ public interface IMovieService {
     String updatePoster(String movieId, MultipartFile poster);
 
     String updateImages(String movieId, List<MultipartFile> images, List<Integer> imageIds);
+
+    ListResponse searchBySlug(String input, Integer page, Integer size);
 }

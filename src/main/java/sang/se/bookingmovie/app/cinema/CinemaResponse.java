@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import sang.se.bookingmovie.app.movie.MovieResponse;
 import sang.se.bookingmovie.app.room.RoomResponse;
 import sang.se.bookingmovie.app.showtime.ShowtimeResponse;
 
@@ -18,24 +19,12 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class CinemaResponse {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String id;
-
-    @NotBlank(message = "Cinema name must not be blank")
-    @NotNull(message = "Cinema name must not be null")
     private String name;
-
-    @NotBlank(message = "Cinema address must not be blank")
-    @NotNull(message = "Cinema address must not be null")
     private String address;
-
-    @NotBlank(message = "Cinema district must not be blank")
-    @NotNull(message = "Cinema district must not be null")
     private String district;
-
-    @NotBlank(message = "Cinema city must not be blank")
-    @NotNull(message = "Cinema city must not be null")
     private String city;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) private List<ShowtimeResponse> showtime;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) private List<MovieResponse> movies;
 
-    private List<ShowtimeResponse> showtime;
 }

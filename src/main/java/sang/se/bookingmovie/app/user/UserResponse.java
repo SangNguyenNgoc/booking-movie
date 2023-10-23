@@ -17,8 +17,6 @@ public class UserResponse {
     @JsonProperty("full_name") private String fullName;
     private String email;
     @JsonProperty("date_of_birth") private String dateOfBirth;
-    @JsonProperty("phone_number") private String phoneNumber;
-    private Boolean gender;
     private Integer point;
     private Boolean verify;
     private String role;

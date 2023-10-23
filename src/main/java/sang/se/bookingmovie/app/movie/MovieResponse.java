@@ -37,6 +37,7 @@ public class MovieResponse{
         @JsonProperty("horizontal_poster") private String horizontalPoster;
         private String producer;
         private String rated;
+        private String slug;
         @JsonInclude(JsonInclude.Include.NON_NULL) private MovieGenre genre;
         @JsonInclude(JsonInclude.Include.NON_NULL) private MovieStatus status;
         @JsonInclude(JsonInclude.Include.NON_NULL) private List<Format> formats;

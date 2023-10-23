@@ -5,7 +5,7 @@ import sang.se.bookingmovie.response.ListResponse;
 public interface ICinemaService {
     String create(Cinema cinemaRequest);
 
-    ListResponse getAll();
+    ListResponse getAll(Integer page, Integer size);
 
     Cinema getById(String cinemaId);
 

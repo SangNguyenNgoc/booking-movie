@@ -7,6 +7,6 @@ import java.util.List;
 @Builder
 public record ListResponse(
         Integer total,
-        List<Object> data
+        List<?> data
 ) {
 }

@@ -40,11 +40,6 @@ public class UserEntity implements UserDetails {
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
-    @Column(name = "phone_number")
-    private String phoneNumber;
-
-    private Boolean gender;
-
     private Integer point;
 
     private Boolean verify;

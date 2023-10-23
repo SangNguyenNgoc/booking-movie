@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,8 +59,11 @@ public class CinemaController {
             }
     )
     @GetMapping(value = "/landing/cinemas")
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(cinemaService.getAll());
+    public ResponseEntity<?> getAll(
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size
+            ) {
+        return ResponseEntity.ok(cinemaService.getAll(page, size));
     }
 
     @Operation(

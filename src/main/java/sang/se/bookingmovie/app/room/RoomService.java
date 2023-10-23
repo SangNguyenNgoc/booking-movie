@@ -1,6 +1,11 @@
 package sang.se.bookingmovie.app.room;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import sang.se.bookingmovie.app.cinema.CinemaEntity;
 import sang.se.bookingmovie.app.cinema.CinemaRepository;
@@ -39,10 +44,11 @@ public class RoomService implements IRoomService {
     }
 
     @Override
-    public ListResponse getAll() {
-        List<RoomEntity> roomEntities = roomRepository.findAll();
+    public ListResponse getAll(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page-1, size, Sort.by("id"));
+        Page<RoomEntity> roomEntities = roomRepository.findAll(pageable);
         return ListResponse.builder()
-                .total(roomEntities.size())
+                .total(roomEntities.getTotalPages())
                 .data(roomEntities.stream()
                         .map(mapper::entityToResponse)
                         .collect(Collectors.toList()))
@@ -50,11 +56,12 @@ public class RoomService implements IRoomService {
     }
 
     @Override
-    public ListResponse getAllByCinema(String cinemaId) {
+    public ListResponse getAllByCinema(String cinemaId, Integer page, Integer size) {
         cinemaRepository.findById(cinemaId).orElseThrow(() -> new AllException("Not found", 404, List.of(cinemaId + " not found")));
-        List<RoomEntity> roomEntities = roomRepository.findAllByCinemaId(cinemaId);
+        Pageable pageable = PageRequest.of(page-1, size, Sort.by("id"));
+        Page<RoomEntity> roomEntities = roomRepository.findAllByCinemaId(cinemaId, pageable);
         return ListResponse.builder()
-                .total(roomEntities.size())
+                .total(roomEntities.getTotalPages())
                 .data(roomEntities.stream()
                         .map(mapper::entityToResponse)
                         .collect(Collectors.toList()))
@@ -62,11 +69,12 @@ public class RoomService implements IRoomService {
     }
 
     @Override
-    public ListResponse getAllByName(String cinemaId, String name) {
+    public ListResponse getAllByName(String cinemaId, String name, Integer page, Integer size) {
         cinemaRepository.findById(cinemaId).orElseThrow(() -> new AllException("Not found", 404, List.of(cinemaId + " not found")));
-        List<RoomEntity> roomEntities = roomRepository.findByNameInCinema(cinemaId, name);
+        Pageable pageable = PageRequest.of(page-1, size, Sort.by("id"));
+        Page<RoomEntity> roomEntities = roomRepository.findByNameInCinema(cinemaId, name, pageable);
         return ListResponse.builder()
-                .total(roomEntities.size())
+                .total(roomEntities.getTotalPages())
                 .data(roomEntities.stream()
                         .map(mapper::entityToResponse)
                         .collect(Collectors.toList()))

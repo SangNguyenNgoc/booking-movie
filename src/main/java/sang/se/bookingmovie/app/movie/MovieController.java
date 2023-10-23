@@ -48,10 +48,12 @@ public class MovieController {
     )
     @GetMapping(value = "/landing/status/movies")
     public ResponseEntity<?> getMovieByStatus(
-            @RequestParam(value = "status", required = false) String slug
+            @RequestParam(value = "status", required = false) String slug,
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size
     ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(movieService.getMoviesByStatus(slug));
+                .body(movieService.getMoviesByStatus(slug, size, page));
     }
 
     @Operation(
@@ -69,9 +71,12 @@ public class MovieController {
             }
     )
     @GetMapping(value = "/admin/movies")
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<?> getAll(
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size
+    ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(movieService.getAll());
+                .body(movieService.getAll(page, size));
     }
 
     @Operation(
@@ -88,10 +93,10 @@ public class MovieController {
                     )
             }
     )
-    @GetMapping(value = "/admin/movie/{movieSlug}")
-    public ResponseEntity<?> getDetailMovie(@PathVariable(value = "movieSlug") String slug) {
+    @GetMapping(value = "/admin/movie/{movieId}")
+    public ResponseEntity<?> getDetailMovie(@PathVariable(value = "movieId") String movieId) {
         return ResponseEntity.status(200)
-                .body(movieService.getMovieBySlug(slug));
+                .body(movieService.getMovieById(movieId));
     }
 
 
@@ -279,6 +284,16 @@ public class MovieController {
     ) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(movieService.updateImages(movieId, images, imageIds));
+    }
+
+    @GetMapping(value = "/landing/searchMovie")
+    public ResponseEntity<?> searchMoviesPageToLanding(
+            @RequestParam(value = "search") String input,
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size
+    ) {
+        return ResponseEntity.status(200)
+                .body(movieService.searchBySlug(input, page, size));
     }
 
 }

@@ -323,9 +323,12 @@ public class UserController {
             }
     )
     @GetMapping(value = "/admin/users")
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<?> getAll(
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size
+    ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(userService.getAll());
+                .body(userService.getAll(page, size));
     }
 
 

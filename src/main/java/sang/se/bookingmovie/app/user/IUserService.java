@@ -1,5 +1,6 @@
 package sang.se.bookingmovie.app.user;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import sang.se.bookingmovie.auth.AuthRequest;
 import sang.se.bookingmovie.auth.AuthResponse;
 import sang.se.bookingmovie.response.ListResponse;
@@ -18,7 +19,7 @@ public interface IUserService {
 
     UserResponse getCurrentUser(String token, String email);
 
-    ListResponse getAll();
+    ListResponse getAll(Integer page, Integer size);
 
     String sendToUpdateEmail(String token,String newEmail);
 

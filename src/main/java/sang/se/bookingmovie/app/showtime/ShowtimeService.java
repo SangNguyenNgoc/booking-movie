@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sang.se.bookingmovie.app.cinema.CinemaEntity;
 import sang.se.bookingmovie.app.cinema.CinemaMapper;
+import sang.se.bookingmovie.app.cinema.CinemaRepository;
 import sang.se.bookingmovie.app.cinema.CinemaResponse;
 import sang.se.bookingmovie.app.format.FormatEntity;
 import sang.se.bookingmovie.app.format.FormatRepository;
@@ -38,6 +39,7 @@ public class ShowtimeService implements IShowtimeService {
     private final FormatRepository formatRepository;
     private final RoomRepository roomRepository;
     private final MovieRepository movieRepository;
+    private final CinemaRepository cinemaRepository;
     private final CinemaMapper cinemaMapper;
 
     private String createShowTimeID() {
@@ -65,27 +67,23 @@ public class ShowtimeService implements IShowtimeService {
     }
 
     @Override
-    public ListResponse getShowtimeByCinemaAndDate(Date date, String cinemaId) {
+    public CinemaResponse getShowtimeByCinemaAndDate(Date date, String cinemaId) {
+        CinemaEntity cinemaEntity = cinemaRepository.findById(cinemaId)
+                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Cinema is not exits")));
         List<MovieEntity> movieEntities = showtimeRepository.findByDateAndCinema(date, cinemaId);
-        List<MovieResponse> movieResponses = movieEntities.stream()
-                .peek(movieEntity -> {
-                    movieEntity.setGenre(null);
-                    movieEntity.setStatus(null);
-                    movieEntity.setFormats(null);
-                    movieEntity.setComments(null);
-                    movieEntity.getShowtimes().forEach(showtimeEntity -> showtimeEntity.setRoom(null));
-                })
+        CinemaResponse cinemaResponse = cinemaMapper.entityToResponse(cinemaEntity);
+        cinemaResponse.setMovies(movieEntities.stream()
+                .peek(this::getFieldInShowtimeByCinemaAndDate)
                 .map(movieMapper::entityToResponse)
-                .toList();
-        movieResponses.forEach(movieResponse -> {
-            movieResponse.setShowtimes(movieResponse.getShowtimes().stream()
-                    .sorted(Comparator.comparing(ShowtimeResponse::getStartTime))
-                    .toList());
-        });
-        return ListResponse.builder()
-                .total(movieResponses.size())
-                .data(List.of(movieResponses))
-                .build();
+                .peek(movieResponse -> {
+                    movieResponse.setShowtimes(movieResponse.getShowtimes().stream()
+                            .sorted(Comparator.comparing(ShowtimeResponse::getStartTime))
+                            .collect(Collectors.toList())
+                    );
+                })
+                .toList()
+        );
+        return cinemaResponse;
     }
 
     @Override
@@ -156,5 +154,13 @@ public class ShowtimeService implements IShowtimeService {
     private void getFieldToDetail(MovieEntity movieEntity) {
         movieEntity.setShowtimes(null);
         movieEntity.getStatus().setMovies(null);
+    }
+
+    private void getFieldInShowtimeByCinemaAndDate(MovieEntity movieEntity) {
+        movieEntity.setGenre(null);
+        movieEntity.setStatus(null);
+        movieEntity.setFormats(null);
+        movieEntity.setComments(null);
+        movieEntity.getShowtimes().forEach(showtimeEntity -> showtimeEntity.setRoom(null));
     }
 }

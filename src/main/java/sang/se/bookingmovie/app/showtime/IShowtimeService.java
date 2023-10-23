@@ -1,5 +1,6 @@
 package sang.se.bookingmovie.app.showtime;
 
+import sang.se.bookingmovie.app.cinema.CinemaResponse;
 import sang.se.bookingmovie.app.movie.MovieResponse;
 import sang.se.bookingmovie.response.ListResponse;
 
@@ -14,7 +15,7 @@ import java.util.List;
 public interface IShowtimeService {
     String create(List<ShowtimeRequest> showtimeRequest);
 
-    ListResponse getShowtimeByCinemaAndDate(Date date, String cinemaId);
+    CinemaResponse getShowtimeByCinemaAndDate(Date date, String cinemaId);
 
     MovieResponse getShowtimeByMovie(Date date, String movieId);
 

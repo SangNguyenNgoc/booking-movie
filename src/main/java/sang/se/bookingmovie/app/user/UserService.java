@@ -1,9 +1,14 @@
 package sang.se.bookingmovie.app.user;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -172,10 +177,11 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public ListResponse getAll() {
-        List<UserEntity> userEntities = userRepository.findAll();
+    public ListResponse getAll(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page-1, size, Sort.by("createDate").descending());
+        Page<UserEntity> userEntities = userRepository.findAll(pageable);
         return ListResponse.builder()
-                .total(userEntities.size())
+                .total(userEntities.getTotalPages())
                 .data(userEntities.stream()
                         .map(userMapper::entityToResponse)
                         .collect(Collectors.toList()))
@@ -282,12 +288,6 @@ public class UserService implements IUserService {
         }
         if(userUpdate.getDateOfBirth() != null) {
             userEntity.setDateOfBirth(userUpdate.getDateOfBirth());
-        }
-        if(userUpdate.getGender() != null) {
-            userEntity.setGender(userUpdate.getGender());
-        }
-        if(userUpdate.getPhoneNumber() != null) {
-            userEntity.setPhoneNumber(userUpdate.getPhoneNumber());
         }
         return userMapper.entityToResponse(userEntity);
     }

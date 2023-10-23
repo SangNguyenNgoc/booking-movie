@@ -1,7 +1,12 @@
 package sang.se.bookingmovie.app.cinema;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import sang.se.bookingmovie.app.movie_genre.MovieGenre;
 import sang.se.bookingmovie.app.movie_genre.MovieGenreEntity;
@@ -30,10 +35,11 @@ public class CinemaService implements ICinemaService {
     }
 
     @Override
-    public ListResponse getAll() {
-        List<CinemaEntity> cinemaEntities = cinemaRepository.findAll();
+    public ListResponse getAll(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page-1, size, Sort.by("id"));
+        Page<CinemaEntity> cinemaEntities = cinemaRepository.findAll(pageable);
         return ListResponse.builder()
-                .total(cinemaEntities.size())
+                .total(cinemaEntities.getTotalPages())
                 .data(cinemaEntities.stream()
                         .map(mapper::entityToResponse)
                         .collect(Collectors.toList()))
