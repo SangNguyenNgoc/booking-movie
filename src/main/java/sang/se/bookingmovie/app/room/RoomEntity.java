@@ -30,6 +30,8 @@ public class RoomEntity {
     @Column(name = "available_seats")
     private Integer availableSeats;
 
+    private String slug;
+
     @OneToMany(
             mappedBy = "room",
             fetch = FetchType.LAZY,

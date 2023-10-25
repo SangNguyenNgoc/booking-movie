@@ -103,7 +103,7 @@ public class ShowtimeService implements IShowtimeService {
                             .collect(Collectors.toSet());
                     CinemaResponse cinemaResponse = cinemaMapper.entityToResponse(cinemaEntity);
                     cinemaResponse.setShowtime(showtimeEntities.stream()
-                            .peek(showtimeEntity -> showtimeEntity.setRoom(null))
+                            .peek(this::getFieldToList)
                             .map(showtimeMapper::entityToResponse)
                             .sorted(Comparator.comparing(ShowtimeResponse::getStartTime))
                             .collect(Collectors.toList()));
@@ -146,8 +146,7 @@ public class ShowtimeService implements IShowtimeService {
     }
 
     private void getFieldToGetSeat(ShowtimeEntity showtimeEntity) {
-        showtimeEntity.setMovie(null);
-        showtimeEntity.setFormat(null);
+        getFieldToDetail(showtimeEntity.getMovie());
         showtimeEntity.setTickets(null);
     }
 
@@ -156,11 +155,19 @@ public class ShowtimeService implements IShowtimeService {
         movieEntity.getStatus().setMovies(null);
     }
 
+    private void getFieldToList(ShowtimeEntity showtimeEntity) {
+        showtimeEntity.setRoom(null);
+        showtimeEntity.setMovie(null);
+        showtimeEntity.setFormat(null);
+    }
+
     private void getFieldInShowtimeByCinemaAndDate(MovieEntity movieEntity) {
         movieEntity.setGenre(null);
         movieEntity.setStatus(null);
         movieEntity.setFormats(null);
         movieEntity.setComments(null);
-        movieEntity.getShowtimes().forEach(showtimeEntity -> showtimeEntity.setRoom(null));
+        movieEntity.getShowtimes().forEach(this::getFieldToList);
     }
+
+
 }

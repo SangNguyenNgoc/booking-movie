@@ -33,7 +33,7 @@ public class MovieController {
     @Operation(
             summary = "Lấy phim theo 1 trạng thái từ sơ sở dữ liệu",
             description = "API lấy phim theo trạng thái, nếu truyền param `status`, 1 status kèm phim sẽ được trả, " +
-                    "nếu không truyền param, tất cả status kèm phim sẽ được trả. " +
+                    "nếu không truyền param, tất cả status kèm phim sẽ được trả, ngoài ra cần page và size. " +
                     "Đường dẫn API này chỉ lấy các thuộc tính cơ bản, API này dành cho trang người dùng.",
             responses = {
                     @ApiResponse(
@@ -41,7 +41,7 @@ public class MovieController {
                             responseCode = "200",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = MovieStatus.class)
+                                    schema = @Schema(implementation = ListResponse.class)
                             )
                     )
             }
@@ -53,7 +53,7 @@ public class MovieController {
             @RequestParam(value = "size") Integer size
     ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(movieService.getMoviesByStatus(slug, size, page));
+                .body(movieService.getMoviesByStatus(slug, page, size));
     }
 
     @Operation(
@@ -81,7 +81,7 @@ public class MovieController {
 
     @Operation(
             summary = "Lấy chi tiết 1 phim từ cơ sở dữ liệu bằng slug",
-            description = "API lấy chi tiết 1 phim từ cỡ sở dữ liệu băằng slug, API này chỉ dành cho trang admin",
+            description = "API lấy chi tiết 1 phim từ cỡ sở dữ liệu bằng id, API này chỉ dành cho trang admin",
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -109,8 +109,7 @@ public class MovieController {
                             description = "Success",
                             responseCode = "201",
                             content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = String.class)
+                                    mediaType = "application/json"
                             )
                     ),
                     @ApiResponse(
@@ -152,8 +151,7 @@ public class MovieController {
                             description = "Success",
                             responseCode = "201",
                             content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = String.class)
+                                    mediaType = "application/json"
                             )
                     ),
                     @ApiResponse(
@@ -186,8 +184,7 @@ public class MovieController {
                             description = "Success",
                             responseCode = "200",
                             content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = String.class)
+                                    mediaType = "application/json"
                             )
                     ),
                     @ApiResponse(
@@ -227,8 +224,7 @@ public class MovieController {
                             description = "Success",
                             responseCode = "200",
                             content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = String.class)
+                                    mediaType = "application/json"
                             )
                     ),
                     @ApiResponse(
@@ -262,8 +258,7 @@ public class MovieController {
                             description = "Success",
                             responseCode = "200",
                             content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = String.class)
+                                    mediaType = "application/json"
                             )
                     ),
                     @ApiResponse(
@@ -286,6 +281,20 @@ public class MovieController {
                 .body(movieService.updateImages(movieId, images, imageIds));
     }
 
+    @Operation(
+            summary = "Tìm kiếm phim",
+            description = "API tìm kiếm phim, yêu cầu chuỗi input, page và size",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ListResponse.class)
+                            )
+                    )
+            }
+    )
     @GetMapping(value = "/landing/searchMovie")
     public ResponseEntity<?> searchMoviesPageToLanding(
             @RequestParam(value = "search") String input,

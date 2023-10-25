@@ -61,7 +61,7 @@ public class MovieGenreController {
                     )
             }
     )
-    @GetMapping(value = "/landing/movieGenres")
+    @GetMapping(value = "/admin/movieGenres")
     public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(movieGenreService.getAll());
     }

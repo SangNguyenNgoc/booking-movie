@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import sang.se.bookingmovie.auth.AuthRequest;
 import sang.se.bookingmovie.auth.AuthResponse;
 import sang.se.bookingmovie.response.ErrorResponse;
+import sang.se.bookingmovie.response.ListResponse;
 
 import java.sql.Date;
 
@@ -91,8 +92,7 @@ public class UserController {
                             description = "Success",
                             responseCode = "200",
                             content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = String.class)
+                                    mediaType = "application/json"
                             )
                     ),
                     @ApiResponse(
@@ -126,8 +126,7 @@ public class UserController {
                             description = "Success",
                             responseCode = "200",
                             content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = AuthResponse.class)
+                                    mediaType = "application/json"
                             )
                     ),
                     @ApiResponse(
@@ -162,8 +161,7 @@ public class UserController {
                             description = "Success",
                             responseCode = "200",
                             content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = AuthResponse.class)
+                                    mediaType = "application/json"
                             )
                     ),
                     @ApiResponse(
@@ -199,7 +197,7 @@ public class UserController {
                             responseCode = "200",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = AuthResponse.class)
+                                    schema = @Schema(implementation = UserResponse.class)
                             )
                     ),
                     @ApiResponse(
@@ -233,7 +231,7 @@ public class UserController {
                             responseCode = "200",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = AuthResponse.class)
+                                    schema = @Schema(implementation = UserResponse.class)
                             )
                     ),
                     @ApiResponse(
@@ -268,7 +266,7 @@ public class UserController {
                             responseCode = "200",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = AuthResponse.class)
+                                    schema = @Schema(implementation = UserResponse.class)
                             )
                     ),
                     @ApiResponse(
@@ -307,7 +305,7 @@ public class UserController {
                             responseCode = "200",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = AuthResponse.class)
+                                    schema = @Schema(implementation = ListResponse.class)
                             )
                     ),
                     @ApiResponse(
@@ -341,7 +339,7 @@ public class UserController {
                             responseCode = "200",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = AuthResponse.class)
+                                    schema = @Schema(implementation = Boolean.class)
                             )
                     ),
                     @ApiResponse(
@@ -376,8 +374,7 @@ public class UserController {
                             description = "Success",
                             responseCode = "200",
                             content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = AuthResponse.class)
+                                    mediaType = "application/json"
                             )
                     ),
                     @ApiResponse(
@@ -413,8 +410,7 @@ public class UserController {
                             description = "Success",
                             responseCode = "200",
                             content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = AuthResponse.class)
+                                    mediaType = "application/json"
                             )
                     ),
                     @ApiResponse(

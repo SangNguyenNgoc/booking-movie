@@ -51,6 +51,11 @@ public class ApplicationUtil {
         }
     }
 
+    public String createUUID() {
+        UUID randomUUID = UUID.randomUUID();
+        return randomUUID.toString();
+    }
+
     public String generateVerificationCode(int length) {
         Random random = new Random();
         StringBuilder code = new StringBuilder();

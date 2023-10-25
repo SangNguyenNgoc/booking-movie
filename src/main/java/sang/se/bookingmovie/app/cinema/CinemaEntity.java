@@ -29,6 +29,8 @@ public class CinemaEntity {
 
     private String description;
 
+    private String slug;
+
     @OneToMany(
             mappedBy = "cinema",
             fetch = FetchType.LAZY,
@@ -36,11 +38,5 @@ public class CinemaEntity {
     )
     private Set<RoomEntity> rooms;
 
-    public void update(Cinema cinema){
-        if (cinema.getName() != null)name = cinema.getName();
-        if (cinema.getAddress() != null)address = cinema.getAddress();
-        if (cinema.getCity() != null)city = cinema.getCity();
-        if (cinema.getDistrict() != null)district = cinema.getDistrict();
-    }
 
 }

@@ -30,6 +30,7 @@ public class CinemaService implements ICinemaService {
     public String create(Cinema cinemaRequest) {
         CinemaEntity cinemaEntity = mapper.requestToEntity(cinemaRequest);
         cinemaEntity.setId(createCinemaID());
+        cinemaEntity.setSlug(applicationUtil.toSlug(cinemaEntity.getName()));
         cinemaRepository.save(cinemaEntity);
         return "success";
     }
@@ -58,13 +59,20 @@ public class CinemaService implements ICinemaService {
     public String update(Cinema cinemaRequest, String cinemaId) {
         CinemaEntity cinemaEntity = cinemaRepository.findById(cinemaId)
                 .orElseThrow(()-> new AllException("Not Found", 404, List.of("cinemaId not found")));
-        cinemaEntity.update(cinemaRequest);
+        update(cinemaEntity, cinemaRequest);
         cinemaRepository.save(cinemaEntity);
         return "success";
     }
 
     private String createCinemaID(){
-        Long count = cinemaRepository.count() + 1;
+        long count = cinemaRepository.count() + 1;
         return "Cinema" + applicationUtil.addZeros(count,3);
+    }
+
+    public void update(CinemaEntity cinemaEntity, Cinema cinema){
+        cinemaEntity.setName(cinema.getName());
+        cinemaEntity.setAddress(cinema.getAddress());
+        cinemaEntity.setCity(cinema.getCity());
+        cinemaEntity.setDistrict(cinema.getDistrict());
     }
 }

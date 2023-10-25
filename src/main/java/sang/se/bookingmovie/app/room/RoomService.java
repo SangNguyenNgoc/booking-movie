@@ -39,6 +39,7 @@ public class RoomService implements IRoomService {
         RoomEntity newRoom =  new RoomEntity(roomRequest.getName(), roomRequest.getTotalSeats(), roomRequest.getTotalSeats());
         newRoom.setCinema(cinema);
         newRoom.setId(createRoomID());
+        newRoom.setSlug(applicationUtil.toSlug(applicationUtil.toSlug(newRoom.getName())));
         roomRepository.save(newRoom);
         return "success";
     }
@@ -70,7 +71,8 @@ public class RoomService implements IRoomService {
 
     @Override
     public ListResponse getAllByName(String cinemaId, String name, Integer page, Integer size) {
-        cinemaRepository.findById(cinemaId).orElseThrow(() -> new AllException("Not found", 404, List.of(cinemaId + " not found")));
+        cinemaRepository.findById(cinemaId)
+                .orElseThrow(() -> new AllException("Not found", 404, List.of(cinemaId + " not found")));
         Pageable pageable = PageRequest.of(page-1, size, Sort.by("id"));
         Page<RoomEntity> roomEntities = roomRepository.findByNameInCinema(cinemaId, name, pageable);
         return ListResponse.builder()
@@ -82,7 +84,7 @@ public class RoomService implements IRoomService {
     }
 
     private String createRoomID(){
-        Long count = roomRepository.count() + 1;
+        long count = roomRepository.count() + 1;
         return "Room" + applicationUtil.addZeros(count,3);
     }
 }

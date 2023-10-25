@@ -27,4 +27,10 @@ public class User {
     @Past(message = "Date of birth MUST be past")
     private Date dateOfBirth;
 
+    @Pattern(regexp = "^[0-9]+$", message = "Invalid number phone")
+    private String phoneNumber;
+
+    @NotNull(message = "Gender MUST not be null")
+    private Boolean gender;
+
 }

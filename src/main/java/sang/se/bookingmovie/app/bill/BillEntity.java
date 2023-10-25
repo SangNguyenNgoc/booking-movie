@@ -23,7 +23,18 @@ public class BillEntity {
     @Column(name = "payment_at")
     private LocalDate paymentAt;
 
-    private Integer total;
+    @Column(name = "change_point")
+    private Integer changedPoint;
+
+    private Double total;
+
+    private String status;
+
+    @Column(name = "transaction_id")
+    private String transactionId;
+
+    @Column(name = "cancel_reason")
+    private String cancelReason;
 
     @OneToMany(
             mappedBy = "bill",
