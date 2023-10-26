@@ -67,23 +67,23 @@ public class ShowtimeService implements IShowtimeService {
     }
 
     @Override
-    public CinemaResponse getShowtimeByCinemaAndDate(Date date, String cinemaId) {
+    public ListResponse getShowtimeByCinemaAndDate(Date date, String cinemaId) {
         CinemaEntity cinemaEntity = cinemaRepository.findById(cinemaId)
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Cinema is not exits")));
         List<MovieEntity> movieEntities = showtimeRepository.findByDateAndCinema(date, cinemaId);
-        CinemaResponse cinemaResponse = cinemaMapper.entityToResponse(cinemaEntity);
-        cinemaResponse.setMovies(movieEntities.stream()
-                .peek(this::getFieldInShowtimeByCinemaAndDate)
-                .map(movieMapper::entityToResponse)
-                .peek(movieResponse -> {
-                    movieResponse.setShowtimes(movieResponse.getShowtimes().stream()
-                            .sorted(Comparator.comparing(ShowtimeResponse::getStartTime))
-                            .collect(Collectors.toList())
-                    );
-                })
-                .toList()
-        );
-        return cinemaResponse;
+        return ListResponse.builder()
+                .total(movieEntities.size())
+                .data(movieEntities.stream()
+                        .peek(this::getFieldInShowtimeByCinemaAndDate)
+                        .map(movieMapper::entityToResponse)
+                        .peek(movieResponse -> {
+                            movieResponse.setShowtimes(movieResponse.getShowtimes().stream()
+                                    .sorted(Comparator.comparing(ShowtimeResponse::getStartTime))
+                                    .collect(Collectors.toList())
+                            );
+                        })
+                        .toList())
+                .build();
     }
 
     @Override
