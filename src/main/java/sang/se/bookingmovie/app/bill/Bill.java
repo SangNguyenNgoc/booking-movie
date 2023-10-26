@@ -15,6 +15,7 @@ import java.util.List;
 public class Bill {
 
     @Digits(integer = 2, fraction = 0, message = "Changed point MUST be a number")
+    @Min(value = 0, message = "Changed point MUST MUST be at least 0")
     @Max(value = 50, message = "Changed point MUST be less than or equal to 18")
     private Integer changedPoint;
 

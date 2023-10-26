@@ -35,7 +35,7 @@ public class MovieMapper implements IMapper<MovieEntity, Movie, MovieResponse> {
 
     private final ModelMapper mapper;
 
-    private final ShowtimeMapper showtimeMapper;
+    private final CommentMapper commentMapper;
 
     private final ObjectMapper objectMapper;
 
@@ -49,12 +49,12 @@ public class MovieMapper implements IMapper<MovieEntity, Movie, MovieResponse> {
 
     @Override
     public MovieResponse entityToResponse(MovieEntity movieEntity) {
-        if(movieEntity.getShowtimes() == null) {
+        if(movieEntity.getComments() == null) {
             return mapper.map(movieEntity, MovieResponse.class);
         } else {
             MovieResponse movieResponse = mapper.map(movieEntity, MovieResponse.class);
-            movieResponse.setShowtimes(movieEntity.getShowtimes().stream()
-                    .map(showtimeMapper::entityToResponse)
+            movieResponse.setComments(movieEntity.getComments().stream()
+                    .map(commentMapper::entityToResponse)
                     .collect(Collectors.toList())
             );
             return movieResponse;
