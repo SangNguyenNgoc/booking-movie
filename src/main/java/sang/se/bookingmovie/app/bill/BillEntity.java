@@ -2,6 +2,7 @@ package sang.se.bookingmovie.app.bill;
 
 import jakarta.persistence.*;
 import lombok.*;
+import sang.se.bookingmovie.app.bill_status.BillStatusEntity;
 import sang.se.bookingmovie.app.ticket.TicketEntity;
 import sang.se.bookingmovie.app.user.UserEntity;
 
@@ -28,8 +29,6 @@ public class BillEntity {
 
     private Double total;
 
-    private String status;
-
     @Column(name = "transaction_id")
     private String transactionId;
 
@@ -43,13 +42,21 @@ public class BillEntity {
     )
     private Set<TicketEntity> tickets ;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "user_id",
             nullable = false,
             referencedColumnName = "user_id"
     )
     private UserEntity user;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(
+            name = "status_id",
+            nullable = false,
+            referencedColumnName = "bill_status_id"
+    )
+    private BillStatusEntity status;
 
 
 }

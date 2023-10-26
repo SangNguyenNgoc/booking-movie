@@ -142,6 +142,20 @@ public class MovieService implements IMovieService {
     }
 
     @Override
+    public MovieResponse getMovieBySlug(String slug) {
+        MovieEntity movieEntity = movieRepository.findBySlug(slug)
+                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("movie is not exist")));
+        getFieldToDetail(movieEntity);
+        MovieResponse movieResponse = movieMapper.entityToResponse(movieEntity);
+        movieResponse.setImages(
+                movieResponse.getImages().stream()
+                        .sorted(Comparator.comparing(MovieImage::getId))
+                        .collect(Collectors.toList())
+        );
+        return movieResponse;
+    }
+
+    @Override
     @Transactional
     public String updateStatusOfMovie(String movieId, Integer statusId) {
         MovieEntity movieEntity = findMovieById(movieId);
@@ -231,12 +245,6 @@ public class MovieService implements IMovieService {
                         .collect(Collectors.toList())
                 )
                 .build();
-    }
-
-    private List<MovieResponse> sortByReleaseDate(List<MovieResponse> movies) {
-        return movies.stream()
-                .sorted(Comparator.comparing(MovieResponse::getReleaseDate))
-                .toList();
     }
 
     private void getFieldToList(MovieEntity movieEntity) {

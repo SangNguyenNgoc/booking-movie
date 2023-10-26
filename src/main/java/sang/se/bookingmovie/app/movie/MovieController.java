@@ -94,9 +94,30 @@ public class MovieController {
             }
     )
     @GetMapping(value = "/admin/movie/{movieId}")
-    public ResponseEntity<?> getDetailMovie(@PathVariable(value = "movieId") String movieId) {
+    public ResponseEntity<?> getDetailMovieByAdmin(@PathVariable(value = "movieId") String movieId) {
         return ResponseEntity.status(200)
                 .body(movieService.getMovieById(movieId));
+    }
+
+
+    @Operation(
+            summary = "Lấy chi tiết 1 phim từ cơ sở dữ liệu bằng slug",
+            description = "API lấy chi tiết 1 phim từ cỡ sở dữ liệu bằng id, API này chỉ dành cho trang admin",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = MovieResponse.class)
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/movie/{movieSlug}")
+    public ResponseEntity<?> getDetailMovieBySlug(@PathVariable(value = "movieSlug") String movieSlug) {
+        return ResponseEntity.status(200)
+                .body(movieService.getMovieById(movieSlug));
     }
 
 

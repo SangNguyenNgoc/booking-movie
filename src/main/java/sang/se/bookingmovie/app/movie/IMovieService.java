@@ -18,6 +18,8 @@ public interface IMovieService {
 
     MovieResponse getMovieById(String movieId);
 
+    MovieResponse getMovieBySlug(String slug);
+
     String updateStatusOfMovie(String movieId, Integer statusId);
 
     void updateStatusOfMovie(LocalDate currentDate);
