@@ -7,9 +7,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sang.se.bookingmovie.app.cinema.CinemaEntity;
 import sang.se.bookingmovie.app.cinema.CinemaRepository;
+import sang.se.bookingmovie.app.movie.MovieEntity;
+import sang.se.bookingmovie.app.movie_status.MovieStatusEntity;
+import sang.se.bookingmovie.app.room_status.RoomStatusEntity;
+import sang.se.bookingmovie.app.room_status.RoomStatusRepository;
 import sang.se.bookingmovie.exception.AllException;
+import sang.se.bookingmovie.exception.DataNotFoundException;
 import sang.se.bookingmovie.response.ListResponse;
 import sang.se.bookingmovie.utils.ApplicationUtil;
 import sang.se.bookingmovie.validate.ObjectsValidator;
@@ -31,6 +37,8 @@ public class RoomService implements IRoomService {
 
     private final ApplicationUtil applicationUtil;
 
+    private final RoomStatusRepository roomStatusRepository;
+
     @Override
     public String create(RoomReq roomRequest, String cinemaId) {
         validator.validate(roomRequest);
@@ -45,11 +53,10 @@ public class RoomService implements IRoomService {
     }
 
     @Override
-    public ListResponse getAll(Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page-1, size, Sort.by("id"));
-        Page<RoomEntity> roomEntities = roomRepository.findAll(pageable);
+    public ListResponse getAll() {
+        List<RoomEntity> roomEntities = roomRepository.findAll();
         return ListResponse.builder()
-                .total(roomEntities.getTotalPages())
+                .total(roomEntities.size())
                 .data(roomEntities.stream()
                         .map(mapper::entityToResponse)
                         .collect(Collectors.toList()))
@@ -57,12 +64,11 @@ public class RoomService implements IRoomService {
     }
 
     @Override
-    public ListResponse getAllByCinema(String cinemaId, Integer page, Integer size) {
+    public ListResponse getAllByCinema(String cinemaId) {
         cinemaRepository.findById(cinemaId).orElseThrow(() -> new AllException("Not found", 404, List.of(cinemaId + " not found")));
-        Pageable pageable = PageRequest.of(page-1, size, Sort.by("id"));
-        Page<RoomEntity> roomEntities = roomRepository.findAllByCinemaId(cinemaId, pageable);
+        List<RoomEntity> roomEntities = roomRepository.findAllByCinemaId(cinemaId);
         return ListResponse.builder()
-                .total(roomEntities.getTotalPages())
+                .total(roomEntities.size())
                 .data(roomEntities.stream()
                         .map(mapper::entityToResponse)
                         .collect(Collectors.toList()))
@@ -81,6 +87,19 @@ public class RoomService implements IRoomService {
                         .map(mapper::entityToResponse)
                         .collect(Collectors.toList()))
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public String updateStatusOfRoom(String roomId, Integer statusId) {
+        RoomEntity roomEntity = roomRepository.findById(roomId)
+                .orElseThrow(() -> new AllException("NOT FOUND", 404, List.of("Not found room id" + roomId)));
+        RoomStatusEntity roomStatusEntity = roomStatusRepository.findById(statusId)
+                .orElseThrow(() -> new DataNotFoundException(
+                        "Data not found",
+                        List.of("status with id " + statusId + " is not exist")));
+        roomEntity.setStatus(roomStatusEntity);
+        return "Success";
     }
 
     private String createRoomID(){

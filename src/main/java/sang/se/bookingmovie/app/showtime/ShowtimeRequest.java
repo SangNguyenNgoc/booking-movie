@@ -24,7 +24,6 @@ public class ShowtimeRequest {
     private Date startDate;
 
     @JsonProperty("start_time")
-    @Future(message = "The start time must be in the future")
     @NotNull(message = "Start time must not be null")
     private Time startTime;
 

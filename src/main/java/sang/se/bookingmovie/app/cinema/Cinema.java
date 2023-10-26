@@ -29,4 +29,8 @@ public class Cinema {
     @NotBlank(message = "Cinema city must not be blank")
     @NotNull(message = "Cinema city must not be null")
     private String city;
+
+    @NotBlank(message = "Cinema description must not be blank")
+    @NotNull(message = "Cinema description must not be null")
+    private String description;
 }

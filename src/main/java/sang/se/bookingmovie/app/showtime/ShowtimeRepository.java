@@ -13,13 +13,13 @@ public interface ShowtimeRepository extends JpaRepository<ShowtimeEntity, String
     @Query("SELECT mv FROM MovieEntity mv " +
             "JOIN FETCH mv.showtimes s " +
             "JOIN FETCH s.room r " +
-            "WHERE r.cinema.id = :cinemaId AND s.startDate = :date")
+            "WHERE r.cinema.id = :cinemaId AND s.startDate = :date AND s.status = true")
     List<MovieEntity> findByDateAndCinema(@Param("date") Date date, @Param("cinemaId") String cinemaId);
 
     @Query("SELECT c FROM CinemaEntity c " +
             "JOIN FETCH c.rooms r " +
             "JOIN FETCH r.showtimes s " +
-            "WHERE s.movie.id = :movieId AND s.startDate = :date")
+            "WHERE s.movie.id = :movieId AND s.startDate = :date AND s.status = true")
     List<CinemaEntity> findByMovieAndDate(@Param("date") Date date, @Param("movieId") String movieId);
 
     @Query("SELECT st FROM ShowtimeEntity st " +
@@ -27,4 +27,8 @@ public interface ShowtimeRepository extends JpaRepository<ShowtimeEntity, String
             "WHERE r.cinema.id = :cinemaId AND st.startDate = :date")
     List<ShowtimeEntity> findByCinemaId(@Param("date") Date date, @Param("cinemaId") String movieId);
 
+    @Query("SELECT st FROM ShowtimeEntity st " +
+            "WHERE st.startDate = :date AND st.room.id = :roomId"
+    )
+    List<ShowtimeEntity> findByDateAndRoom(@Param("date") Date date, @Param("roomId") String roomId);
 }

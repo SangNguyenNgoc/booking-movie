@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sang.se.bookingmovie.error.ErrorResponse;
@@ -65,11 +66,8 @@ public class RoomController {
             }
     )
     @GetMapping(value = "/admin/rooms")
-    public ResponseEntity<?> getAll(
-            @RequestParam(value = "page") Integer page,
-            @RequestParam(value = "size") Integer size
-    ) {
-        return ResponseEntity.ok(roomService.getAll(page, size));
+    public ResponseEntity<?> getAll() {
+        return ResponseEntity.ok(roomService.getAll());
     }
 
     @Operation(
@@ -88,12 +86,8 @@ public class RoomController {
     )
 
     @GetMapping(value = "/admin/cinema/{cinemaId}/rooms")
-    public ResponseEntity<?> getAllByCinema(
-            @PathVariable(name = "cinemaId") String cinemaId,
-            @RequestParam(value = "page") Integer page,
-            @RequestParam(value = "size") Integer size
-    ) {
-        return ResponseEntity.ok(roomService.getAllByCinema(cinemaId, page, size));
+    public ResponseEntity<?> getAllByCinema(@PathVariable(name = "cinemaId") String cinemaId) {
+        return ResponseEntity.ok(roomService.getAllByCinema(cinemaId));
     }
 
     @Operation(
@@ -118,5 +112,36 @@ public class RoomController {
             @RequestParam(value = "size") Integer size
     ) {
         return ResponseEntity.ok(roomService.getAllByName(cinemaId, name, page, size));
+    }
+
+    @Operation(
+            summary = "Chỉnh sửa trạng thái của phong",
+            description = "API thay đổi trạng thái của phong. " +
+                    "API này chỉ dành cho trang admin.",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "201",
+                            content = @Content(
+                                    mediaType = "application/json"
+                            )
+                    ),
+                    @ApiResponse(
+                            description = "Data not found",
+                            responseCode = "404",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = sang.se.bookingmovie.response.ErrorResponse.class)
+                            )
+                    )
+            }
+    )
+    @PutMapping(value = "/admin/room/{roomId}/status/{statusId}")
+    public ResponseEntity<?> updateStatus(
+            @PathVariable(value = "rooomId") String roomId,
+            @PathVariable(value = "statusId") Integer statusId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(roomService.updateStatusOfRoom(roomId, statusId));
     }
 }

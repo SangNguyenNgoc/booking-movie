@@ -31,6 +31,8 @@ public class CinemaEntity {
 
     private String slug;
 
+    private String status;
+
     @OneToMany(
             mappedBy = "cinema",
             fetch = FetchType.LAZY,

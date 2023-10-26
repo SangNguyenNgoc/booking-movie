@@ -8,7 +8,7 @@ import sang.se.bookingmovie.validate.ObjectsValidator;
 
 @Service
 @RequiredArgsConstructor
-public class RoomMapper implements IMapper<RoomEntity, RoomReq, RoomReq> {
+public class RoomMapper implements IMapper<RoomEntity, RoomReq, RoomResponse> {
     private final ModelMapper mapper;
 
     private final ObjectsValidator<RoomReq> validator;
@@ -19,7 +19,7 @@ public class RoomMapper implements IMapper<RoomEntity, RoomReq, RoomReq> {
     }
 
     @Override
-    public RoomReq entityToResponse(RoomEntity roomEntity) {
-        return mapper.map(roomEntity, RoomReq.class);
+    public RoomResponse entityToResponse(RoomEntity roomEntity) {
+        return mapper.map(roomEntity, RoomResponse.class);
     }
 }
