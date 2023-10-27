@@ -20,9 +20,14 @@ import sang.se.bookingmovie.exception.DataNotFoundException;
 import sang.se.bookingmovie.exception.UserNotFoundException;
 import sang.se.bookingmovie.utils.ApplicationUtil;
 import sang.se.bookingmovie.utils.JwtService;
+import sang.se.bookingmovie.vnpay.VnpayService;
 
 import java.util.List;
 import java.util.Set;
+import java.io.UnsupportedEncodingException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,9 +56,11 @@ public class BillService implements IBillService {
 
     private final ApplicationUtil applicationUtil;
 
+    private final VnpayService vnpayService;
+
     @Override
     @Transactional
-    public String create(String token, Bill bill) {
+    public String create(String token, Bill bill) throws UnsupportedEncodingException {
         checkSeat(bill.getShowtimeId(), bill.getSeatId());
         String userId = jwtService.extractSubject(jwtService.validateToken(token));
         UserEntity userEntity = userRepository.findById(userId)
@@ -67,19 +74,21 @@ public class BillService implements IBillService {
         List<SeatRoomEntity> seatRoomEntities = seatRoomRepository.findAllById(bill.getSeatId());
 
         String billId = applicationUtil.createUUID();
+        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
         BillEntity billEntity = BillEntity.builder()
                 .id(billId)
                 .transactionId(applicationUtil.createUUID(billId))
                 .changedPoint(bill.getChangedPoint())
                 .paymentAt(null)
                 .status(billStatusEntity)
+                .createTime(cld.getTime())
                 .cancelReason(null)
                 .total(seatRoomEntities.stream().mapToDouble(this::getPriceOfSeat).sum() - bill.getChangedPoint() * promo)
                 .user(userEntity)
                 .build();
         billEntity.setTickets(createTicket(showtimeEntity, seatRoomEntities, billEntity));
         billRepository.save(billEntity);
-        return "Success";
+        return vnpayService.doPost(billEntity);
     }
 
     @Override
@@ -108,7 +117,7 @@ public class BillService implements IBillService {
 
     private void checkSeat(String showtimeId, List<Integer> seatIds) {
         seatIds.forEach(seatId -> {
-            if(ticketRepository.findByShowtime(showtimeId, seatId).size() != 0) {
+            if(!ticketRepository.findByShowtime(showtimeId, seatId).isEmpty()) {
                 throw new AllException("Seat already reserved", 400, List.of("Seat already reserved"));
             }
         });

@@ -1,5 +1,7 @@
 package sang.se.bookingmovie.app.bill;
 
+import java.io.UnsupportedEncodingException;
+
 public interface IBillService {
 
     String create(String token, Bill bill);
@@ -7,4 +9,5 @@ public interface IBillService {
     String pay(String transactionId);
 
     String refund();
+    String create(String token, Bill bill) throws UnsupportedEncodingException;
 }
