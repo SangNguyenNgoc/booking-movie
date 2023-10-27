@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
                 contact = @Contact(
                         name = "Sang Nguyễn",
                         email = "nngocsang38@gmail.com",
-                        url = "https://github.com/SangNguyenNgoc"
+                        url = "https://github.com/SangNguyenNgoc/course-registration.git"
                 ),
                 description = "Open Api for booking movie app",
                 title = "OpenApi booking movie - Sang Nguyễn",
