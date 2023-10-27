@@ -1,7 +1,9 @@
 package sang.se.bookingmovie.app.bill;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.servlet.ServletException;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,7 @@ import sang.se.bookingmovie.utils.ApplicationUtil;
 import sang.se.bookingmovie.utils.JwtService;
 import sang.se.bookingmovie.vnpay.VnpayService;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.io.UnsupportedEncodingException;
@@ -93,11 +96,11 @@ public class BillService implements IBillService {
 
     @Override
     @Transactional
-    public String pay(String transactionId) {
-        int result = 0;
+    public String pay(String transactionId) throws ServletException, JSONException, IOException {
+        BillEntity billEntity = billRepository.findByTransactionId(transactionId)
+                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill is not exits")));
+        int result = vnpayService.verifyPay(billEntity);
         if(result == 0) {
-            BillEntity billEntity = billRepository.findByTransactionId(transactionId)
-                    .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill is not exits")));
             BillStatusEntity billStatusEntity = billStatusRepository.findById(2)
                             .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill status is not exits")));
             billEntity.setStatus(billStatusEntity);
