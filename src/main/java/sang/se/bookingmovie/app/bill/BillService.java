@@ -83,6 +83,20 @@ public class BillService implements IBillService {
         return "Success";
     }
 
+    @Override
+    public String pay(String transactionId) {
+        BillEntity billEntity = billRepository.findByTransactionId(transactionId)
+                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill is not exits")));
+        int result = 0;
+
+        return null;
+    }
+
+    @Override
+    public String refund() {
+        return null;
+    }
+
     private Double getPriceOfSeat(SeatRoomEntity seatRoomEntity) {
         return seatRoomEntity.getType().getPrice();
     }
