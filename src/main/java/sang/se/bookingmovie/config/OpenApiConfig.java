@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Configuration;
         servers = {
                 @Server(
                         description = "Localhost",
-                        url = "http://localhost:8080"
+                        url = "https://booking-movie-backend-3a547b1ac2e9.herokuapp.com"
                 )
         }
 )
