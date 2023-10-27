@@ -22,4 +22,6 @@ public interface IShowtimeService {
     void updateStatusOfShowtime (LocalDate currentDate, LocalTime currentTime);
 
     ShowtimeResponse getSeatInShowTime(String showtimeId);
+
+    List<CinemaResponse> getAllCinemaDetailShowtime();
 }

@@ -140,6 +140,21 @@ public class ShowtimeService implements IShowtimeService {
         return showtimeResponse;
     }
 
+    @Override
+    public List<CinemaResponse> getAllCinemaDetailShowtime() {
+        List<CinemaEntity> cinemaEntities = cinemaRepository.findAll();
+        return cinemaEntities.stream().map(cinemaEntity -> {
+                    List<MovieEntity> movieEntities = showtimeRepository.findByCinema(cinemaEntity.getId());
+                    CinemaResponse cinemaResponse = cinemaMapper.entityToResponse(cinemaEntity);
+                    cinemaResponse.setMovies(movieEntities.stream()
+                            .peek(this::getFieldInShowtimeByCinemaAndDate)
+                            .map(movieMapper::entityToResponse)
+                            .collect(Collectors.toList()));
+                    return cinemaResponse;
+                })
+                .collect(Collectors.toList());
+    }
+
     private Boolean checkShowtimeInData(List<ShowtimeRequest> showtimeRequests){
         for (ShowtimeRequest newShowtime : showtimeRequests) {
             List<ShowtimeEntity> showtimeEntities = showtimeRepository.findByDateAndRoom(newShowtime.getStartDate(), newShowtime.getRoom());

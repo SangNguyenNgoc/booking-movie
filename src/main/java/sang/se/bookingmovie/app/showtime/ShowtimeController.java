@@ -121,4 +121,24 @@ public class ShowtimeController {
                 .body(showtimeService.getSeatInShowTime(showtimeId));
     }
 
+    @Operation(
+            summary = "Lấy toàn bộ suất chiếu theo phim ,rạp",
+            description = "Lấy toàn bộ suất chiếu theo phim ,rạp từ sơ sở dữ liệu",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = CinemaResponse.class)
+                            )
+                    )
+            }
+    )
+
+    @GetMapping(value = "/landing/cinema/movie/showtime")
+    public ResponseEntity<?> getAllShowtime(){
+        return ResponseEntity.ok(showtimeService.getAllCinemaDetailShowtime());
+    }
+
 }
