@@ -1,13 +1,9 @@
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/booking_movie
-    username: root
-    password:
-  servlet:
-    multipart:
-      max-file-size: 5MB
-      max-request-size: 5MB
+    url: mysql://z1c4botdht9ol63h:t4l6t8azcidkew10@ilzyz0heng1bygi8.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/v286le79mlqi6c1y
+    username: z1c4botdht9ol63h
+    password: t4l6t8azcidkew10
   jpa:
     hibernate:
       ddl-auto: update
@@ -49,20 +45,10 @@ discord:
   token: MTE1Njg1Njg2NTYyNDQzMjcwMA.G1jMKr.cdJmTgMASZgcwiLcvGzY3I4fRxtD-45q55ieWs
   poster_channel: test
   image_channel: test
-  avatar_channel: test
-  base_avatar: https://cdn.discordapp.com/attachments/1168144426141499412/1169264779769155594/c6e56503cfdd87da299f72dc416023d4.jpg?ex=6554c5af&is=654250af&hm=440ebc745e441103a1824a80edb22f2d1c371743e8d7a4d413dbbc62eae31554&
 
 verify:
   url: http://localhost:3000
   verify_expiration: 300000
 
-promotion:
-  point: 10
-  promo: 1000
 
-pay:
-  expiration: 900000
 
-scheduler:
-  clear_showtime: 300000
-  wait_showtime: 30
