@@ -6,6 +6,7 @@ import sang.se.bookingmovie.app.bill_status.BillStatusEntity;
 import sang.se.bookingmovie.app.ticket.TicketEntity;
 import sang.se.bookingmovie.app.user.UserEntity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.time.LocalDate;
 import java.util.Set;
@@ -26,7 +27,7 @@ public class BillEntity {
     private Date createTime;
 
     @Column(name = "payment_at")
-    private LocalDate paymentAt;
+    private LocalDateTime paymentAt;
 
     @Column(name = "change_point")
     private Integer changedPoint;
@@ -39,14 +40,17 @@ public class BillEntity {
     @Column(name = "cancel_reason")
     private String cancelReason;
 
+    @Column(name = "cancel_date")
+    private LocalDateTime cancelDate;
+
     @OneToMany(
             mappedBy = "bill",
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = CascadeType.ALL
     )
     private Set<TicketEntity> tickets ;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(
             name = "user_id",
             nullable = false,

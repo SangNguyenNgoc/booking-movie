@@ -168,6 +168,7 @@ public class MovieService implements IMovieService {
     }
 
     @Override
+    @Transactional
     public void updateStatusOfMovie(LocalDate currentDate) {
         List<MovieEntity> movieEntities = movieRepository.findAll();
         movieEntities.forEach(movieEntity -> {

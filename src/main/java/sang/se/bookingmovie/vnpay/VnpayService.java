@@ -54,7 +54,7 @@ public class VnpayService {
 //        } else {
 //            vnp_Params.put("vnp_Locale", "vn");
 //        }
-        vnp_Params.put("vnp_ReturnUrl", vnpayConfig.vnp_ReturnUrl+"?id=" + vnp_TxnRef);
+        vnp_Params.put("vnp_ReturnUrl", vnpayConfig.vnp_ReturnUrl+"?id=" + billEntity.getTransactionId());
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
