@@ -6,6 +6,7 @@ import sang.se.bookingmovie.app.bill_status.BillStatusEntity;
 import sang.se.bookingmovie.app.ticket.TicketEntity;
 import sang.se.bookingmovie.app.user.UserEntity;
 
+import java.util.Date;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -20,6 +21,9 @@ public class BillEntity {
     @Id
     @Column(name = "bill_id")
     private String id;
+
+    @Column(name = "create_time")
+    private Date createTime;
 
     @Column(name = "payment_at")
     private LocalDate paymentAt;

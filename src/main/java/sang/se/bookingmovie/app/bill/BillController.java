@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+
 @RestController
 @RequestMapping("/api/v1")
 @SecurityRequirement(name = "Bearer Authentication")
@@ -19,7 +21,7 @@ public class BillController {
     public ResponseEntity<?> create(
             @RequestHeader(value = "Authorization") String token,
             @RequestBody Bill bill
-    ) {
+    ) throws UnsupportedEncodingException {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(billService.create(token, bill));
     }
