@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface RoomRepository extends JpaRepository<RoomEntity, String> {
     @Query("SELECT r FROM RoomEntity r " +
             "WHERE r.cinema.id = :cinemaId")
-    Page<RoomEntity> findAllByCinemaId(@Param("cinemaId") String cinemaId, Pageable pageable);
+    List<RoomEntity> findAllByCinemaId(@Param("cinemaId") String cinemaId);
 
     @Query("SELECT r FROM RoomEntity r " +
             "WHERE r.cinema.id = :cinemaId AND r.name LIKE :name")

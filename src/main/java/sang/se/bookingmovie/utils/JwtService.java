@@ -8,10 +8,12 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import sang.se.bookingmovie.exception.AllException;
 
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -76,5 +78,14 @@ public class JwtService {
     private Key getSignKey() {
         byte[] keyBytes= Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public String validateToken(String token) {
+        if(token == null || !token.startsWith("Bearer ")) {
+            throw new AllException("Unauthorized", 401, List.of("Unauthorized"));
+        } else {
+            token = token.substring(7);
+            return token;
+        }
     }
 }

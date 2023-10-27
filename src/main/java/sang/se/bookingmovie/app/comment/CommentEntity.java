@@ -5,6 +5,9 @@ import lombok.*;
 import sang.se.bookingmovie.app.movie.MovieEntity;
 import sang.se.bookingmovie.app.user.UserEntity;
 
+import java.sql.Date;
+import java.time.LocalDateTime;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -15,6 +18,7 @@ import sang.se.bookingmovie.app.user.UserEntity;
 public class CommentEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
     private Integer id;
 
@@ -25,7 +29,10 @@ public class CommentEntity {
     @Column(name = "comment_rating")
     private String commentRating;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @Column(name = "create_date")
+    private LocalDateTime createDate;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "movie_id",
             referencedColumnName = "movie_id",
@@ -33,7 +40,7 @@ public class CommentEntity {
     )
     private MovieEntity movie;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "user_id",
             referencedColumnName = "user_id",

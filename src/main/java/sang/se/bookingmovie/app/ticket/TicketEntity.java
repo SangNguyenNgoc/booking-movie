@@ -18,8 +18,6 @@ public class TicketEntity {
     @Column(name = "ticket_id")
     private String id;
 
-    private Integer total;
-
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn (
             name = "bill_id",
@@ -28,7 +26,7 @@ public class TicketEntity {
     )
     private BillEntity bill;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "showtime_id",
             referencedColumnName = "showtime_id",
@@ -36,7 +34,7 @@ public class TicketEntity {
     )
     private ShowtimeEntity showtime;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "seat_room",
             referencedColumnName = "seat_room_id",

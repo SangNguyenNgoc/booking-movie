@@ -67,12 +67,4 @@ public class Movie {
     @NotNull(message = "Formats MUST not be null")
     private List<Format> formats;
 
-    @AssertTrue(message = "The release date MUST be at least 15 days before the end date of screening")
-    public Boolean checkReleaseAndEndDate() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(endDate);
-        calendar.add(Calendar.DATE, -15);
-        Date adjustedEndDate = new Date(calendar.getTimeInMillis());
-        return releaseDate.before(adjustedEndDate);
-    }
 }

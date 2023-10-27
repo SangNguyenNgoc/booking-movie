@@ -7,7 +7,7 @@ import sang.se.bookingmovie.app.room.RoomEntity;
 
 import java.util.List;
 
-public interface SeatRoomRepository extends JpaRepository<SeatRoomEntity, String> {
+public interface SeatRoomRepository extends JpaRepository<SeatRoomEntity, Integer> {
     @Query("SELECT sr FROM SeatRoomEntity sr " +
             "WHERE sr.room.id = :roomId")
     List<SeatRoomEntity> findAllByRoomId(@Param("roomId") String roomId);

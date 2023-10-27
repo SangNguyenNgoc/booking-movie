@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,13 +14,14 @@ import sang.se.bookingmovie.response.ListResponse;
 
 @RestController
 @RequestMapping("/api/v1")
+@SecurityRequirement(name = "Bearer Authentication")
 @RequiredArgsConstructor
 public class CinemaController {
     private final CinemaService cinemaService;
 
     @Operation(
-            description = "Tạo rạp phim và thêm vào cơ sở dữ liệu",
             summary = "Api thêm rạp phim",
+            description = "Tạo rạp phim và thêm vào cơ sở dữ liệu",
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -45,8 +47,8 @@ public class CinemaController {
     }
 
     @Operation(
+            summary = "Lấy tất cả rạp phim",
             description = "Lấy tất cả rạp phim từ sơ sở dữ liệu",
-            summary = "Api lấy tất cả rạp phim",
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -67,15 +69,15 @@ public class CinemaController {
     }
 
     @Operation(
-            description = "Lấy thông tin rạp phim từ sơ sở dữ liệu",
-            summary = "Api lấy thông tin rạp phim",
+            summary = "Lấy thông tin rạp phim",
+            description = "Lấy thông tin rạp phim từ sơ sở dữ liệu theo id.",
             responses = {
                     @ApiResponse(
                             description = "Success",
                             responseCode = "200",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = ListResponse.class)
+                                    schema = @Schema(implementation = Cinema.class)
                             )
                     )
             }
@@ -86,15 +88,14 @@ public class CinemaController {
     }
 
     @Operation(
+            summary = "Sửa thông tin rạp phim",
             description = "Sửa thông tin rạp phim từ sơ sở dữ liệu",
-            summary = "Api sửa thông tin rạp phim",
             responses = {
                     @ApiResponse(
                             description = "Success",
                             responseCode = "200",
                             content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = ListResponse.class)
+                                    mediaType = "application/json"
                             )
                     )
             }

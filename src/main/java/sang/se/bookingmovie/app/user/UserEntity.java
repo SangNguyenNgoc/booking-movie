@@ -55,6 +55,11 @@ public class UserEntity implements UserDetails {
 
     private LocalDateTime createDate;
 
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    private Boolean gender;
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "role_id",

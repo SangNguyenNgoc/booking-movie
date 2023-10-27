@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import sang.se.bookingmovie.app.cinema.Cinema;
 import sang.se.bookingmovie.app.cinema.CinemaEntity;
+import sang.se.bookingmovie.app.room_status.RoomStatusEntity;
 import sang.se.bookingmovie.app.seat_room.SeatRoomEntity;
 import sang.se.bookingmovie.app.showtime.ShowtimeEntity;
 
@@ -30,6 +31,8 @@ public class RoomEntity {
     @Column(name = "available_seats")
     private Integer availableSeats;
 
+    private String slug;
+
     @OneToMany(
             mappedBy = "room",
             fetch = FetchType.LAZY,
@@ -48,9 +51,17 @@ public class RoomEntity {
     @OneToMany(
             mappedBy = "room",
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
+            cascade = CascadeType.PERSIST
     )
     private Set<SeatRoomEntity> seats;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(
+            name = "status_id",
+            referencedColumnName = "room_status_id",
+            nullable = false
+    )
+    private RoomStatusEntity status;
 
     public RoomEntity(String name, Integer totalSeats, Integer availableSeats){
         this.name = name;

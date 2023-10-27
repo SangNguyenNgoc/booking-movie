@@ -4,12 +4,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sang.se.bookingmovie.app.cinema.CinemaResponse;
+import sang.se.bookingmovie.app.movie.MovieResponse;
 import sang.se.bookingmovie.error.ErrorResponse;
 import sang.se.bookingmovie.response.ListResponse;
 
@@ -18,14 +21,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1")
+@SecurityRequirement(name = "Bearer Authentication")
 @RequiredArgsConstructor
 public class ShowtimeController {
 
     private final ShowtimeService showtimeService;
 
     @Operation(
-            description = "Thêm suất chiếu ghê ",
-            summary = "Api tạo thêm suất chiếu",
+            summary = "Tạo thêm suất chiếu",
+            description = "Thêm suất chiếu vào cơ ở dữ liệu.",
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -52,15 +56,15 @@ public class ShowtimeController {
 
 
     @Operation(
+            summary = "Lấy suất chiếu theo ngày và rạp",
             description = "Lấy suất chiếu theo ngày và rạp từ sơ sở dữ liệu",
-            summary = "Api lấy suất chiếu theo ngày và rạp",
             responses = {
                     @ApiResponse(
                             description = "Success",
                             responseCode = "200",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = ListResponse.class)
+                                    schema = @Schema(implementation = CinemaResponse.class)
                             )
                     )
             }
@@ -75,15 +79,15 @@ public class ShowtimeController {
 
 
     @Operation(
-            description = "Lấy suất chiếu cua phim theo ngày từ sơ sở dữ liệu",
-            summary = "Api lấy suất chiếu cua phim  theo ngày",
+            summary = "Lấy suất chiếu của 1 phim theo ngày",
+            description = "Lấy suất chiếu của 1 phim theo ngày từ sơ sở dữ liệu",
             responses = {
                     @ApiResponse(
                             description = "Success",
                             responseCode = "200",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = ListResponse.class)
+                                    schema = @Schema(implementation = MovieResponse.class)
                             )
                     )
             }

@@ -3,7 +3,10 @@ package sang.se.bookingmovie.app.movie;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
+import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Service;
 import sang.se.bookingmovie.app.comment.CommentMapper;
 import sang.se.bookingmovie.app.format.FormatMapper;
@@ -13,11 +16,16 @@ import sang.se.bookingmovie.app.movie_img.MovieImage;
 import sang.se.bookingmovie.app.movie_img.MovieImageMapper;
 import sang.se.bookingmovie.app.movie_status.MovieStatus;
 import sang.se.bookingmovie.app.movie_status.MovieStatusMapper;
+import sang.se.bookingmovie.app.showtime.ShowtimeEntity;
+import sang.se.bookingmovie.app.showtime.ShowtimeMapper;
+import sang.se.bookingmovie.app.showtime.ShowtimeResponse;
 import sang.se.bookingmovie.exception.JsonException;
 import sang.se.bookingmovie.utils.IMapper;
 import sang.se.bookingmovie.validate.ObjectsValidator;
 
 import java.sql.Date;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +34,8 @@ import java.util.stream.Collectors;
 public class MovieMapper implements IMapper<MovieEntity, Movie, MovieResponse> {
 
     private final ModelMapper mapper;
+
+    private final CommentMapper commentMapper;
 
     private final ObjectMapper objectMapper;
 
@@ -39,7 +49,16 @@ public class MovieMapper implements IMapper<MovieEntity, Movie, MovieResponse> {
 
     @Override
     public MovieResponse entityToResponse(MovieEntity movieEntity) {
-        return mapper.map(movieEntity, MovieResponse.class);
+        if(movieEntity.getComments() == null) {
+            return mapper.map(movieEntity, MovieResponse.class);
+        } else {
+            MovieResponse movieResponse = mapper.map(movieEntity, MovieResponse.class);
+            movieResponse.setComments(movieEntity.getComments().stream()
+                    .map(commentMapper::entityToResponse)
+                    .collect(Collectors.toList())
+            );
+            return movieResponse;
+        }
     }
 
     public MovieEntity jsonToEntity(String movieJson) {

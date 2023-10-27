@@ -50,5 +50,7 @@ verify:
   url: http://localhost:3000
   verify_expiration: 300000
 
-
+promotion:
+  point: 10
+  promo: 1000
 

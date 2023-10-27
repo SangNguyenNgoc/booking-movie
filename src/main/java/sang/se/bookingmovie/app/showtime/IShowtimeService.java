@@ -15,9 +15,9 @@ import java.util.List;
 public interface IShowtimeService {
     String create(List<ShowtimeRequest> showtimeRequest);
 
-    CinemaResponse getShowtimeByCinemaAndDate(Date date, String cinemaId);
+    ListResponse getShowtimeByCinemaAndDate(Date date, String cinemaId);
 
-    MovieResponse getShowtimeByMovie(Date date, String movieId);
+    List<CinemaResponse> getShowtimeByMovie(Date date, String movieId);
 
     void updateStatusOfShowtime (LocalDate currentDate, LocalTime currentTime);
 

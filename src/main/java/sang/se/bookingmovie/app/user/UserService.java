@@ -105,7 +105,7 @@ public class UserService implements IUserService {
     @Override
     @Transactional
     public String sendToVerifyAccount(String token) {
-        var userEntity = userRepository.findById(jwtService.extractSubject(validateToken(token)))
+        var userEntity = userRepository.findById(jwtService.extractSubject(jwtService.validateToken(token)))
                 .orElseThrow(() -> new DataNotFoundException(
                         "Data not found",
                         List.of("User is not exist")
@@ -122,7 +122,7 @@ public class UserService implements IUserService {
     @Override
     @Transactional
     public String verify(String token, String verifyCode) {
-        var userEntity = userRepository.findById(jwtService.extractSubject(validateToken(token)))
+        var userEntity = userRepository.findById(jwtService.extractSubject(jwtService.validateToken(token)))
                 .orElseThrow(() -> new AllException(
                         "Verification failure",
                         400,
@@ -159,7 +159,7 @@ public class UserService implements IUserService {
     public UserResponse getCurrentUser(String token, String email) {
         UserEntity userEntity;
         if(token != null) {
-            userEntity = userRepository.findById(jwtService.extractSubject(validateToken(token)))
+            userEntity = userRepository.findById(jwtService.extractSubject(jwtService.validateToken(token)))
                     .orElseThrow(() -> new AllException(
                             "Data not found",
                             404,
@@ -192,7 +192,7 @@ public class UserService implements IUserService {
     @Transactional
     public String sendToUpdateEmail(String token, String newEmail) {
         checkEmail(newEmail);
-        var userEntity = getUserById(jwtService.extractSubject(validateToken(token)));
+        var userEntity = getUserById(jwtService.extractSubject(jwtService.validateToken(token)));
         userEntity.setVerifyMail(newEmail + "/" + applicationUtil.generateVerificationCode(6));
         applicationEventPublisher.publishEvent(
                 VerifyMailEvent.builder()
@@ -207,7 +207,7 @@ public class UserService implements IUserService {
     @Override
     @Transactional
     public UserResponse updateEmail(String token, String verifyMail) {
-        var userEntity = getUserById(jwtService.extractSubject(validateToken(token)));
+        var userEntity = getUserById(jwtService.extractSubject(jwtService.validateToken(token)));
         if(userEntity.getVerifyMail() == null) {
             throw new AllException("Verification failure", 404, List.of("Past the confirmation period"));
         }
@@ -231,16 +231,14 @@ public class UserService implements IUserService {
 
     @Override
     public Boolean checkPassword(String token, String password) {
-        validateToken(token);
-        var userEntity = getUserById(jwtService.extractSubject(validateToken(token)));
+        var userEntity = getUserById(jwtService.extractSubject(jwtService.validateToken(token)));
         return passwordEncoder.matches(password, userEntity.getPassword());
     }
 
     @Override
     @Transactional
     public String changePassword(String token, String oldPassword, String newPassword) {
-        validateToken(token);
-        var userEntity = getUserById(jwtService.extractSubject(validateToken(token)));
+        var userEntity = getUserById(jwtService.extractSubject(jwtService.validateToken(token)));
         if(passwordEncoder.matches(oldPassword, userEntity.getPassword())) {
             userEntity.setPassword(passwordEncoder.encode(newPassword));
             return "Success";
@@ -282,7 +280,7 @@ public class UserService implements IUserService {
     @Transactional
     public UserResponse updateUser(String token, UserUpdate userUpdate) {
         userMapper.validateUpdate(userUpdate);
-        UserEntity userEntity = getUserById(jwtService.extractSubject(validateToken(token)));
+        UserEntity userEntity = getUserById(jwtService.extractSubject(jwtService.validateToken(token)));
         if(userUpdate.getFullName() != null) {
             userEntity.setFullName(userUpdate.getFullName());
         }
@@ -303,15 +301,6 @@ public class UserService implements IUserService {
     private void checkEmail(String email) {
         if(userRepository.findByEmail(email).isPresent()) {
             throw new AllException("Conflict", 409, List.of("Email taken!"));
-        }
-    }
-
-    private String validateToken(String token) {
-        if(token == null || !token.startsWith("Bearer ")) {
-            throw new AllException("Forbidden", 404, List.of("Access denied"));
-        } else {
-            token = token.substring(7);
-            return token;
         }
     }
 
