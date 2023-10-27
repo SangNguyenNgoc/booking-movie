@@ -21,7 +21,6 @@ import sang.se.bookingmovie.exception.UserNotFoundException;
 import sang.se.bookingmovie.utils.ApplicationUtil;
 import sang.se.bookingmovie.utils.JwtService;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -84,16 +83,22 @@ public class BillService implements IBillService {
     }
 
     @Override
+    @Transactional
     public String pay(String transactionId) {
-        BillEntity billEntity = billRepository.findByTransactionId(transactionId)
-                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill is not exits")));
         int result = 0;
-
-        return null;
+        if(result == 0) {
+            BillEntity billEntity = billRepository.findByTransactionId(transactionId)
+                    .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill is not exits")));
+            BillStatusEntity billStatusEntity = billStatusRepository.findById(2)
+                            .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill status is not exits")));
+            billEntity.setStatus(billStatusEntity);
+        }
+        return "Success";
     }
 
     @Override
     public String refund() {
+
         return null;
     }
 
