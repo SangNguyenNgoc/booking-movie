@@ -1,6 +1,7 @@
 package sang.se.bookingmovie.app.movie;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -51,7 +52,7 @@ public class MovieService implements IMovieService {
     @Override
     public ListResponse getMoviesByStatus(String slug, Integer page, Integer size) {
         List<MovieStatus> movieStatusList = new ArrayList<>();
-        Pageable pageable = PageRequest.of(page-1, size, Sort.by("releaseDate"));
+        Pageable pageable = PageRequest.of(page-1, size);
         if (slug != null) {
             MovieStatusEntity movieStatusEntity = movieStatusRepository.findStatusAndMovieBySlug(slug)
                     .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("status is not exist")));
@@ -116,7 +117,7 @@ public class MovieService implements IMovieService {
 
     @Override
     public ListResponse getAll(Integer page, Integer size) {
-        PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by("releaseDate"));
+        PageRequest pageRequest = PageRequest.of(page-1, size);
         List<MovieResponse> movieResponses = movieRepository.findAll(pageRequest).stream()
                 .peek(this::getFieldToList)
                 .map(movieMapper::entityToResponse)
@@ -168,6 +169,7 @@ public class MovieService implements IMovieService {
     }
 
     @Override
+    @Transactional
     public void updateStatusOfMovie(LocalDate currentDate) {
         List<MovieEntity> movieEntities = movieRepository.findAll();
         movieEntities.forEach(movieEntity -> {

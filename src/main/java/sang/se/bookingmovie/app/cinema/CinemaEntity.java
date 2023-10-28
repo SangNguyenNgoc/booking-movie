@@ -33,6 +33,9 @@ public class CinemaEntity {
 
     private String status;
 
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
     @OneToMany(
             mappedBy = "cinema",
             fetch = FetchType.LAZY,

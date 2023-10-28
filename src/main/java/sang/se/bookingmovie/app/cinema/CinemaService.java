@@ -74,5 +74,6 @@ public class CinemaService implements ICinemaService {
         cinemaEntity.setAddress(cinema.getAddress());
         cinemaEntity.setCity(cinema.getCity());
         cinemaEntity.setDistrict(cinema.getDistrict());
+        cinemaEntity.setPhoneNumber(cinema.getPhoneNumber());
     }
 }

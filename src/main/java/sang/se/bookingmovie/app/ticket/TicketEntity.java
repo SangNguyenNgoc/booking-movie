@@ -18,7 +18,7 @@ public class TicketEntity {
     @Column(name = "ticket_id")
     private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn (
             name = "bill_id",
             referencedColumnName = "bill_id",

@@ -1,5 +1,6 @@
 package sang.se.bookingmovie.app.user;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,6 @@ public class UserResponse {
     private String email;
     @JsonProperty("date_of_birth") private String dateOfBirth;
     private Integer point;
-    private Boolean verify;
-    private String role;
+    @JsonInclude(JsonInclude.Include.NON_NULL) private Boolean verify;
+    @JsonInclude(JsonInclude.Include.NON_NULL) private String role;
 }

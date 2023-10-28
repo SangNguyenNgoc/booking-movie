@@ -246,8 +246,8 @@ public class UserController {
                     )
             }
     )
-    @GetMapping(value = "/currentUser")
-    public ResponseEntity<?> getCurrentUser(
+    @GetMapping(value = "/profile")
+    public ResponseEntity<?> getProfile(
             @RequestHeader(value = "Authorization") String token
     ) {
         return ResponseEntity.status(HttpStatus.OK)

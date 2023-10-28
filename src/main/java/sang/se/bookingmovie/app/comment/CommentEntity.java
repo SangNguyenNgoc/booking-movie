@@ -26,9 +26,6 @@ public class CommentEntity {
 
     private Boolean status;
 
-    @Column(name = "comment_rating")
-    private String commentRating;
-
     @Column(name = "create_date")
     private LocalDateTime createDate;
 

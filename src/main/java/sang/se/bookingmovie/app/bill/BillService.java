@@ -1,7 +1,12 @@
 package sang.se.bookingmovie.app.bill;
 
+import jakarta.servlet.ServletException;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sang.se.bookingmovie.app.bill_status.BillStatusEntity;
@@ -17,13 +22,17 @@ import sang.se.bookingmovie.app.user.UserRepository;
 import sang.se.bookingmovie.exception.AllException;
 import sang.se.bookingmovie.exception.DataNotFoundException;
 import sang.se.bookingmovie.exception.UserNotFoundException;
+import sang.se.bookingmovie.response.ListResponse;
 import sang.se.bookingmovie.utils.ApplicationUtil;
+import sang.se.bookingmovie.event.DeleteBillTask;
 import sang.se.bookingmovie.utils.JwtService;
 import sang.se.bookingmovie.vnpay.VnpayService;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 import java.io.UnsupportedEncodingException;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,6 +45,9 @@ public class BillService implements IBillService {
 
     @Value("${promotion.promo}")
     private Integer promo;
+
+    @Value("${pay.expiration}")
+    private Integer payExpiration;
 
     private final BillRepository billRepository;
 
@@ -54,6 +66,8 @@ public class BillService implements IBillService {
     private final ApplicationUtil applicationUtil;
 
     private final VnpayService vnpayService;
+
+    private final BillMapper mapper;
 
     @Override
     @Transactional
@@ -85,7 +99,116 @@ public class BillService implements IBillService {
                 .build();
         billEntity.setTickets(createTicket(showtimeEntity, seatRoomEntities, billEntity));
         billRepository.save(billEntity);
+        Timer timer = new Timer();
+        timer.schedule(new DeleteBillTask(billRepository, billId), payExpiration);
         return vnpayService.doPost(billEntity);
+    }
+
+    @Override
+    @Transactional
+    public String pay(String transactionId) throws ServletException, JSONException, IOException {
+        BillEntity billEntity = billRepository.findByTransactionId(transactionId)
+                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill is not exits")));
+        int result = vnpayService.verifyPay(billEntity);
+        if(result == 0) {
+            BillStatusEntity billStatusEntity = billStatusRepository.findById(2)
+                            .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill status is not exits")));
+            billEntity.setStatus(billStatusEntity);
+            billEntity.setPaymentAt(LocalDateTime.now());
+        }
+        return "Success";
+    }
+
+    @Override
+    @Transactional
+    public String refund(String billId, String reason) {
+        BillEntity billEntity = billRepository.findById(billId)
+                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill is not exits")));
+        if(billEntity.getStatus().getId() != 1) {
+            throw new AllException("Can not refund",400 , List.of("The bill has been paid or cancelled."));
+        }
+        BillStatusEntity billStatusEntity = billStatusRepository.findById(3)
+                        .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill status is not exits")));
+        billEntity.setCancelDate(LocalDateTime.now());
+        billEntity.setCancelReason(reason);
+        billEntity.setStatus(billStatusEntity);
+        List<String> ticketIds = billEntity.getTickets().stream()
+                .map(TicketEntity::getId)
+                .toList();
+        billEntity.setTickets(null);
+        ticketRepository.deleteAllById(ticketIds);
+        return "Success";
+    }
+
+    @Override
+    public ListResponse getBillByUser(String token, Integer page, Integer size, java.sql.Date date) {
+        String userId = jwtService.extractSubject(jwtService.validateToken(token));
+        Pageable pageable = PageRequest.of(page-1, size, Sort.by("createTime").descending());
+        userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found", List.of("User is not exits")));
+        List<BillResponse> billResponses;
+        if(date == null) {
+            billResponses = billRepository.findByUser(userId, pageable).stream()
+                    .map(mapper::entityToResponse)
+                    .peek(this::getFieldToList)
+                    .toList();
+        } else {
+            billResponses = billRepository.findByUser(userId, date, pageable).stream()
+                    .map(mapper::entityToResponse)
+                    .peek(this::getFieldToList)
+                    .toList();
+        }
+        return ListResponse.builder()
+                .total(billResponses.size())
+                .data(billResponses)
+                .build();
+    }
+
+    @Override
+    public ListResponse getBillByAdmin(String email, Integer page, Integer size, java.sql.Date date) {
+        UserEntity userEntity = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found", List.of("User is not exits")));
+        Pageable pageable = PageRequest.of(page-1, size, Sort.by("createTime").descending());
+        List<BillResponse> billResponses;
+        if(date == null) {
+            billResponses = billRepository.findByUser(userEntity.getId(), pageable).stream()
+                    .map(mapper::entityToResponse)
+                    .peek(this::getFieldToList)
+                    .toList();
+        } else {
+            billResponses = billRepository.findByUser(userEntity.getId(), date, pageable).stream()
+                    .map(mapper::entityToResponse)
+                    .peek(this::getFieldToList)
+                    .toList();
+        }
+        return ListResponse.builder()
+                .total(billResponses.size())
+                .data(billResponses)
+                .build();
+    }
+
+    @Override
+    public BillResponse getDetail(String token, String billId) {
+        String userId = jwtService.extractSubject(jwtService.validateToken(token));
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found", List.of("User is not exits")));
+        BillEntity billEntity = billRepository.findById(billId)
+                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill is not exits")));
+        if(!billEntity.getUser().getId().equals(userEntity.getId())) {
+            throw new DataNotFoundException("Data not found", List.of("Bill is not exits"));
+        }
+        BillResponse billResponse = mapper.entityToResponse(billEntity);
+        getFieldToDetail(billResponse);
+        return billResponse;
+    }
+
+    @Override
+    public BillResponse getDetail(String billId) {
+        BillEntity billEntity = billRepository.findById(billId)
+                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill is not exits")));
+        BillResponse billResponse = mapper.entityToResponse(billEntity);
+        getFieldToDetail(billResponse);
+        return billResponse;
     }
 
     private Double getPriceOfSeat(SeatRoomEntity seatRoomEntity) {
@@ -125,6 +248,17 @@ public class BillService implements IBillService {
                         .bill(billEntity)
                         .build())
                 .collect(Collectors.toSet());
+    }
+
+    private void getFieldToList(BillResponse billResponse) {
+        billResponse.setCancelReason(null);
+        billResponse.getUser().setRole(null);
+        billResponse.getUser().setVerify(null);
+    }
+
+    private void getFieldToDetail(BillResponse billResponse) {
+        billResponse.getUser().setRole(null);
+        billResponse.getUser().setVerify(null);
     }
 
 }

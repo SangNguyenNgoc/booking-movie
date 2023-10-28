@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import sang.se.bookingmovie.app.cinema.CinemaResponse;
-import sang.se.bookingmovie.app.comment.Comment;
+import sang.se.bookingmovie.app.comment.CommentResponse;
 import sang.se.bookingmovie.app.format.Format;
 import sang.se.bookingmovie.app.movie_genre.MovieGenre;
 import sang.se.bookingmovie.app.movie_img.MovieImage;
@@ -43,6 +43,6 @@ public class MovieResponse{
         @JsonInclude(JsonInclude.Include.NON_NULL) private List<Format> formats;
         @JsonInclude(JsonInclude.Include.NON_EMPTY) private List<MovieImage> images;
         @JsonInclude(JsonInclude.Include.NON_EMPTY) private List<ShowtimeResponse> showtimes;
-        @JsonInclude(JsonInclude.Include.NON_EMPTY) private List<Comment> comments;
+        @JsonInclude(JsonInclude.Include.NON_EMPTY) private List<CommentResponse> comment;
         @JsonInclude(JsonInclude.Include.NON_EMPTY) private List<CinemaResponse> cinemas;
 }

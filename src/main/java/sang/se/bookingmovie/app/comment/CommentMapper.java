@@ -1,18 +1,16 @@
 package sang.se.bookingmovie.app.comment;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import sang.se.bookingmovie.utils.IMapper;
 import sang.se.bookingmovie.validate.ObjectsValidator;
 
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
-public class CommentMapper implements IMapper<CommentEntity, Comment, Comment> {
+public class CommentMapper implements IMapper<CommentEntity, Comment, CommentResponse> {
 
     private final ModelMapper mapper;
 
@@ -25,11 +23,11 @@ public class CommentMapper implements IMapper<CommentEntity, Comment, Comment> {
     }
 
     @Override
-    public Comment entityToResponse(CommentEntity commentEntity) {
-        Comment comment = mapper.map(commentEntity, Comment.class);
-        comment.setUser(commentEntity.getUser().getFullName());
+    public CommentResponse entityToResponse(CommentEntity commentEntity) {
+        CommentResponse commentResponse = mapper.map(commentEntity, CommentResponse.class);
+        commentResponse.setUser(commentEntity.getUser().getFullName());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        comment.setCreateDate(commentEntity.getCreateDate().format(formatter));
-        return comment;
+        commentResponse.setCreateDate(commentEntity.getCreateDate().format(formatter));
+        return commentResponse;
     }
 }

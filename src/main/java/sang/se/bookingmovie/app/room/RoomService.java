@@ -47,7 +47,7 @@ public class RoomService implements IRoomService {
         RoomEntity newRoom =  new RoomEntity(roomRequest.getName(), roomRequest.getTotalSeats(), roomRequest.getTotalSeats());
         newRoom.setCinema(cinema);
         newRoom.setId(createRoomID());
-        newRoom.setSlug(applicationUtil.toSlug(applicationUtil.toSlug(newRoom.getName())));
+        newRoom.setSlug(applicationUtil.toSlug(newRoom.getName()));
         roomRepository.save(newRoom);
         return "success";
     }

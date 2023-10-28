@@ -80,7 +80,7 @@ public class MovieController {
     }
 
     @Operation(
-            summary = "Lấy chi tiết 1 phim từ cơ sở dữ liệu bằng slug",
+            summary = "Lấy chi tiết 1 phim từ cơ sở dữ liệu bằng id",
             description = "API lấy chi tiết 1 phim từ cỡ sở dữ liệu bằng id, API này chỉ dành cho trang admin",
             responses = {
                     @ApiResponse(
@@ -89,6 +89,14 @@ public class MovieController {
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = MovieResponse.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            description = "Data not found",
+                            responseCode = "404",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponse.class)
                             )
                     )
             }
@@ -102,7 +110,7 @@ public class MovieController {
 
     @Operation(
             summary = "Lấy chi tiết 1 phim từ cơ sở dữ liệu bằng slug",
-            description = "API lấy chi tiết 1 phim từ cỡ sở dữ liệu bằng id, API này chỉ dành cho trang admin",
+            description = "API lấy chi tiết 1 phim từ cỡ sở dữ liệu bằng slug",
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -111,13 +119,21 @@ public class MovieController {
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = MovieResponse.class)
                             )
+                    ),
+                    @ApiResponse(
+                            description = "Data not found",
+                            responseCode = "404",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
                     )
             }
     )
-    @GetMapping(value = "/movie/{movieSlug}")
+    @GetMapping(value = "/landing/movie/{movieSlug}")
     public ResponseEntity<?> getDetailMovieBySlug(@PathVariable(value = "movieSlug") String movieSlug) {
         return ResponseEntity.status(200)
-                .body(movieService.getMovieById(movieSlug));
+                .body(movieService.getMovieBySlug(movieSlug));
     }
 
 
