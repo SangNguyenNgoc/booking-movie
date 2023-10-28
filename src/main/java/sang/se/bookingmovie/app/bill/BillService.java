@@ -24,6 +24,7 @@ import sang.se.bookingmovie.exception.DataNotFoundException;
 import sang.se.bookingmovie.exception.UserNotFoundException;
 import sang.se.bookingmovie.response.ListResponse;
 import sang.se.bookingmovie.utils.ApplicationUtil;
+import sang.se.bookingmovie.event.DeleteBillTask;
 import sang.se.bookingmovie.utils.JwtService;
 import sang.se.bookingmovie.vnpay.VnpayService;
 
@@ -34,7 +35,6 @@ import java.util.Set;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.sql.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +45,9 @@ public class BillService implements IBillService {
 
     @Value("${promotion.promo}")
     private Integer promo;
+
+    @Value("${pay.expiration}")
+    private Integer payExpiration;
 
     private final BillRepository billRepository;
 
@@ -96,6 +99,8 @@ public class BillService implements IBillService {
                 .build();
         billEntity.setTickets(createTicket(showtimeEntity, seatRoomEntities, billEntity));
         billRepository.save(billEntity);
+        Timer timer = new Timer();
+        timer.schedule(new DeleteBillTask(billRepository, billId), payExpiration);
         return vnpayService.doPost(billEntity);
     }
 
@@ -180,6 +185,21 @@ public class BillService implements IBillService {
                 .total(billResponses.size())
                 .data(billResponses)
                 .build();
+    }
+
+    @Override
+    public BillResponse getDetail(String token, String billId) {
+        String userId = jwtService.extractSubject(jwtService.validateToken(token));
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found", List.of("User is not exits")));
+        BillEntity billEntity = billRepository.findById(billId)
+                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill is not exits")));
+        if(!billEntity.getUser().getId().equals(userEntity.getId())) {
+            throw new DataNotFoundException("Data not found", List.of("Bill is not exits"));
+        }
+        BillResponse billResponse = mapper.entityToResponse(billEntity);
+        getFieldToDetail(billResponse);
+        return billResponse;
     }
 
     @Override

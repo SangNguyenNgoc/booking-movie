@@ -3,6 +3,7 @@ package sang.se.bookingmovie.app.cinema;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.modelmapper.internal.bytebuddy.asm.Advice;
 
@@ -33,4 +34,9 @@ public class Cinema {
     @NotBlank(message = "Cinema description must not be blank")
     @NotNull(message = "Cinema description must not be null")
     private String description;
+
+    @NotBlank(message = "Cinema phone number must not be blank")
+    @NotNull(message = "Cinema phone number must not be null")
+    @Pattern(regexp = "^[0-9]+$", message = "Invalid number phone")
+    private String phoneNumber;
 }

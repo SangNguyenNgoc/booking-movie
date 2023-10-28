@@ -38,51 +38,11 @@ public class ScheduledTasks {
     }
 
     @PostConstruct
-    @Scheduled(fixedRate = 60000) // Chạy mỗi 60 giây
+    @Scheduled(fixedRate = 300000) // Chạy mỗi 5 phút
     public void changeShowtimeStatus() {
         LocalDate currentDate = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
         showtimeService.updateStatusOfShowtime(currentDate, currentTime);
     }
-
-//    @PostConstruct
-//    @Transactional
-//    public void dataLoader() {
-//        List<RoomEntity> roomEntities = roomRepository.findAll();
-//        SeatTypeEntity vip = seatTypeRepository.findById(2).orElse(null);
-//        SeatTypeEntity normal = seatTypeRepository.findById(1).orElse(null);
-//        int ascii = 65;
-//        for (RoomEntity room : roomEntities) {
-//            for (int i = 0; i < 10; i++) {
-//                for (int j = 0; j < 15; j++) {
-//                    SeatRoomEntity seatRoomEntity;
-//                    if (i > 3 && i < 8 && j >= 5 && j <= 9) {
-//                        seatRoomEntity = SeatRoomEntity.builder()
-//                                .id(null)
-//                                .row(String.valueOf((char) ascii))
-//                                .rowIndex(j+1)
-//                                .type(null)
-//                                .room(null)
-//                                .status(true)
-//                                .build();
-//                        seatRoomEntity.setRoom(room);
-//                        seatRoomEntity.setType(vip);
-//                    } else {
-//                        seatRoomEntity = SeatRoomEntity.builder()
-//                                .id(null)
-//                                .row(String.valueOf((char) ascii))
-//                                .rowIndex(j+1)
-//                                .status(true)
-//                                .build();
-//                        seatRoomEntity.setRoom(room);
-//                        seatRoomEntity.setType(normal);
-//                    }
-//                    seatRoomRepository.save(seatRoomEntity);
-//                }
-//                ascii++;
-//            }
-//            ascii = 65;
-//        }
-//    }
 
 }

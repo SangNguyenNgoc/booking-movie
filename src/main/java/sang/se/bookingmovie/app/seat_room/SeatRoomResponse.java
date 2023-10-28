@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import sang.se.bookingmovie.app.seat_type.SeatType;
-import sang.se.bookingmovie.app.seat_type.SeatTypeEntity;
 import sang.se.bookingmovie.app.ticket.TicketResponse;
 
 import java.util.List;
@@ -21,8 +20,8 @@ public class SeatRoomResponse {
     @JsonProperty("seat_id") private Integer id;
     private Boolean status;
     private String row;
+    @JsonProperty("is_reserved")
     @JsonInclude(JsonInclude.Include.NON_NULL) private Boolean isReserved;
     @JsonProperty("row_index") private Integer rowIndex;
     @JsonInclude(JsonInclude.Include.NON_NULL) private SeatType type;
-    @JsonInclude(JsonInclude.Include.NON_NULL) private List<TicketResponse> tickets;
 }

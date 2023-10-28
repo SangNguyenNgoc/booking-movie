@@ -14,10 +14,10 @@ import sang.se.bookingmovie.response.ListResponse;
 import sang.se.bookingmovie.utils.ApplicationUtil;
 import sang.se.bookingmovie.utils.JwtService;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +32,6 @@ public class CommentService implements ICommentService {
     private final JwtService jwtService;
 
     private final CommentMapper commentMapper;
-
-    private final ApplicationUtil applicationUtil;
 
     @Override
     public String create(String token, Comment comment) {
@@ -88,12 +86,13 @@ public class CommentService implements ICommentService {
         String userId = jwtService.validateToken(token);
         UserEntity userEntity = userRepository.findById(jwtService.extractSubject(userId))
                 .orElseThrow(() -> new UserNotFoundException("User not found", List.of("User is not exits")));
-        List<Comment> commentList = userEntity.getComments().stream()
+        List<CommentResponse> commentResponseList = userEntity.getComments().stream()
+                .sorted(Comparator.comparing(CommentEntity::getCreateDate).reversed())
                 .map(commentMapper::entityToResponse)
                 .toList();
         return ListResponse.builder()
-                .total(commentList.size())
-                .data(commentList)
+                .total(commentResponseList.size())
+                .data(commentResponseList)
                 .build();
     }
 
@@ -101,12 +100,27 @@ public class CommentService implements ICommentService {
     public ListResponse getCommentByAdmin(String email) {
         UserEntity userEntity = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found", List.of("User is not exits")));
-        List<Comment> commentList = userEntity.getComments().stream()
+        List<CommentResponse> commentResponseList = userEntity.getComments().stream()
+                .sorted(Comparator.comparing(CommentEntity::getCreateDate).reversed())
                 .map(commentMapper::entityToResponse)
                 .toList();
         return ListResponse.builder()
-                .total(commentList.size())
-                .data(commentList)
+                .total(commentResponseList.size())
+                .data(commentResponseList)
+                .build();
+    }
+
+    @Override
+    public ListResponse getCommentToModerate() {
+        List<CommentEntity> commentEntities = commentRepository.findAll();
+        List<CommentResponse> commentResponses = commentEntities.stream()
+                .sorted(Comparator.comparing(CommentEntity::getCreateDate).reversed())
+                .filter(commentEntity -> !commentEntity.getStatus())
+                .map(commentMapper::entityToResponse)
+                .toList();
+        return ListResponse.builder()
+                .total(commentEntities.size())
+                .data(commentResponses)
                 .build();
     }
 }

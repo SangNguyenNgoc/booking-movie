@@ -21,6 +21,8 @@ public interface IBillService {
 
     ListResponse getBillByAdmin(String email, Integer page, Integer size, Date date);
 
+    BillResponse getDetail(String token, String billId);
+
     BillResponse getDetail(String billId);
 
 }

@@ -1,6 +1,7 @@
 package sang.se.bookingmovie.app.showtime;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sang.se.bookingmovie.app.cinema.CinemaEntity;
@@ -30,6 +31,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ShowtimeService implements IShowtimeService {
 
+    @Value("${scheduler.wait_showtime}")
+    private long waitShowtime;
     private final ApplicationUtil applicationUtil;
     private final ShowtimeRepository showtimeRepository;
     private final ShowtimeMapper showtimeMapper;
@@ -162,9 +165,9 @@ public class ShowtimeService implements IShowtimeService {
             for (ShowtimeEntity showtimeEntity : showtimeEntities ) {
                 LocalTime existTime = showtimeEntity.getStartTime().toLocalTime();
                 if ( (isTime.isAfter(existTime)
-                        && isTime.isBefore(existTime.plusMinutes(30 + showtimeEntity.getRunningTime())))
+                        && isTime.isBefore(existTime.plusMinutes(waitShowtime + showtimeEntity.getRunningTime())))
                         || (existTime.isAfter(isTime)
-                        && existTime.isBefore(isTime.plusMinutes(30 + newShowtime.getRunningTime() )))
+                        && existTime.isBefore(isTime.plusMinutes(waitShowtime + newShowtime.getRunningTime() )))
                 ) {
                     return false;
                 }
@@ -178,12 +181,15 @@ public class ShowtimeService implements IShowtimeService {
             LocalTime isTime = showtimeRequests.get(i).getStartTime().toLocalTime();
             for (int j = i+1; j < showtimeRequests.size(); j++) {
                 LocalTime exitsTime = showtimeRequests.get(j).getStartTime().toLocalTime();
-                if ( ((isTime.isAfter(exitsTime) && isTime.isBefore(exitsTime.plusMinutes(30 + showtimeRequests.get(j).getRunningTime())))
-                        || (exitsTime.isAfter(isTime)
-                        && exitsTime.isBefore(isTime.plusMinutes(30 + showtimeRequests.get(i).getRunningTime()))))
-                        && showtimeRequests.get(i).getRoom().equals(showtimeRequests.get(j).getRoom())
-                ) {
-                    return false;
+                if(showtimeRequests.get(i).getStartDate().equals(showtimeRequests.get(j).getStartDate())) {
+                    if (
+                            ((isTime.isAfter(exitsTime) && isTime.isBefore(exitsTime.plusMinutes(waitShowtime + showtimeRequests.get(j).getRunningTime())))
+                            || (exitsTime.isAfter(isTime)
+                            && exitsTime.isBefore(isTime.plusMinutes(waitShowtime + showtimeRequests.get(i).getRunningTime()))))
+                            && showtimeRequests.get(i).getRoom().equals(showtimeRequests.get(j).getRoom())
+                    ) {
+                        return false;
+                    }
                 }
             }
         }

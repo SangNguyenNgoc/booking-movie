@@ -14,7 +14,6 @@ public class ShowtimeMapper implements IMapper<ShowtimeEntity, ShowtimeRequest, 
 
     private final ModelMapper mapper;
     private final ObjectsValidator<ShowtimeRequest> validator;
-    private SimpleDateFormat sdf;
 
     @Override
     public ShowtimeEntity requestToEntity(ShowtimeRequest showtimeRequest) {
@@ -25,7 +24,7 @@ public class ShowtimeMapper implements IMapper<ShowtimeEntity, ShowtimeRequest, 
     @Override
     public ShowtimeResponse entityToResponse(ShowtimeEntity showtimeEntity) {
         ShowtimeResponse showtimeResponse = mapper.map(showtimeEntity, ShowtimeResponse.class);
-        sdf = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         showtimeResponse.setStartTime(sdf.format(showtimeEntity.getStartTime()));
         sdf = new SimpleDateFormat("EE dd/MM");
         showtimeResponse.setStartDate(sdf.format(showtimeEntity.getStartDate()));

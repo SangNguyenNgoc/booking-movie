@@ -54,3 +54,9 @@ promotion:
   point: 10
   promo: 1000
 
+pay:
+  expiration: 900000
+
+scheduler:
+  clear_showtime: 300000
+  wait_showtime: 30
