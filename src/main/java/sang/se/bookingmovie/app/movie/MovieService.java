@@ -1,7 +1,5 @@
 package sang.se.bookingmovie.app.movie;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -214,6 +212,14 @@ public class MovieService implements IMovieService {
     public String updatePoster(String movieId, MultipartFile poster) {
         MovieEntity movieEntity = findMovieById(movieId);
         movieEntity.setPoster(discordService.sendImage(poster, true));
+        return "Success";
+    }
+
+    @Override
+    @Transactional
+    public String updateHorPoster(String movieId, MultipartFile horPoster) {
+        MovieEntity movieEntity = findMovieById(movieId);
+        movieEntity.setHorizontalPoster(discordService.sendImage(horPoster, true));
         return "Success";
     }
 

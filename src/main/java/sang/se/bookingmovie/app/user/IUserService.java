@@ -1,6 +1,7 @@
 package sang.se.bookingmovie.app.user;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
+import org.springframework.web.multipart.MultipartFile;
 import sang.se.bookingmovie.auth.AuthRequest;
 import sang.se.bookingmovie.auth.AuthResponse;
 import sang.se.bookingmovie.response.ListResponse;
@@ -34,5 +35,7 @@ public interface IUserService {
     String resetPassword(String email, String verifyPass, String pass);
 
     UserResponse updateUser(String token, UserUpdate userUpdate);
+
+    UserResponse updateAvatar(String token, MultipartFile avatar);
 
 }

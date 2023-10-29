@@ -50,8 +50,8 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     }
 
     public String createToken(DefaultOAuth2User userDetails) {
+        System.out.println(userDetails);
         String email = userDetails.getAttribute("email");
-        AuthResponse response1 = null;
         var user = userRepository.findByEmail(email)
                 .orElse(null);
         if (user == null) {
@@ -59,6 +59,7 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             var userRegister = UserEntity.builder()
                     .fullName(userDetails.getAttribute("name"))
                     .email(email)
+                    .avatar(userDetails.getAttribute("picture"))
                     .password(passwordEncoder.encode("booking-movie"))
                     .createDate(applicationUtil.getDateNow())
                     .id(applicationUtil.createUUID(email + applicationUtil.getDateNow()))

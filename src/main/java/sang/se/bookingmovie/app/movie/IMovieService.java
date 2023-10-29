@@ -1,6 +1,7 @@
 package sang.se.bookingmovie.app.movie;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import sang.se.bookingmovie.app.movie_status.MovieStatus;
 import sang.se.bookingmovie.response.ListResponse;
@@ -27,6 +28,8 @@ public interface IMovieService {
     String updateMovie(String movieId, Movie movie);
 
     String updatePoster(String movieId, MultipartFile poster);
+
+    String updateHorPoster(String movieId, MultipartFile poster);
 
     String updateImages(String movieId, List<MultipartFile> images, List<Integer> imageIds);
 

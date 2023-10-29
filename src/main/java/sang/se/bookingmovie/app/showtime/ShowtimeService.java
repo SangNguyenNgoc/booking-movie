@@ -137,6 +137,8 @@ public class ShowtimeService implements IShowtimeService {
             seatRoomEntity.setTickets(null);
         });
         ShowtimeResponse showtimeResponse = showtimeMapper.entityToResponse(showtimeEntity);
+        String roomName = showtimeResponse.getRoom().getName().replace("-", " | ");
+        showtimeResponse.getRoom().setName(roomName);
         showtimeResponse.getRoom().setSeats(showtimeResponse.getRoom().getSeats().stream()
                 .sorted(Comparator.comparing(SeatRoomResponse::getId))
                 .toList());

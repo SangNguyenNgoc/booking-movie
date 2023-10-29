@@ -33,6 +33,9 @@ public class DiscordService {
     @Value("${discord.image_channel}")
     private String imageChannel;
 
+    @Value("${discord.avatar_channel}")
+    private String avatarChannel;
+
     private JDA jda;
 
     @EventListener(ApplicationReadyEvent.class)
@@ -54,6 +57,25 @@ public class DiscordService {
             } else {
                 textChannel = jda.getTextChannelsByName(imageChannel, false).get(0);
             }
+            String name = Objects.requireNonNull(multipartFile.getOriginalFilename());
+            byte[] fileData = multipartFile.getBytes();
+            InputStream inputStream = new ByteArrayInputStream(fileData);
+            if(textChannel != null) {
+                textChannel.sendFiles(FileUpload.fromData(inputStream, name)).queue(message -> {
+                    String cdnUrl = message.getAttachments().get(0).getUrl();
+                    cdnUrlFuture.complete(cdnUrl);
+                });
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        return cdnUrlFuture.join();
+    }
+
+    public String sendAvatar(MultipartFile multipartFile) {
+        CompletableFuture<String> cdnUrlFuture = new CompletableFuture<>();
+        try {
+            TextChannel textChannel = jda.getTextChannelsByName(avatarChannel, false).get(0);;
             String name = Objects.requireNonNull(multipartFile.getOriginalFilename());
             byte[] fileData = multipartFile.getBytes();
             InputStream inputStream = new ByteArrayInputStream(fileData);
