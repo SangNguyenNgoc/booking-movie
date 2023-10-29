@@ -40,6 +40,8 @@ public class UserEntity implements UserDetails {
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
+    private String avatar;
+
     private Integer point;
 
     private Boolean verify;

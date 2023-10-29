@@ -13,10 +13,16 @@ import java.sql.Date;
 @AllArgsConstructor
 @Builder
 public class UserUpdate {
+
     @NotEmpty(message = "Name MUST not be blank")
     private String fullName;
 
     @Past(message = "Date of birth MUST be past")
     private Date dateOfBirth;
+
+    private Boolean gender;
+
+    @Pattern(regexp = "^[0-9]+$", message = "Invalid number phone")
+    private String phoneNumber;
 
 }

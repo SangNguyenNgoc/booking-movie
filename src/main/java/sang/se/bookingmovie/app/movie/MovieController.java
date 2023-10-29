@@ -253,8 +253,8 @@ public class MovieController {
 
 
     @Operation(
-            summary = "Thay poster mới cho phim",
-            description = "API thay đổi poster của phim. " +
+            summary = "Thay poster(dọc) mới cho phim",
+            description = "API thay đổi poster(dọc) của phim. " +
                     "API này chỉ dành cho trang admin.",
             responses = {
                     @ApiResponse(
@@ -281,6 +281,37 @@ public class MovieController {
     ) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(movieService.updatePoster(movieId, poster));
+    }
+
+    @Operation(
+            summary = "Thay poster(ngang) mới cho phim",
+            description = "API thay đổi poster(ngang) của phim. " +
+                    "API này chỉ dành cho trang admin.",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json"
+                            )
+                    ),
+                    @ApiResponse(
+                            description = "Data not found",
+                            responseCode = "404",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
+                    )
+            }
+    )
+    @PutMapping(value = "/admin/movie/{movieId}/horPoster")
+    public ResponseEntity<?> updateHorPoster(
+            @PathVariable(value = "movieId") String movieId,
+            @RequestParam(value = "poster") MultipartFile poster
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(movieService.updateHorPoster(movieId, poster));
     }
 
 

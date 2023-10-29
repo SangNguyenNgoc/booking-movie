@@ -15,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import sang.se.bookingmovie.app.role.RoleEntity;
 import sang.se.bookingmovie.app.role.RoleRepository;
 import sang.se.bookingmovie.auth.AuthRequest;
@@ -27,6 +28,7 @@ import sang.se.bookingmovie.exception.DataNotFoundException;
 import sang.se.bookingmovie.exception.UserNotFoundException;
 import sang.se.bookingmovie.response.ListResponse;
 import sang.se.bookingmovie.utils.ApplicationUtil;
+import sang.se.bookingmovie.utils.DiscordService;
 import sang.se.bookingmovie.utils.EmailService;
 import sang.se.bookingmovie.utils.JwtService;
 
@@ -42,6 +44,12 @@ public class UserService implements IUserService {
     @Value("${verify.verify_expiration}")
     private Long verifyExpiration;
 
+    @Value("${discord.base_avatar_male}")
+    private String avatarMale;
+
+    @Value("${discord.base_avatar_female}")
+    private String avatarFemale;
+
     private final UserRepository userRepository;
 
     private final RoleRepository roleRepository;
@@ -51,6 +59,8 @@ public class UserService implements IUserService {
     private final JwtService jwtService;
 
     private final EmailService emailService;
+
+    private final DiscordService discordService;
 
     private final ApplicationUtil applicationUtil;
 
@@ -69,6 +79,11 @@ public class UserService implements IUserService {
         userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
         userEntity.setVerify(false);
         userEntity.setPoint(0);
+        if (userEntity.getGender()) {
+            userEntity.setAvatar(avatarMale);
+        } else {
+            userEntity.setAvatar(avatarFemale);
+        }
         var userResponse = userMapper.entityToResponse(userEntity);
         RoleEntity roleEntity = roleRepository.findById(3)
                 .orElseThrow(() -> new AllException(
@@ -286,6 +301,25 @@ public class UserService implements IUserService {
         }
         if(userUpdate.getDateOfBirth() != null) {
             userEntity.setDateOfBirth(userUpdate.getDateOfBirth());
+        }
+        if(userUpdate.getGender() != null) {
+            userEntity.setGender(userUpdate.getGender());
+        }
+        return userMapper.entityToResponse(userEntity);
+    }
+
+    @Override
+    @Transactional
+    public UserResponse updateAvatar(String token, MultipartFile avatar) {
+        UserEntity userEntity = getUserById(jwtService.extractSubject(jwtService.validateToken(token)));
+        if(avatar != null) {
+            userEntity.setAvatar(discordService.sendAvatar(avatar));
+        } else {
+            if(userEntity.getGender()) {
+                userEntity.setAvatar(avatarMale);
+            } else {
+                userEntity.setAvatar(avatarFemale);
+            }
         }
         return userMapper.entityToResponse(userEntity);
     }

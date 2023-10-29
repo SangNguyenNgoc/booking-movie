@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import sang.se.bookingmovie.auth.AuthRequest;
 import sang.se.bookingmovie.auth.AuthResponse;
 import sang.se.bookingmovie.response.ErrorResponse;
@@ -483,16 +484,56 @@ public class UserController {
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = UserResponse.class)
                             )
+                    ),
+                    @ApiResponse(
+                            description = "Unauthorized",
+                            responseCode = "401",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
                     )
             }
     )
     @PutMapping(value = "/user")
     public ResponseEntity<?> updateUser(
-            @RequestHeader(value = "token") String token,
+            @RequestHeader(value = "Authorization") String token,
             @RequestBody UserUpdate userUpdate
     ) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(userService.updateUser(token, userUpdate));
+    }
+
+    @Operation(
+            summary = "Cập nhật avatar ngươì dùng",
+            description = "API cập nhật avatar ngươì dùng, truyền avatar để thay đổi ảnh, nếu không truyền avatar tự động " +
+                    "quay về ảnh mặc định (coi như là xóa ảnh). ",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = UserResponse.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            description = "Unauthorized",
+                            responseCode = "401",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
+                    )
+            }
+    )
+    @PutMapping(value = "/user/avatar")
+    public ResponseEntity<?> updateAvatar(
+            @RequestHeader(value = "Authorization") String token,
+            @RequestParam(value = "avatar", required = false) MultipartFile avatar
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(userService.updateAvatar(token, avatar));
     }
 
 }
