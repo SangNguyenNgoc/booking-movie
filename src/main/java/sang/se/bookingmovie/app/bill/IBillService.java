@@ -19,7 +19,7 @@ public interface IBillService {
 
     ListResponse getBillByUser(String token, Integer page, Integer size, Date date);
 
-    ListResponse getBillByAdmin(String email, Integer page, Integer size, Date date);
+    ListResponse getBillByAdmin(String userId, Integer page, Integer size, Date date);
 
     BillResponse getDetail(String token, String billId);
 

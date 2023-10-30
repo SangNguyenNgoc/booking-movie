@@ -75,7 +75,7 @@ public class BillService implements IBillService {
         checkSeat(bill.getShowtimeId(), bill.getSeatId());
         String userId = jwtService.extractSubject(jwtService.validateToken(token));
         UserEntity userEntity = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found", List.of("User is not exits")));
+                .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
         setPointToUser(userEntity, bill.getChangedPoint());
 
         ShowtimeEntity showtimeEntity = showtimeRepository.findById(bill.getShowtimeId())
@@ -145,7 +145,7 @@ public class BillService implements IBillService {
         String userId = jwtService.extractSubject(jwtService.validateToken(token));
         Pageable pageable = PageRequest.of(page-1, size, Sort.by("createTime").descending());
         userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found", List.of("User is not exits")));
+                .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
         List<BillResponse> billResponses;
         if(date == null) {
             billResponses = billRepository.findByUser(userId, pageable).stream()
@@ -165,9 +165,9 @@ public class BillService implements IBillService {
     }
 
     @Override
-    public ListResponse getBillByAdmin(String email, Integer page, Integer size, java.sql.Date date) {
-        UserEntity userEntity = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found", List.of("User is not exits")));
+    public ListResponse getBillByAdmin(String userId, Integer page, Integer size, java.sql.Date date) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
         Pageable pageable = PageRequest.of(page-1, size, Sort.by("createTime").descending());
         List<BillResponse> billResponses;
         if(date == null) {
@@ -191,7 +191,7 @@ public class BillService implements IBillService {
     public BillResponse getDetail(String token, String billId) {
         String userId = jwtService.extractSubject(jwtService.validateToken(token));
         UserEntity userEntity = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found", List.of("User is not exits")));
+                .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
         BillEntity billEntity = billRepository.findById(billId)
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill is not exits")));
         if(!billEntity.getUser().getId().equals(userEntity.getId())) {

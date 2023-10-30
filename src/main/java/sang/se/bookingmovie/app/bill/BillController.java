@@ -227,15 +227,15 @@ public class BillController {
                     )
             }
     )
-    @GetMapping(value = "/admin/user/bills")
+    @GetMapping(value = "/admin/user/{userId}/bills")
     public ResponseEntity<?> getBillByAdmin(
-            @RequestParam(value = "email") String email,
+            @PathVariable(value = "userId") String userId,
             @RequestParam(value = "page") Integer page,
             @RequestParam(value = "size") Integer size,
             @RequestParam(value = "date", required = false) Date date
     ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(billService.getBillByAdmin(email, page, size, date));
+                .body(billService.getBillByAdmin(userId, page, size, date));
     }
 
     @Operation(

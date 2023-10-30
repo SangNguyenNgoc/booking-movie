@@ -15,6 +15,7 @@ import java.sql.Date;
 @AllArgsConstructor
 @Builder
 public class UserResponse {
+    @JsonInclude(JsonInclude.Include.NON_NULL) private String id;
     @JsonProperty("full_name") private String fullName;
     private String email;
     @JsonProperty("date_of_birth") private String dateOfBirth;

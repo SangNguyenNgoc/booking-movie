@@ -156,12 +156,12 @@ public class CommentController {
                     )
             }
     )
-    @GetMapping(value = "admin/user/comments")
+    @GetMapping(value = "admin/user/{userId}/comments")
     public ResponseEntity<?> getCommentByUserByAdmin(
-            @RequestParam(value = "email") String email
+            @PathVariable(value = "userId") String userId
     ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(commentService.getCommentByAdmin(email));
+                .body(commentService.getCommentByAdmin(userId));
     }
 
 
