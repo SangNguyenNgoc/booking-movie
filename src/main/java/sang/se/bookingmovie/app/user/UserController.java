@@ -287,12 +287,12 @@ public class UserController {
                     )
             }
     )
-    @GetMapping(value = "/admin/user")
+    @GetMapping(value = "/admin/user/{userId}")
     public ResponseEntity<?> getCurrentUserAdmin(
-            @RequestParam(value = "email") String email
+            @PathVariable(value = "userId") String userId
     ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(userService.getCurrentUser(null, email));
+                .body(userService.getCurrentUser(null, userId));
     }
 
 

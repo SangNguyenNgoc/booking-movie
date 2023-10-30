@@ -41,4 +41,7 @@ public class TicketEntity {
             nullable = false
     )
     private SeatRoomEntity seatRoom;
+
+    @Transient
+    private Boolean stillValid;
 }

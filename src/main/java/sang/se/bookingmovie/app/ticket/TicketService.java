@@ -34,22 +34,22 @@ public class TicketService implements ITicketService {
     public ListResponse getTicketInUser(String token, Boolean stillValid) {
         String userId = jwtService.extractSubject(jwtService.validateToken(token));
         UserEntity userEntity = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found", List.of("User is not exits")));
+                .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
         List<TicketEntity> ticketEntities;
         List<TicketResponse> ticketResponses;
         if(stillValid) {
             ticketEntities = ticketRepository.findByUser(userEntity.getId());
             ticketResponses = ticketEntities.stream()
                     .filter(ticketEntity -> ticketMapper.checkTicketValid(ticketEntity.getShowtime()))
+                    .peek(ticketEntity -> ticketEntity.setStillValid(true))
                     .map(ticketMapper::entityToResponseList)
-                    .peek(ticketResponse -> ticketResponse.setStillValid(true))
                     .toList();
         } else {
             ticketEntities = ticketRepository.findByUser(userEntity.getId());
             ticketResponses = ticketEntities.stream()
                     .filter(ticketEntity -> !ticketMapper.checkTicketValid(ticketEntity.getShowtime()))
+                    .peek(ticketEntity -> ticketEntity.setStillValid(false))
                     .map(ticketMapper::entityToResponseList)
-                    .peek(ticketResponse -> ticketResponse.setStillValid(false))
                     .toList();
         }
         return ListResponse.builder()
@@ -68,6 +68,7 @@ public class TicketService implements ITicketService {
         }
         List<TicketEntity> ticketEntities = ticketRepository.findByBill(billId);
         List<TicketResponse> ticketResponses = ticketEntities.stream()
+                .peek(ticketEntity -> ticketEntity.setStillValid(ticketMapper.checkTicketValid(ticketEntity.getShowtime())))
                 .map(ticketMapper::entityToResponseList)
                 .toList();
         return ListResponse.builder()

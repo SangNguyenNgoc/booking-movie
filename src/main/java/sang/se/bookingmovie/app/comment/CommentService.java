@@ -37,7 +37,7 @@ public class CommentService implements ICommentService {
     public String create(String token, Comment comment) {
         String userId = jwtService.validateToken(token);
         UserEntity userEntity = userRepository.findById(jwtService.extractSubject(userId))
-                .orElseThrow(() -> new UserNotFoundException("User not found", List.of("User is not exits")));
+                .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
         MovieEntity movieEntity = movieRepository.findById(comment.getMovieId())
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Movie is not exits")));
         CommentEntity commentEntity = commentMapper.requestToEntity(comment);
@@ -70,7 +70,7 @@ public class CommentService implements ICommentService {
     public String deleteComment(String token, Integer commentId) {
         String userId = jwtService.validateToken(token);
         UserEntity userEntity = userRepository.findById(jwtService.extractSubject(userId))
-                .orElseThrow(() -> new UserNotFoundException("User not found", List.of("User is not exits")));
+                .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
         CommentEntity commentEntity = commentRepository.findById(commentId)
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Comment is not exits")));
         if(commentEntity.getUser().getId().equals(userEntity.getId())) {
@@ -85,7 +85,7 @@ public class CommentService implements ICommentService {
     public ListResponse getCommentByUser(String token) {
         String userId = jwtService.validateToken(token);
         UserEntity userEntity = userRepository.findById(jwtService.extractSubject(userId))
-                .orElseThrow(() -> new UserNotFoundException("User not found", List.of("User is not exits")));
+                .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
         List<CommentResponse> commentResponseList = userEntity.getComments().stream()
                 .sorted(Comparator.comparing(CommentEntity::getCreateDate).reversed())
                 .map(commentMapper::entityToResponse)
@@ -97,9 +97,9 @@ public class CommentService implements ICommentService {
     }
 
     @Override
-    public ListResponse getCommentByAdmin(String email) {
-        UserEntity userEntity = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found", List.of("User is not exits")));
+    public ListResponse getCommentByAdmin(String userId) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
         List<CommentResponse> commentResponseList = userEntity.getComments().stream()
                 .sorted(Comparator.comparing(CommentEntity::getCreateDate).reversed())
                 .map(commentMapper::entityToResponse)

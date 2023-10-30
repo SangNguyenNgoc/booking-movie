@@ -1,6 +1,5 @@
 package sang.se.bookingmovie.app.user;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -32,9 +31,7 @@ import sang.se.bookingmovie.utils.DiscordService;
 import sang.se.bookingmovie.utils.EmailService;
 import sang.se.bookingmovie.utils.JwtService;
 
-import java.sql.Date;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -171,7 +168,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserResponse getCurrentUser(String token, String email) {
+    public UserResponse getCurrentUser(String token, String userId) {
         UserEntity userEntity;
         if(token != null) {
             userEntity = userRepository.findById(jwtService.extractSubject(jwtService.validateToken(token)))
@@ -181,7 +178,7 @@ public class UserService implements IUserService {
                             List.of("User is not exist")
                     ));
         } else {
-            userEntity = userRepository.findByEmail(email)
+            userEntity = userRepository.findById(userId)
                     .orElseThrow(() -> new AllException(
                             "Data not found",
                             404,
@@ -348,7 +345,7 @@ public class UserService implements IUserService {
     @Transactional
     public void sendToVerifyAccount(VerifyAccountEvent event)  {
         emailService.sendEmail(event.getEmail(), "Mã xác nhận từ Cinema",
-                "Vui không cung cấp mã xác nhận cho bất kì ai, nhập mã sau để xác nhận tài khoa, " +
+                "Vui không cung cấp mã xác nhận cho bất kì ai, nhập mã sau để xác nhận tài khoản, " +
                         "mã có hiệu lực 5 phút: " + event.getVerifyCode());
         try {
             Thread.sleep(verifyExpiration);

@@ -55,6 +55,7 @@ public class TicketMapper implements IMapper<TicketEntity, TicketResponse, Ticke
                 .showtime(date + " " + time)
                 .cinema(seat.getRoom().getCinema().getName())
                 .movie(ticketEntity.getShowtime().getMovie().getName())
+                .stillValid(ticketEntity.getStillValid())
                 .build();
     }
 

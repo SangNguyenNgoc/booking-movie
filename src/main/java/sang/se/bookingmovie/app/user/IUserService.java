@@ -18,7 +18,7 @@ public interface IUserService {
 
     String verify(String email, String verifyCode);
 
-    UserResponse getCurrentUser(String token, String email);
+    UserResponse getCurrentUser(String token, String userId);
 
     ListResponse getAll(Integer page, Integer size);
 
