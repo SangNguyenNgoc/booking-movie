@@ -35,7 +35,7 @@ public class FormatEntity {
     @ManyToMany(
             mappedBy = "formats",
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
+            cascade = CascadeType.PERSIST
     )
     private Set<MovieEntity> movies;
 }

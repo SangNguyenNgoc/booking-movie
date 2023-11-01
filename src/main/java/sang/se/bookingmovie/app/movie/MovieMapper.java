@@ -13,7 +13,11 @@ import sang.se.bookingmovie.exception.JsonException;
 import sang.se.bookingmovie.utils.IMapper;
 import sang.se.bookingmovie.validate.ObjectsValidator;
 
+import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -60,8 +64,11 @@ public class MovieMapper implements IMapper<MovieEntity, Movie, MovieResponse> {
             return mapper.map(movieEntity, MovieResponse.class);
         } else {
             MovieResponse movieResponse = mapper.map(movieEntity, MovieResponse.class);
-            movieResponse.setShowtimes(movieEntity.getShowtimes().stream()
-                            .map(showtimeMapper::entityToResponse)
+            movieResponse.setShowtimes(movieResponse.getShowtimes().stream()
+                            .peek(showtimeResponse -> {
+                                int lastIndex = showtimeResponse.getStartTime().lastIndexOf(":");
+                                showtimeResponse.setStartTime(showtimeResponse.getStartTime().substring(0, lastIndex));
+                            })
                             .collect(Collectors.toList())
             );
             return movieResponse;
@@ -76,6 +83,14 @@ public class MovieMapper implements IMapper<MovieEntity, Movie, MovieResponse> {
             throw new JsonException("Json error", List.of("Parse json failure"));
         }
     }
+    public Movie jsonToRequest(String movieJson) {
+        try {
+            return objectMapper.readValue(movieJson, Movie.class);
+        } catch (JsonProcessingException e) {
+            throw new JsonException("Json error", List.of("Parse json failure"));
+        }
+    }
+
 
 
 }
