@@ -21,7 +21,7 @@ public class UserResponse {
     @JsonProperty("date_of_birth") private String dateOfBirth;
     private Integer point;
     private String avatar;
-    private Boolean gender;
+    private String gender;
     @JsonProperty("phone_number") private String phoneNumber;
     @JsonInclude(JsonInclude.Include.NON_NULL) private Boolean verify;
     @JsonInclude(JsonInclude.Include.NON_NULL) private String role;

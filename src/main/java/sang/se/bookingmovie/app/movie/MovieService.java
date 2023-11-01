@@ -177,7 +177,7 @@ public class MovieService implements IMovieService {
             }
             LocalDate endDateMovie = movieEntity.getEndDate().toLocalDate();
             if (currentDate.isAfter(endDateMovie)) {
-                updateStatusOfMovie(movieEntity.getId(), 3);
+                updateStatusOfMovie(movieEntity.getId(), 4);
             }
         });
     }

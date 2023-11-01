@@ -27,10 +27,6 @@ public class ShowtimeRequest {
     @NotNull(message = "Start time must not be null")
     private Time startTime;
 
-    @JsonProperty("running_time")
-    @NotNull(message = "running time must not be null")
-    private Integer runningTime;
-
     @JsonProperty("movie_id")
     @NotBlank(message = "movie id must not be blank")
     @NotNull(message = "movie id must not be null")

@@ -7,12 +7,16 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import sang.se.bookingmovie.app.comment.CommentEntity;
 import sang.se.bookingmovie.app.comment.CommentMapper;
+import sang.se.bookingmovie.app.showtime.ShowtimeMapper;
+import sang.se.bookingmovie.app.showtime.ShowtimeResponse;
 import sang.se.bookingmovie.exception.JsonException;
 import sang.se.bookingmovie.utils.IMapper;
 import sang.se.bookingmovie.validate.ObjectsValidator;
 
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +26,8 @@ public class MovieMapper implements IMapper<MovieEntity, Movie, MovieResponse> {
     private final ModelMapper mapper;
 
     private final CommentMapper commentMapper;
+
+    private final ShowtimeMapper showtimeMapper;
 
     private final ObjectMapper objectMapper;
 
@@ -44,6 +50,19 @@ public class MovieMapper implements IMapper<MovieEntity, Movie, MovieResponse> {
                     .filter(CommentEntity::getStatus)
                     .map(commentMapper::entityToResponse)
                     .collect(Collectors.toList())
+            );
+            return movieResponse;
+        }
+    }
+
+    public MovieResponse entityCinemaDetailShowtime(MovieEntity movieEntity) {
+        if(movieEntity.getShowtimes() == null) {
+            return mapper.map(movieEntity, MovieResponse.class);
+        } else {
+            MovieResponse movieResponse = mapper.map(movieEntity, MovieResponse.class);
+            movieResponse.setShowtimes(movieEntity.getShowtimes().stream()
+                            .map(showtimeMapper::entityToResponse)
+                            .collect(Collectors.toList())
             );
             return movieResponse;
         }

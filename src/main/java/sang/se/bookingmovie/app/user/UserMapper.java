@@ -6,8 +6,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import sang.se.bookingmovie.app.movie.Movie;
 import sang.se.bookingmovie.auth.AuthRequest;
+import sang.se.bookingmovie.exception.AllException;
+import sang.se.bookingmovie.utils.ApplicationUtil;
 import sang.se.bookingmovie.utils.IMapper;
 import sang.se.bookingmovie.validate.ObjectsValidator;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,16 +25,21 @@ public class UserMapper implements IMapper<UserEntity, User, UserResponse> {
 
     private final ObjectsValidator<UserUpdate> updateValidator;
 
+    private final ApplicationUtil applicationUtil;
+
     @Override
     public UserEntity requestToEntity(User user) {
         validator.validate(user);
-        return mapper.map(user, UserEntity.class);
+        UserEntity userEntity = mapper.map(user, UserEntity.class);
+        userEntity.setGender(getGenderInRequest(user.getGender()));
+        return userEntity;
     }
 
     @Override
     public UserResponse entityToResponse(UserEntity userEntity) {
         UserResponse userResponse = mapper.map(userEntity, UserResponse.class);
         userResponse.setRole(userEntity.getRole().getName());
+        userResponse.setGender(userEntity.getGender().getValue());
         return userResponse;
     }
 
@@ -40,5 +49,14 @@ public class UserMapper implements IMapper<UserEntity, User, UserResponse> {
 
     public void validateUpdate(UserUpdate userUpdate) {
         updateValidator.validate(userUpdate);
+    }
+
+    public Gender getGenderInRequest(String gender) {
+        switch (applicationUtil.toSlug(gender)) {
+            case "nam" -> {return Gender.MALE;}
+            case "nu" -> {return Gender.FEMALE;}
+            case "khong-xac-dinh" -> {return Gender.UNKNOWN;}
+            default -> throw new AllException("Data invalid", 404, List.of("Gender invalid"));
+        }
     }
 }

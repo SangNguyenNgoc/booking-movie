@@ -41,11 +41,8 @@ public class UserService implements IUserService {
     @Value("${verify.verify_expiration}")
     private Long verifyExpiration;
 
-    @Value("${discord.base_avatar_male}")
-    private String avatarMale;
-
-    @Value("${discord.base_avatar_female}")
-    private String avatarFemale;
+    @Value("${discord.base_avatar}")
+    private String baseAvatar;
 
     private final UserRepository userRepository;
 
@@ -76,11 +73,7 @@ public class UserService implements IUserService {
         userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
         userEntity.setVerify(false);
         userEntity.setPoint(0);
-        if (userEntity.getGender()) {
-            userEntity.setAvatar(avatarMale);
-        } else {
-            userEntity.setAvatar(avatarFemale);
-        }
+        userEntity.setAvatar(baseAvatar);
         var userResponse = userMapper.entityToResponse(userEntity);
         RoleEntity roleEntity = roleRepository.findById(3)
                 .orElseThrow(() -> new AllException(
@@ -293,14 +286,20 @@ public class UserService implements IUserService {
     public UserResponse updateUser(String token, UserUpdate userUpdate) {
         userMapper.validateUpdate(userUpdate);
         UserEntity userEntity = getUserById(jwtService.extractSubject(jwtService.validateToken(token)));
-        if(userUpdate.getFullName() != null) {
+        if(userUpdate.getFullName() != null && !userUpdate.getFullName().isEmpty()) {
             userEntity.setFullName(userUpdate.getFullName());
         }
         if(userUpdate.getDateOfBirth() != null) {
             userEntity.setDateOfBirth(userUpdate.getDateOfBirth());
         }
         if(userUpdate.getGender() != null) {
-            userEntity.setGender(userUpdate.getGender());
+            userEntity.setGender(userMapper.getGenderInRequest(userUpdate.getGender()));
+        }
+        if(userUpdate.getPhoneNumber() != null) {
+            userEntity.setPhoneNumber(userUpdate.getPhoneNumber());
+        }
+        if(userUpdate.getEmail() != null) {
+            sendToUpdateEmail(token, userUpdate.getEmail());
         }
         return userMapper.entityToResponse(userEntity);
     }
@@ -312,11 +311,7 @@ public class UserService implements IUserService {
         if(avatar != null) {
             userEntity.setAvatar(discordService.sendAvatar(avatar));
         } else {
-            if(userEntity.getGender()) {
-                userEntity.setAvatar(avatarMale);
-            } else {
-                userEntity.setAvatar(avatarFemale);
-            }
+            userEntity.setAvatar(baseAvatar);
         }
         return userMapper.entityToResponse(userEntity);
     }
