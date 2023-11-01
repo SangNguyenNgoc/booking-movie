@@ -245,7 +245,7 @@ public class MovieController {
     @PutMapping(value = "/admin/movie/{movieId}")
     public ResponseEntity<?> updateMovie(
             @PathVariable(value = "movieId") String movieId,
-            @RequestParam(value = "movie") String movieJson,
+            @RequestParam(value = "movie", required = false) String movieJson,
             @RequestParam(value = "poster", required = false) MultipartFile poster,
             @RequestParam(value = "horPoster", required = false) MultipartFile horPoster,
             @RequestParam(value = "images", required = false) List<MultipartFile> images,
