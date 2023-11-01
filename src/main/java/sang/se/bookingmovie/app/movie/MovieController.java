@@ -245,10 +245,14 @@ public class MovieController {
     @PutMapping(value = "/admin/movie/{movieId}")
     public ResponseEntity<?> updateMovie(
             @PathVariable(value = "movieId") String movieId,
-            @RequestBody Movie movie
+            @RequestParam(value = "movie") String movieJson,
+            @RequestParam(value = "poster", required = false) MultipartFile poster,
+            @RequestParam(value = "horPoster", required = false) MultipartFile horPoster,
+            @RequestParam(value = "images", required = false) List<MultipartFile> images,
+            @RequestParam(value = "imageIds", required = false) List<Integer> imageIds
     ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(movieService.updateMovie(movieId, movie));
+                .body(movieService.updateMovie(movieId, movieJson, images, imageIds, poster, horPoster));
     }
 
 

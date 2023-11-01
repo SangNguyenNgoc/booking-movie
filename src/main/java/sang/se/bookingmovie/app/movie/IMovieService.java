@@ -34,4 +34,6 @@ public interface IMovieService {
     String updateImages(String movieId, List<MultipartFile> images, List<Integer> imageIds);
 
     ListResponse searchBySlug(String input, Integer page, Integer size);
+
+    String updateMovie(String movieId, String movieJson, List<MultipartFile> images, List<Integer> imageIds, MultipartFile poster, MultipartFile horPoster);
 }
