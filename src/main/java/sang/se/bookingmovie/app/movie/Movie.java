@@ -57,7 +57,7 @@ public class Movie {
     private String producer;
 
     @NotNull(message = "Genre MUST not be null")
-    private MovieGenre genre;
+    private Integer genre;
 
     @NotNull(message = "Rated MUST not be null")
     @Min(value = 8, message = "Age for rated MUST be at least 8")
@@ -65,6 +65,10 @@ public class Movie {
     private Integer rated;
 
     @NotNull(message = "Formats MUST not be null")
-    private List<Format> formats;
+    private List<Integer> formats;
+
+    @Min(value = 1, message = "Age for rated MUST be at least 1")
+    @Max(value = 4, message = "Age for rated MUST be less than or equal to 4")
+    private Integer statusId;
 
 }

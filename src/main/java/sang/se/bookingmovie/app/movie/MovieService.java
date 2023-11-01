@@ -7,7 +7,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import sang.se.bookingmovie.app.format.FormatEntity;
 import sang.se.bookingmovie.app.format.FormatRepository;
+import sang.se.bookingmovie.app.movie_genre.MovieGenreEntity;
 import sang.se.bookingmovie.app.movie_genre.MovieGenreRepository;
 import sang.se.bookingmovie.app.movie_img.MovieImage;
 import sang.se.bookingmovie.app.movie_img.MovieImageEntity;
@@ -87,7 +89,8 @@ public class MovieService implements IMovieService {
 
     @Override
     public String create(String movieJson, MultipartFile poster, MultipartFile horPoster, List<MultipartFile> images) {
-        MovieEntity movieEntity = movieMapper.jsonToEntity(movieJson);
+        Movie movie = movieMapper.jsonToRequest(movieJson);
+        MovieEntity movieEntity = movieMapper.requestToEntity(movie);
         movieEntity.setId(createId());
         movieEntity.setSlug(applicationUtil.toSlug(movieEntity.getName() + " " + movieEntity.getSubName()));
         movieEntity.setPoster(discordService.sendImage(poster, true));
@@ -95,19 +98,22 @@ public class MovieService implements IMovieService {
         MovieStatusEntity movieStatusEntity = movieStatusRepository.findBySlug("coming-soon")
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("status is not exist")));
         movieEntity.setStatus(movieStatusEntity);
-        movieGenreRepository.findById(movieEntity.getGenre().getId())
+        MovieGenreEntity movieGenreEntity = movieGenreRepository.findById(movie.getGenre())
                 .orElseThrow(() -> new DataNotFoundException(
                         "Data not found",
                         List.of("genre with id: " + movieEntity.getGenre().getId() + " is not exist")
                 ));
-        movieEntity.getFormats().forEach(formatEntity -> {
-            formatRepository.findById(formatEntity.getId())
+        movieEntity.setGenre(movieGenreEntity);
+        Set<FormatEntity> formatEntities = new HashSet<>();
+        movie.getFormats().forEach(i -> {
+            FormatEntity formatEntity = formatRepository.findById(i)
                     .orElseThrow(() -> new DataNotFoundException(
                             "Data not found",
-                            List.of("format with id: " + formatEntity.getId() + " is not exist")
+                            List.of("format with id: " + i + " is not exist")
                     ));
-            formatEntity.setMovies(Set.of(movieEntity));
+            formatEntities.add(formatEntity);
         });
+        movieEntity.setFormats(formatEntities);
         movieEntity.setImages(createMovieImage(movieEntity, images));
         movieRepository.save(movieEntity);
         return "Success";
@@ -187,22 +193,32 @@ public class MovieService implements IMovieService {
         MovieEntity movieEntityAfter = movieMapper.requestToEntity(movie);
         MovieEntity movieEntityBefore = findMovieById(movieId);
         movieEntityAfter.setId(movieId);
-        movieEntityAfter.setStatus(movieEntityBefore.getStatus());
         movieEntityAfter.setSlug(applicationUtil.toSlug(movieEntityAfter.getName()));
         movieEntityAfter.setPoster(movieEntityBefore.getPoster());
-        movieGenreRepository.findById(movieEntityAfter.getGenre().getId())
+        movieEntityAfter.setRating(movieEntityBefore.getRating());
+        movieEntityAfter.setNumberOfRatings(movieEntityBefore.getNumberOfRatings());
+        MovieGenreEntity movieGenreEntity = movieGenreRepository.findById(movie.getGenre())
                 .orElseThrow(() -> new DataNotFoundException(
                         "Data not found",
-                        List.of("genre with id: " + movie.getGenre().getId() + " is not exist")
+                        List.of("genre with id: " + movie.getGenre() + " is not exist")
                 ));
-        movieEntityAfter.getFormats().forEach(formatEntity -> {
-            formatRepository.findById(formatEntity.getId())
+        movieEntityAfter.setGenre(movieGenreEntity);
+        Set<FormatEntity> formatEntities = new HashSet<>();
+        movie.getFormats().forEach(i -> {
+            FormatEntity formatEntity = formatRepository.findById(i)
                     .orElseThrow(() -> new DataNotFoundException(
                             "Data not found",
-                            List.of("format with id: " + formatEntity.getId() + " is not exist")
+                            List.of("format with id: " + i + " is not exist")
                     ));
-            formatEntity.setMovies(Set.of(movieEntityAfter));
+            formatEntities.add(formatEntity);
         });
+        movieEntityAfter.setFormats(formatEntities);
+        MovieStatusEntity movieStatusEntity = movieStatusRepository.findById(movie.getStatusId())
+                .orElseThrow(() -> new DataNotFoundException(
+                        "Data not found",
+                        List.of("Status with id: " + movie.getStatusId() + " is not exist")
+                ));
+        movieEntityAfter.setStatus(movieStatusEntity);
         movieRepository.save(movieEntityAfter);
         return "Success";
     }
