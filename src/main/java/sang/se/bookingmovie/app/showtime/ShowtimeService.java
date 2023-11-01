@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 public class ShowtimeService implements IShowtimeService {
 
     @Value("${scheduler.wait_showtime}")
-    private long waitShowtime;
+    private int waitShowtime;
     private final ApplicationUtil applicationUtil;
     private final ShowtimeRepository showtimeRepository;
     private final ShowtimeMapper showtimeMapper;
@@ -65,6 +65,7 @@ public class ShowtimeService implements IShowtimeService {
             showtimeEntity.setFormat(format);
             showtimeEntity.setMovie(movie);
             showtimeEntity.setStatus(true);
+            showtimeEntity.setRunningTime(movie.getRunningTime() + waitShowtime);
             showtimeRepository.save(showtimeEntity);
         }
         return "success";
@@ -96,17 +97,17 @@ public class ShowtimeService implements IShowtimeService {
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("movie is not exist")));
         List<CinemaEntity> cinemaEntities = showtimeRepository.findByMovieAndDate(date, movieId);
         List<CinemaResponse> cinemaResponses = cinemaEntities.stream().map(cinemaEntity -> {
-            Set<ShowtimeEntity> showtimeEntities = cinemaEntity.getRooms().stream()
-                    .flatMap(roomEntity -> roomEntity.getShowtimes().stream())
-                    .collect(Collectors.toSet());
-            CinemaResponse cinemaResponse = cinemaMapper.entityToResponse(cinemaEntity);
-            cinemaResponse.setShowtime(showtimeEntities.stream()
-                    .peek(this::getFieldToList)
-                    .map(showtimeMapper::entityToResponse)
-                    .sorted(Comparator.comparing(ShowtimeResponse::getStartTime))
-                    .collect(Collectors.toList()));
-            return cinemaResponse;
-        })
+                    Set<ShowtimeEntity> showtimeEntities = cinemaEntity.getRooms().stream()
+                            .flatMap(roomEntity -> roomEntity.getShowtimes().stream())
+                            .collect(Collectors.toSet());
+                    CinemaResponse cinemaResponse = cinemaMapper.entityToResponse(cinemaEntity);
+                    cinemaResponse.setShowtime(showtimeEntities.stream()
+                            .peek(this::getFieldToList)
+                            .map(showtimeMapper::entityToResponse)
+                            .sorted(Comparator.comparing(ShowtimeResponse::getStartTime))
+                            .collect(Collectors.toList()));
+                    return cinemaResponse;
+                })
                 .collect(Collectors.toList());
         return cinemaResponses;
     }
@@ -117,10 +118,14 @@ public class ShowtimeService implements IShowtimeService {
         List<ShowtimeEntity> showtimeEntities = showtimeRepository.findAll();
         showtimeEntities.forEach(showtimeEntity -> {
             LocalDate startDate = showtimeEntity.getStartDate().toLocalDate();
-            if (startDate.equals(currentDate)) {
-                LocalTime startTime = showtimeEntity.getStartTime().toLocalTime();
-                if (startTime.equals(currentTime) || currentTime.isAfter(startTime)) {
-                    showtimeEntity.setStatus(false);
+            if(startDate.isBefore(currentDate)) {
+                showtimeEntity.setStatus(false);
+            } else {
+                if (startDate.equals(currentDate)) {
+                    LocalTime startTime = showtimeEntity.getStartTime().toLocalTime();
+                    if (startTime.equals(currentTime) || currentTime.isAfter(startTime)) {
+                        showtimeEntity.setStatus(false);
+                    }
                 }
             }
         });
@@ -153,7 +158,7 @@ public class ShowtimeService implements IShowtimeService {
                     CinemaResponse cinemaResponse = cinemaMapper.entityToResponse(cinemaEntity);
                     cinemaResponse.setMovies(movieEntities.stream()
                             .peek(this::getFieldInShowtimeByCinemaAndDate)
-                            .map(movieMapper::entityToResponse)
+                            .map(movieMapper::entityCinemaDetailShowtime)
                             .collect(Collectors.toList()));
                     return cinemaResponse;
                 })
@@ -163,13 +168,20 @@ public class ShowtimeService implements IShowtimeService {
     private Boolean checkShowtimeInData(List<ShowtimeRequest> showtimeRequests){
         for (ShowtimeRequest newShowtime : showtimeRequests) {
             List<ShowtimeEntity> showtimeEntities = showtimeRepository.findByDateAndRoom(newShowtime.getStartDate(), newShowtime.getRoom());
-            LocalTime isTime = newShowtime.getStartTime().toLocalTime();
+            MovieEntity movieEntity = movieRepository.findByAddShowtime(newShowtime.getMovie())
+                    .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found movie id")));
+
+            LocalTime startTimeTesting = newShowtime.getStartTime().toLocalTime();
+            LocalTime endTimeTesting = startTimeTesting.plusMinutes(movieEntity.getRunningTime() + waitShowtime);
+
             for (ShowtimeEntity showtimeEntity : showtimeEntities ) {
-                LocalTime existTime = showtimeEntity.getStartTime().toLocalTime();
-                if ( (isTime.isAfter(existTime)
-                        && isTime.isBefore(existTime.plusMinutes(waitShowtime + showtimeEntity.getRunningTime())))
-                        || (existTime.isAfter(isTime)
-                        && existTime.isBefore(isTime.plusMinutes(waitShowtime + newShowtime.getRunningTime() )))
+
+                LocalTime startTimeInData = showtimeEntity.getStartTime().toLocalTime();
+                LocalTime endTimeInData = startTimeInData.plusMinutes(showtimeEntity.getRunningTime());
+
+                if ( (startTimeTesting.isAfter(startTimeInData) && startTimeTesting.isBefore(endTimeInData)) ||
+                        (startTimeInData.isAfter(startTimeTesting) && startTimeInData.isBefore(endTimeTesting)) ||
+                                (startTimeTesting.equals(startTimeInData))
                 ) {
                     return false;
                 }
@@ -179,15 +191,27 @@ public class ShowtimeService implements IShowtimeService {
     }
 
     private Boolean checkShowtimeInList(List<ShowtimeRequest> showtimeRequests){
+
         for (int i = 0; i < showtimeRequests.size() - 1; i++) {
-            LocalTime isTime = showtimeRequests.get(i).getStartTime().toLocalTime();
+
+            MovieEntity movieEntityTesting = movieRepository.findByAddShowtime(showtimeRequests.get(i).getMovie())
+                    .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found movie id")));
+            LocalTime startTimeTesting = showtimeRequests.get(i).getStartTime().toLocalTime();
+            LocalTime endTimeTesting = startTimeTesting.plusMinutes(movieEntityTesting.getRunningTime() + waitShowtime);
+
             for (int j = i+1; j < showtimeRequests.size(); j++) {
-                LocalTime exitsTime = showtimeRequests.get(j).getStartTime().toLocalTime();
+
+                MovieEntity movieEntityInList = movieRepository.findByAddShowtime(showtimeRequests.get(i).getMovie())
+                        .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found movie id")));
+                LocalTime startTimeInList = showtimeRequests.get(j).getStartTime().toLocalTime();
+                LocalTime endTimeInList = startTimeInList.plusMinutes(movieEntityInList.getRunningTime() + waitShowtime);
+
                 if(showtimeRequests.get(i).getStartDate().equals(showtimeRequests.get(j).getStartDate())) {
-                    if (
-                            ((isTime.isAfter(exitsTime) && isTime.isBefore(exitsTime.plusMinutes(waitShowtime + showtimeRequests.get(j).getRunningTime())))
-                            || (exitsTime.isAfter(isTime)
-                            && exitsTime.isBefore(isTime.plusMinutes(waitShowtime + showtimeRequests.get(i).getRunningTime()))))
+                    if ((
+                            (startTimeTesting.isAfter(startTimeInList) && startTimeTesting.isBefore(endTimeInList)) ||
+                            (startTimeInList.isAfter(startTimeTesting) && startTimeInList.isBefore(endTimeTesting)) ||
+                                    startTimeTesting.equals(startTimeInList)
+                        )
                             && showtimeRequests.get(i).getRoom().equals(showtimeRequests.get(j).getRoom())
                     ) {
                         return false;

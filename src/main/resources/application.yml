@@ -46,8 +46,7 @@ discord:
   poster_channel: test
   image_channel: test
   avatar_channel: test
-  base_avatar_male: https://cdn.discordapp.com/attachments/1168144426141499412/1168152800119750677/unnamed.jpg?ex=6550ba12&is=653e4512&hm=7a8ec66da34b0c82e527cacb9712531f092cfc309abd0edfb8264763b06b9a12&
-  base_avatar_female: https://cdn.discordapp.com/attachments/1168144426141499412/1168152799855530004/unnamed_1.jpg?ex=6550ba12&is=653e4512&hm=572879fb64472925ea1322086ad95e9d6b2a68c74ccbc179e07715a3c6ff3213&
+  base_avatar: https://cdn.discordapp.com/attachments/1168144426141499412/1169264779769155594/c6e56503cfdd87da299f72dc416023d4.jpg?ex=6554c5af&is=654250af&hm=440ebc745e441103a1824a80edb22f2d1c371743e8d7a4d413dbbc62eae31554&
 
 verify:
   url: http://localhost:3000

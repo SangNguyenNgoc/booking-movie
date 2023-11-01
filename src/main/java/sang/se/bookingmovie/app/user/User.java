@@ -31,7 +31,7 @@ public class User {
     @Pattern(regexp = "^[0-9]+$", message = "Invalid number phone")
     private String phoneNumber;
 
-    @NotNull(message = "Gender MUST not be null")
-    private Boolean gender;
+    @NotBlank(message = "Gender MUST not be blank")
+    private String gender;
 
 }

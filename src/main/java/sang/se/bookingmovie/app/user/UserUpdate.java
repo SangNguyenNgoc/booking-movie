@@ -1,5 +1,6 @@
 package sang.se.bookingmovie.app.user;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,15 +15,17 @@ import java.sql.Date;
 @Builder
 public class UserUpdate {
 
-    @NotEmpty(message = "Name MUST not be blank")
     private String fullName;
 
     @Past(message = "Date of birth MUST be past")
     private Date dateOfBirth;
 
-    private Boolean gender;
+    private String gender;
 
     @Pattern(regexp = "^[0-9]+$", message = "Invalid number phone")
     private String phoneNumber;
+
+    @Email
+    private String email;
 
 }
