@@ -34,9 +34,7 @@ public interface ShowtimeRepository extends JpaRepository<ShowtimeEntity, String
 
     @Query("SELECT mv FROM MovieEntity mv " +
             "JOIN FETCH mv.showtimes s " +
-            "JOIN FETCH s.room r " +
-            "WHERE r.cinema.id = :cinemaId AND s.status = true "+
-            "ORDER BY s.startTime ASC"
+            "WHERE s.room.cinema.id = :cinemaId AND s.status = true "
     )
     List<MovieEntity> findByCinema(@Param("cinemaId") String cinemaId);
 }
