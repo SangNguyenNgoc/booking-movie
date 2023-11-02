@@ -135,6 +135,9 @@ public class ShowtimeService implements IShowtimeService {
     public ShowtimeResponse getSeatInShowTime(String showtimeId) {
         ShowtimeEntity showtimeEntity = showtimeRepository.findById(showtimeId)
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Showtime is not exits")));
+        if(!showtimeEntity.getStatus()) {
+            throw new DataNotFoundException("Data not found", List.of("Showtime is not exits"));
+        }
         getFieldToGetSeat(showtimeEntity);
         showtimeEntity.getRoom().getSeats().forEach(seatRoomEntity -> {
             seatRoomEntity.setIsReserved(seatRoomEntity.getTickets().stream()
@@ -154,7 +157,7 @@ public class ShowtimeService implements IShowtimeService {
     public List<CinemaResponse> getAllCinemaDetailShowtime() {
         List<CinemaEntity> cinemaEntities = cinemaRepository.findAll();
         return cinemaEntities.stream().map(cinemaEntity -> {
-                    List<MovieEntity> movieEntities = showtimeRepository.findByCinema(cinemaEntity.getId());
+                    List<MovieEntity> movieEntities = movieRepository.findByCinema(cinemaEntity.getId());
                     CinemaResponse cinemaResponse = cinemaMapper.entityToResponse(cinemaEntity);
                     cinemaResponse.setMovies(movieEntities.stream()
                             .peek(this::getFieldInShowtimeByCinemaAndDate)

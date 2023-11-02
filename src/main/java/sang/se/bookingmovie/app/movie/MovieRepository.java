@@ -31,4 +31,12 @@ public interface MovieRepository extends JpaRepository<MovieEntity, String> {
             "WHERE mv.id = :movieId AND s.id != 4")
     Optional<MovieEntity> findByAddShowtime(@Param("movieId") String movieId);
 
+    @Query("SELECT mv FROM MovieEntity mv " +
+            "JOIN FETCH mv.showtimes s " +
+            "JOIN FETCH s.room r " +
+            "JOIN FETCH r.cinema c " +
+            "WHERE c.id = :cinemaId AND s.status = true"
+    )
+    List<MovieEntity> findByCinema(@Param("cinemaId") String cinemaId);
+
 }

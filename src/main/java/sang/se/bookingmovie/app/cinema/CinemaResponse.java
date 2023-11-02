@@ -25,6 +25,8 @@ public class CinemaResponse {
     private String district;
     private String city;
     private String description;
+    @JsonProperty("phone_number")
+    private String phoneNumber;
     @JsonInclude(JsonInclude.Include.NON_EMPTY) private List<ShowtimeResponse> showtime;
     @JsonInclude(JsonInclude.Include.NON_EMPTY) private List<MovieResponse> movies;
 
