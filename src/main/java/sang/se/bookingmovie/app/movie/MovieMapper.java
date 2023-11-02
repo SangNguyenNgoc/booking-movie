@@ -65,6 +65,7 @@ public class MovieMapper implements IMapper<MovieEntity, Movie, MovieResponse> {
         } else {
             MovieResponse movieResponse = mapper.map(movieEntity, MovieResponse.class);
             movieResponse.setShowtimes(movieResponse.getShowtimes().stream()
+                            .sorted(Comparator.comparing(ShowtimeResponse::getStartTime))
                             .peek(showtimeResponse -> {
                                 int lastIndex = showtimeResponse.getStartTime().lastIndexOf(":");
                                 showtimeResponse.setStartTime(showtimeResponse.getStartTime().substring(0, lastIndex));
