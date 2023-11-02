@@ -108,10 +108,11 @@ public class BillController {
     )
     @PutMapping(value = "/customer/payment/{transactionId}")
     public ResponseEntity<?> pay(
+            @RequestHeader(value = "Authorization") String token,
             @PathVariable(value = "transactionId") String transactionId
     ) throws ServletException, JSONException, IOException {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(billService.pay(transactionId));
+                .body(billService.pay(token, transactionId));
     }
 
 

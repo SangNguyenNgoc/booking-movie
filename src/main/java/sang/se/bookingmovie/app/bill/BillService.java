@@ -76,8 +76,7 @@ public class BillService implements IBillService {
         String userId = jwtService.extractSubject(jwtService.validateToken(token));
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
-        setPointToUser(userEntity, bill.getChangedPoint());
-
+        checkPointToUser(userEntity, bill.getChangedPoint());
         ShowtimeEntity showtimeEntity = showtimeRepository.findById(bill.getShowtimeId())
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Showtime is not exits")));
         BillStatusEntity billStatusEntity = billStatusRepository.findById(1)
@@ -106,15 +105,17 @@ public class BillService implements IBillService {
 
     @Override
     @Transactional
-    public String pay(String transactionId) throws ServletException, JSONException, IOException {
+    public String pay(String token, String transactionId) throws ServletException, JSONException, IOException {
         BillEntity billEntity = billRepository.findByTransactionId(transactionId)
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill is not exits")));
+        String userId = jwtService.extractSubject(jwtService.validateToken(token));
         int result = vnpayService.verifyPay(billEntity);
         if(result == 0) {
             BillStatusEntity billStatusEntity = billStatusRepository.findById(2)
                             .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill status is not exits")));
             billEntity.setStatus(billStatusEntity);
             billEntity.setPaymentAt(LocalDateTime.now());
+            setPointToUser(userId);
         }
         return "Success";
     }
@@ -223,15 +224,11 @@ public class BillService implements IBillService {
         });
     }
 
-    private void setPointToUser(UserEntity userEntity, Integer promo) {
-        if(promo > 0) {
-            if(userEntity.getPoint() >= promo) {
-                userEntity.setPoint(userEntity.getPoint() - promo);
-            } else {
-                throw new AllException("Not Enough Points", 404, List.of("Not Enough Points"));
-            }
+    private void checkPointToUser(UserEntity userEntity, Integer promo) {
+        if(userEntity.getPoint() >= promo) {
+            userEntity.setPoint(userEntity.getPoint() - promo);
         } else {
-            userEntity.setPoint(userEntity.getPoint() + promoPoint);
+            throw new AllException("Not Enough Points", 404, List.of("Not Enough Points"));
         }
     }
 
@@ -260,5 +257,13 @@ public class BillService implements IBillService {
         billResponse.getUser().setRole(null);
         billResponse.getUser().setVerify(null);
     }
+
+    @Transactional
+    private void setPointToUser(String userId) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
+        userEntity.setPoint(userEntity.getPoint() + promoPoint);
+    }
+
 
 }
