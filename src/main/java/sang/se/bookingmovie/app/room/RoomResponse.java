@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import sang.se.bookingmovie.app.cinema.CinemaResponse;
 import sang.se.bookingmovie.app.room_status.RoomStatus;
 import sang.se.bookingmovie.app.room_status.RoomStatusEntity;
 import sang.se.bookingmovie.app.seat_room.SeatRoomResponse;
@@ -27,4 +28,7 @@ public class RoomResponse {
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<SeatRoomResponse> seats;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private CinemaResponse cinema;
 }

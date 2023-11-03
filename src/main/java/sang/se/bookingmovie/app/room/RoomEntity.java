@@ -40,7 +40,7 @@ public class RoomEntity {
     )
     private Set<ShowtimeEntity> showtimes;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "cinema_id",
             referencedColumnName = "cinema_id",

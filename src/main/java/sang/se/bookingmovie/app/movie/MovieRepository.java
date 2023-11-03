@@ -31,4 +31,5 @@ public interface MovieRepository extends JpaRepository<MovieEntity, String> {
             "WHERE mv.id = :movieId AND s.id != 4")
     Optional<MovieEntity> findByAddShowtime(@Param("movieId") String movieId);
 
+
 }

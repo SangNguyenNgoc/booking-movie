@@ -315,6 +315,7 @@ public class MovieService implements IMovieService {
 
 
     @Override
+    @Transactional
     public String updateMovie(String movieId, String movieJson, List<MultipartFile> images, List<Integer> imageIds, MultipartFile poster, MultipartFile horPoster) {
         if(movieJson != null) {
             updateMovie(movieId, movieMapper.jsonToRequest(movieJson));

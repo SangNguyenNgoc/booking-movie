@@ -13,7 +13,7 @@ public interface IBillService {
 
     String create(String token, Bill bill) throws UnsupportedEncodingException;
 
-    String pay(String transactionId) throws ServletException, JSONException, IOException;
+    String pay(String token, String transactionId) throws ServletException, JSONException, IOException;
 
     String refund(String billId, String reason);
 

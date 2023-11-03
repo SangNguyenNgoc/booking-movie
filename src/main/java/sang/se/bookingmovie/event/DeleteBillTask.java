@@ -16,7 +16,6 @@ public class DeleteBillTask extends TimerTask {
 
     @Override
     public void run() {
-        System.out.println("delay 5 seconds");
         Optional<BillEntity> billEntity = billRepository.findById(billId);
         if(billEntity.isPresent() && billEntity.get().getStatus().getId() == 1) {
             billRepository.deleteById(billId);

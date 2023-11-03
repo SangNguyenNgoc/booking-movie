@@ -59,7 +59,7 @@ public class ShowtimeEntity {
     )
     private FormatEntity format;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "room_id",
             referencedColumnName = "room_id",
