@@ -8,6 +8,7 @@ import sang.se.bookingmovie.app.cinema.CinemaEntity;
 import sang.se.bookingmovie.app.cinema.CinemaRepository;
 import sang.se.bookingmovie.app.movie.MovieEntity;
 import sang.se.bookingmovie.app.movie.MovieRepository;
+import sang.se.bookingmovie.exception.AllException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -100,29 +101,30 @@ public class  StatisticalService implements IStatisticalService {
     }
 
     @Override
-    public CardResponse getRevenueCinema(LocalDate date) {
+    public CardResponse getRevenueCinema(Integer month, Integer year) {
+        if (month < 1 || month > 12) throw new AllException("Data invalid!", 400 , List.of("Month must be from 0 - 12"));
         Double revenue = 0.0;
         List<CinemaEntity> cinemaEntities = cinemaRepository.findAll();
         List<ColumnResponse> allCinemaInMonth = new ArrayList<>();
         String bestCinema = null;
-        double bestValue = 0.0;
+        double bestRevenue = 0.0;
         for(CinemaEntity cinemaEntity : cinemaEntities){
             Double data = getTotalSumForBills(billRepository.findRevenueByMonthAndCinema(
-                    date.getMonth().getValue(),
-                    date.getYear(),
+                    month,
+                    year,
                     cinemaEntity.getId()
             ));
             allCinemaInMonth.add(ColumnResponse.builder()
                     .content(data.toString())
                     .title(cinemaEntity.getName())
                     .build());
-            if(data > bestValue){
-                bestValue = data;
+            if(data > bestRevenue){
+                bestRevenue = data;
                 bestCinema = cinemaEntity.getName();
             }
             revenue += data;
         }
-            double percent = (bestValue/revenue) * 100;
+            double percent = (bestRevenue /revenue) * 100;
         return CardResponse.builder()
                 .title("RẠP CAO NHẤT")
                 .lastTime(Double.toString(percent))
@@ -133,11 +135,12 @@ public class  StatisticalService implements IStatisticalService {
 
     @Override
     public CardResponse getRevenueMovie(Integer month, Integer year) {
+        if (month < 1 || month > 12) throw new AllException("Data invalid!", 400 , List.of("Month must be from 0 - 12"));
         Double revenue = 0.0;
         List< MovieEntity> movieEntities = movieRepository.findByMonthYear(month, year);
         List<ColumnResponse> allMovieInMonth = new ArrayList<>();
         String bestMovie = null;
-        double bestValue = 0.0;
+        double bestRevenue = 0.0;
         for(MovieEntity movieEntity : movieEntities){
             Double data = getTotalSumForBills(billRepository.findRevenueByMonthAndMovie(
                     month,
@@ -148,13 +151,13 @@ public class  StatisticalService implements IStatisticalService {
                     .content(data.toString())
                     .title(movieEntity.getName())
                     .build());
-            if(data > bestValue){
-                bestValue = data;
+            if(data > bestRevenue){
+                bestRevenue = data;
                 bestMovie = movieEntity.getName();
             }
             revenue += data;
         }
-        double percent = (bestValue/revenue) * 100;
+        double percent = (bestRevenue /revenue) * 100;
         return CardResponse.builder()
                 .title("RẠP CAO NHẤT")
                 .lastTime(Double.toString(percent))
