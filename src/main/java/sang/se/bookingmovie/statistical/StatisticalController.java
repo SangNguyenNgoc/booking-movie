@@ -66,7 +66,7 @@ public class StatisticalController {
             @RequestParam("date") LocalDate date
     ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(statisticalService.getRevenue(date));
+                .body(statisticalService.getTotalTicket(date));
     }
 
     @Operation(

@@ -159,7 +159,7 @@ public class  StatisticalService implements IStatisticalService {
         }
         double percent = (bestRevenue /revenue) * 100;
         return CardResponse.builder()
-                .title("RẠP CAO NHẤT")
+                .title("PHIM CAO NHẤT")
                 .lastTime(Double.toString(percent))
                 .content(bestMovie)
                 .chart(allMovieInMonth)
