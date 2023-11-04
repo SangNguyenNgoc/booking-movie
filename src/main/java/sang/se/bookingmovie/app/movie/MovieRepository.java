@@ -31,5 +31,13 @@ public interface MovieRepository extends JpaRepository<MovieEntity, String> {
             "WHERE mv.id = :movieId AND s.id != 4")
     Optional<MovieEntity> findByAddShowtime(@Param("movieId") String movieId);
 
-
+    @Query("SELECT mv FROM MovieEntity mv " +
+            "WHERE MONTH(mv.releaseDate) <= :month " +
+            "AND YEAR(mv.releaseDate) = :year " +
+            "AND MONTH(mv.endDate) >= :month " +
+            "AND YEAR(mv.endDate) = :year")
+    List<MovieEntity> findByMonthYear(
+            @Param("month") int month,
+            @Param("year") int year
+    );
 }

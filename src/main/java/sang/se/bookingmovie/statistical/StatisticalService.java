@@ -2,7 +2,12 @@ package sang.se.bookingmovie.statistical;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import sang.se.bookingmovie.app.bill.BillEntity;
 import sang.se.bookingmovie.app.bill.BillRepository;
+import sang.se.bookingmovie.app.cinema.CinemaEntity;
+import sang.se.bookingmovie.app.cinema.CinemaRepository;
+import sang.se.bookingmovie.app.movie.MovieEntity;
+import sang.se.bookingmovie.app.movie.MovieRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,9 +15,11 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class StatisticalService implements IStatisticalService {
+public class  StatisticalService implements IStatisticalService {
 
     private final BillRepository billRepository;
+    private final CinemaRepository cinemaRepository;
+    private final MovieRepository movieRepository;
 
     @Override
     public CardResponse getRevenue(LocalDate date) {
@@ -91,4 +98,75 @@ public class StatisticalService implements IStatisticalService {
                 .chart(allDatesInMonth)
                 .build();
     }
+
+    @Override
+    public CardResponse getRevenueCinema(LocalDate date) {
+        Double revenue = 0.0;
+        List<CinemaEntity> cinemaEntities = cinemaRepository.findAll();
+        List<ColumnResponse> allCinemaInMonth = new ArrayList<>();
+        String bestCinema = null;
+        double bestValue = 0.0;
+        for(CinemaEntity cinemaEntity : cinemaEntities){
+            Double data = getTotalSumForBills(billRepository.findRevenueByMonthAndCinema(
+                    date.getMonth().getValue(),
+                    date.getYear(),
+                    cinemaEntity.getId()
+            ));
+            allCinemaInMonth.add(ColumnResponse.builder()
+                    .content(data.toString())
+                    .title(cinemaEntity.getName())
+                    .build());
+            if(data > bestValue){
+                bestValue = data;
+                bestCinema = cinemaEntity.getName();
+            }
+            revenue += data;
+        }
+            double percent = (bestValue/revenue) * 100;
+        return CardResponse.builder()
+                .title("RẠP CAO NHẤT")
+                .lastTime(Double.toString(percent))
+                .content(bestCinema)
+                .chart(allCinemaInMonth)
+                .build();
+    }
+
+    @Override
+    public CardResponse getRevenueMovie(Integer month, Integer year) {
+        Double revenue = 0.0;
+        List< MovieEntity> movieEntities = movieRepository.findByMonthYear(month, year);
+        List<ColumnResponse> allMovieInMonth = new ArrayList<>();
+        String bestMovie = null;
+        double bestValue = 0.0;
+        for(MovieEntity movieEntity : movieEntities){
+            Double data = getTotalSumForBills(billRepository.findRevenueByMonthAndMovie(
+                    month,
+                    year,
+                    movieEntity.getId()
+            ));
+            allMovieInMonth.add(ColumnResponse.builder()
+                    .content(data.toString())
+                    .title(movieEntity.getName())
+                    .build());
+            if(data > bestValue){
+                bestValue = data;
+                bestMovie = movieEntity.getName();
+            }
+            revenue += data;
+        }
+        double percent = (bestValue/revenue) * 100;
+        return CardResponse.builder()
+                .title("RẠP CAO NHẤT")
+                .lastTime(Double.toString(percent))
+                .content(bestMovie)
+                .chart(allMovieInMonth)
+                .build();
+    }
+
+    public Double getTotalSumForBills(List<BillEntity> billEntities) {
+        return billEntities.stream()
+                .mapToDouble(BillEntity::getTotal)
+                .sum();
+    }
+
 }

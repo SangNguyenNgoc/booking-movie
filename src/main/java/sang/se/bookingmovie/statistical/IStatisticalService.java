@@ -8,4 +8,8 @@ public interface IStatisticalService {
 
     CardResponse getTotalTicket(LocalDate date);
 
+    CardResponse getRevenueCinema(LocalDate date);
+
+    CardResponse getRevenueMovie(Integer month, Integer year);
+
 }

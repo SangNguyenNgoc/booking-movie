@@ -66,4 +66,31 @@ public interface BillRepository extends JpaRepository<BillEntity, String> {
             @Param("year") Integer year
     );
 
+    @Query("SELECT b FROM BillEntity b " +
+            "JOIN FETCH b.tickets t " +
+            "JOIN FETCH t.showtime st " +
+            "JOIN FETCH st.room r " +
+            "WHERE MONTH(b.createTime) = :month " +
+            "AND YEAR(b.createTime) = :year " +
+            "AND r.cinema.id = :cinemaId"
+    )
+    List<BillEntity> findRevenueByMonthAndCinema(
+            @Param("month") int month,
+            @Param("year") int year,
+            @Param("cinemaId") String cinemaId
+    );
+
+    @Query("SELECT b FROM BillEntity b " +
+            "JOIN FETCH b.tickets t " +
+            "JOIN FETCH t.showtime st " +
+            "WHERE MONTH(b.createTime) = :month " +
+            "AND YEAR(b.createTime) = :year " +
+            "AND st.movie.id = :movieId"
+    )
+    List<BillEntity> findRevenueByMonthAndMovie(
+            @Param("month") int month,
+            @Param("year") int year,
+            @Param("movieId") String movieId
+    );
+
 }

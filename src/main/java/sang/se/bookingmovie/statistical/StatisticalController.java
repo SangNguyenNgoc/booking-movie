@@ -27,4 +27,21 @@ public class StatisticalController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(statisticalService.getTotalTicket(date));
     }
+
+    @GetMapping(value = "/landing/statistical/cinema")
+    public ResponseEntity<?> cinema(
+            @RequestParam("date") LocalDate date
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(statisticalService.getRevenueCinema(date));
+    }
+
+    @GetMapping(value = "/landing/statistical/movie")
+    public ResponseEntity<?> movie(
+            @RequestParam("month") int month,
+            @RequestParam ("year") int year
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(statisticalService.getRevenueMovie(month,year));
+    }
 }
