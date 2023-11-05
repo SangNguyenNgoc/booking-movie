@@ -29,14 +29,14 @@ import org.springframework.context.annotation.Configuration;
         ),
         servers = {
                 @Server(
-                        description = "Localhost",
+                        description = "Heroku Application",
                         url = "https://booking-movie-backend-3a547b1ac2e9.herokuapp.com"
                 )
         }
 )
 @SecurityScheme(
         name = "Bearer Authentication",
-        description = "JWT auth description",
+        description = "JWT to authentication and authorization",
         scheme = "Bearer",
         type = SecuritySchemeType.HTTP,
         bearerFormat = "JWT",
