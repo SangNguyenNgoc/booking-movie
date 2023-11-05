@@ -58,6 +58,26 @@ public class CommentController {
                 .body(commentService.create(token, comment));
     }
 
+
+    @Operation(
+            summary = "Lấy tất cả comment",
+            description = "Lấy tất cả comment",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json"
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/admin/comments")
+    public ResponseEntity<?> getAll() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(commentService.getAll());
+    }
+
     @Operation(
             summary = "Xóa comment",
             description = "Xóa comment của người dùng, chỉ được thực hiện bởi chính chủ.",
@@ -166,8 +186,9 @@ public class CommentController {
 
 
     @Operation(
-            summary = "Duyệt 1 comment",
-            description = "API duyệt comment, chỉ được thực hiện bởi admin.",
+            summary = "Thay đổi trạng thái 1 comment",
+            description = "API thay đổi trạng thái comment(chỉ nhận 3 giá trị approved, pending, deleted), " +
+                    "chỉ được thực hiện bởi admin.",
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -187,43 +208,18 @@ public class CommentController {
             }
     )
     @PutMapping(value = "/admin/moderationComment/{commentId}")
-    public ResponseEntity<?> moderateComment(@PathVariable(value = "commentId") Integer commentId) {
+    public ResponseEntity<?> setCommentStatus(
+            @PathVariable(value = "commentId") Integer commentId,
+            @RequestParam(value = "status") String status
+    ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(commentService.moderateComment(commentId));
+                .body(commentService.setCommentStatus(commentId, status));
     }
 
 
     @Operation(
-            summary = "Xóa 1 comment",
-            description = "API xóa comment, chỉ được thực hiện bởi admin.",
-            responses = {
-                    @ApiResponse(
-                            description = "Success",
-                            responseCode = "200",
-                            content = @Content(
-                                    mediaType = "application/json"
-                            )
-                    ),
-                    @ApiResponse(
-                            description = "Data not found",
-                            responseCode = "404",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = ErrorResponse.class)
-                            )
-                    )
-            }
-    )
-    @PutMapping(value = "/admin/deleteComment/{commentId}")
-    public ResponseEntity<?> deleteCommentByAdmin(@PathVariable(value = "commentId") Integer commentId) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(commentService.deleteCommentByAdmin(commentId));
-    }
-
-
-    @Operation(
-            summary = "Lấy comment chưa được duyệt",
-            description = "API lấy comment chưa được duyệt, chỉ được thực hiện bởi admin.",
+            summary = "Lấy comment theo status",
+            description = "API lấy comment theo status, chỉ được thực hiện bởi admin.",
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -235,10 +231,12 @@ public class CommentController {
                     )
             }
     )
-    @GetMapping(value = "admin/comments")
-    public ResponseEntity<?> getCommentToModerate() {
+    @GetMapping(value = "/admin/comments/status")
+    public ResponseEntity<?> getCommentByStatus(
+            @RequestParam(value = "status") String status
+    ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(commentService.getCommentToModerate());
+                .body(commentService.getCommentByStatus(status));
     }
 
 }

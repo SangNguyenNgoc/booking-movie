@@ -26,6 +26,8 @@ public class CommentMapper implements IMapper<CommentEntity, Comment, CommentRes
     public CommentResponse entityToResponse(CommentEntity commentEntity) {
         CommentResponse commentResponse = mapper.map(commentEntity, CommentResponse.class);
         commentResponse.setUser(commentEntity.getUser().getFullName());
+        commentResponse.setAvatarUser(commentEntity.getUser().getAvatar());
+        commentResponse.setMovie(commentEntity.getMovie().getSubName());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         commentResponse.setCreateDate(commentEntity.getCreateDate().format(formatter));
         return commentResponse;

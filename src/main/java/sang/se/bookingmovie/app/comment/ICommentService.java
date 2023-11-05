@@ -2,13 +2,15 @@ package sang.se.bookingmovie.app.comment;
 
 import sang.se.bookingmovie.response.ListResponse;
 
+import java.time.LocalDateTime;
+
 public interface ICommentService {
 
     String create(String token, Comment comment);
 
-    String moderateComment(Integer commentId);
+    ListResponse getAll();
 
-    String deleteCommentByAdmin(Integer commentId);
+    String setCommentStatus(Integer commentId, String input);
 
     String deleteComment(String token, Integer commentId);
 
@@ -16,5 +18,7 @@ public interface ICommentService {
 
     ListResponse getCommentByAdmin(String email);
 
-    ListResponse getCommentToModerate();
+    ListResponse getCommentByStatus(String input);
+
+    void deleteCommentByDate(LocalDateTime currentDate);
 }

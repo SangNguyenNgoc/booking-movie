@@ -20,11 +20,15 @@ public class CommentResponse {
     private String content;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @NotBlank(message = "Movie id MUST not be blank")
-    private String movieId;
+    private String movie;
 
     @JsonProperty("create_date")
     private String createDate;
 
     private String user;
+
+    private CommentStatus status;
+
+    @JsonProperty("avatar_user")
+    private String avatarUser;
 }

@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sang.se.bookingmovie.app.comment.CommentService;
 import sang.se.bookingmovie.app.movie.MovieService;
 import sang.se.bookingmovie.app.room.RoomEntity;
 import sang.se.bookingmovie.app.room.RoomRepository;
@@ -29,6 +30,7 @@ public class ScheduledTasks {
 
     private final MovieService movieService;
     private final ShowtimeService showtimeService;
+    private final CommentService commentService;
 
     @PostConstruct
     @Scheduled(cron = "0 0 2 * * ?")
@@ -43,6 +45,13 @@ public class ScheduledTasks {
         LocalDate currentDate = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
         showtimeService.updateStatusOfShowtime(currentDate, currentTime);
+    }
+
+    @PostConstruct
+    @Scheduled(cron = "0 0 2 * * ?")
+    public void deleteComment() {
+        LocalDateTime currentDate = LocalDateTime.now();
+        commentService.deleteCommentByDate(currentDate);
     }
 
 }
