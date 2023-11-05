@@ -530,7 +530,7 @@ public class UserController {
     @PutMapping(value = "/user/avatar")
     public ResponseEntity<?> updateAvatar(
             @RequestHeader(value = "Authorization") String token,
-            @RequestParam(value = "avatar", required = false) MultipartFile avatar
+            @RequestParam(value = "avatar") MultipartFile avatar
     ) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(userService.updateAvatar(token, avatar));

@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import sang.se.bookingmovie.app.comment.CommentEntity;
 import sang.se.bookingmovie.app.comment.CommentMapper;
+import sang.se.bookingmovie.app.comment.CommentStatus;
 import sang.se.bookingmovie.app.showtime.ShowtimeMapper;
 import sang.se.bookingmovie.app.showtime.ShowtimeResponse;
 import sang.se.bookingmovie.exception.JsonException;
@@ -51,7 +52,7 @@ public class MovieMapper implements IMapper<MovieEntity, Movie, MovieResponse> {
             MovieResponse movieResponse = mapper.map(movieEntity, MovieResponse.class);
             movieResponse.setComment(movieEntity.getComments().stream()
                     .sorted(Comparator.comparing(CommentEntity::getCreateDate).reversed())
-                    .filter(CommentEntity::getStatus)
+                    .filter(commentEntity -> commentEntity.getStatus() == CommentStatus.APPROVED)
                     .map(commentMapper::entityToResponse)
                     .collect(Collectors.toList())
             );
@@ -84,6 +85,7 @@ public class MovieMapper implements IMapper<MovieEntity, Movie, MovieResponse> {
             throw new JsonException("Json error", List.of("Parse json failure"));
         }
     }
+
     public Movie jsonToRequest(String movieJson) {
         try {
             return objectMapper.readValue(movieJson, Movie.class);

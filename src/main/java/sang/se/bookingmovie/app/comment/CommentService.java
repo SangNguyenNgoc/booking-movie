@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sang.se.bookingmovie.app.movie.MovieEntity;
 import sang.se.bookingmovie.app.movie.MovieRepository;
+import sang.se.bookingmovie.app.user.Gender;
 import sang.se.bookingmovie.app.user.UserEntity;
 import sang.se.bookingmovie.app.user.UserRepository;
 import sang.se.bookingmovie.exception.AllException;
@@ -14,6 +15,7 @@ import sang.se.bookingmovie.response.ListResponse;
 import sang.se.bookingmovie.utils.ApplicationUtil;
 import sang.se.bookingmovie.utils.JwtService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -33,6 +35,8 @@ public class CommentService implements ICommentService {
 
     private final CommentMapper commentMapper;
 
+    private final ApplicationUtil applicationUtil;
+
     @Override
     public String create(String token, Comment comment) {
         String userId = jwtService.validateToken(token);
@@ -41,7 +45,7 @@ public class CommentService implements ICommentService {
         MovieEntity movieEntity = movieRepository.findById(comment.getMovieId())
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Movie is not exits")));
         CommentEntity commentEntity = commentMapper.requestToEntity(comment);
-        commentEntity.setStatus(false);
+        commentEntity.setStatus(CommentStatus.PENDING);
         commentEntity.setUser(userEntity);
         commentEntity.setMovie(movieEntity);
         commentEntity.setCreateDate(LocalDateTime.now());
@@ -50,21 +54,29 @@ public class CommentService implements ICommentService {
     }
 
     @Override
-    @Transactional
-    public String moderateComment(Integer commentId) {
-        CommentEntity comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Comment is not exits")));
-        comment.setStatus(true);
-        return "Success";
+    public ListResponse getAll() {
+        List<CommentEntity> commentEntities = commentRepository.findAll();
+        return ListResponse.builder()
+                .total(commentEntities.size())
+                .data(commentEntities.stream().map(commentMapper::entityToResponse).collect(Collectors.toList()))
+                .build();
     }
 
     @Override
-    public String deleteCommentByAdmin(Integer commentId) {
+    @Transactional
+    public String setCommentStatus(Integer commentId, String input) {
+        String status = applicationUtil.toSlug(input);
         CommentEntity comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Comment is not exits")));
-        commentRepository.delete(comment);
+        switch (status) {
+            case "approved" -> comment.setStatus(CommentStatus.APPROVED);
+            case "pending" -> comment.setStatus(CommentStatus.PENDING);
+            case "deleted" -> comment.setStatus(CommentStatus.DELETED);
+            default -> throw new AllException("Data invalid", 404, List.of("Comment status invalid"));
+        }
         return "Success";
     }
+
 
     @Override
     public String deleteComment(String token, Integer commentId) {
@@ -111,16 +123,28 @@ public class CommentService implements ICommentService {
     }
 
     @Override
-    public ListResponse getCommentToModerate() {
+    public ListResponse getCommentByStatus(String input) {
+        String status = input.toUpperCase();
         List<CommentEntity> commentEntities = commentRepository.findAll();
         List<CommentResponse> commentResponses = commentEntities.stream()
                 .sorted(Comparator.comparing(CommentEntity::getCreateDate).reversed())
-                .filter(commentEntity -> !commentEntity.getStatus())
+                .filter(commentEntity -> commentEntity.getStatus().toString().equals(status))
                 .map(commentMapper::entityToResponse)
                 .toList();
         return ListResponse.builder()
-                .total(commentEntities.size())
+                .total(commentResponses.size())
                 .data(commentResponses)
                 .build();
+    }
+
+    @Override
+    public void deleteCommentByDate(LocalDateTime currentDate) {
+        LocalDateTime thirtyDaysAgo = currentDate.minusDays(30);
+        List<CommentEntity> commentEntities = commentRepository.findAll();
+        commentEntities.forEach(commentEntity -> {
+            if(commentEntity.getCreateDate().isBefore(thirtyDaysAgo)) {
+                commentRepository.delete(commentEntity);
+            }
+        });
     }
 }

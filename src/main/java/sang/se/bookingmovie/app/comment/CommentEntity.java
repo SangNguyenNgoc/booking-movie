@@ -24,7 +24,8 @@ public class CommentEntity {
 
     private String content;
 
-    private Boolean status;
+    @Enumerated(EnumType.STRING)
+    private CommentStatus status;
 
     @Column(name = "create_date")
     private LocalDateTime createDate;
