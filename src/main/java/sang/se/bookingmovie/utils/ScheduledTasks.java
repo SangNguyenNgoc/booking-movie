@@ -48,4 +48,11 @@ public class ScheduledTasks {
     }
 
 
+    @PostConstruct
+    @Scheduled(cron = "0 0 2 * * ?")
+    public void deleteComment() {
+        LocalDateTime currentDate = LocalDateTime.now();
+        commentService.deleteCommentByDate(currentDate);
+    }
+
 }
