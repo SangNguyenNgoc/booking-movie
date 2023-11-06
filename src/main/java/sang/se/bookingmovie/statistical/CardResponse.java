@@ -16,7 +16,7 @@ public class CardResponse {
 
     private String title;
     private String content;
-    @JsonProperty("last_time")
+    @JsonProperty("percent")
     private String lastTime;
     List<ColumnResponse> chart;
 
