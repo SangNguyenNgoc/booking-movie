@@ -244,7 +244,7 @@ public class MovieService implements IMovieService {
     @Transactional
     public String updateImages(String movieId, List<MultipartFile> images, List<Integer> imageIds) {
         if (imageIds != null && !imageIds.isEmpty()) {
-            movieImageRepository.deleteAllById(imageIds);
+            movieImageRepository.deleteImages(imageIds);
         }
         if (images != null && !images.isEmpty()) {
             MovieEntity movieEntity = findMovieById(movieId);
@@ -252,7 +252,12 @@ public class MovieService implements IMovieService {
             movieImageEntities.addAll(createMovieImage(movieEntity, images));
             movieEntity.setImages(movieImageEntities);
         }
+
         return "Success";
+    }
+
+    public void deleteImages(List<Integer> ids) {
+        movieImageRepository.deleteAllById(ids);
     }
 
     @Override
