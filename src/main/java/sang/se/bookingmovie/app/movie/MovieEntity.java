@@ -92,7 +92,7 @@ public class MovieEntity {
 
     @OneToMany(
             mappedBy = "movie",
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = CascadeType.PERSIST
     )
     private Set<MovieImageEntity> images;

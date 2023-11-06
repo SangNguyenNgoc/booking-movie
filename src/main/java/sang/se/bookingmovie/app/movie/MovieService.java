@@ -189,12 +189,13 @@ public class MovieService implements IMovieService {
     }
 
     @Override
-    public String updateMovie(String movieId, Movie movie) {
+    public void updateMovie(String movieId, Movie movie) {
         MovieEntity movieEntityAfter = movieMapper.requestToEntity(movie);
         MovieEntity movieEntityBefore = findMovieById(movieId);
         movieEntityAfter.setId(movieId);
         movieEntityAfter.setSlug(applicationUtil.toSlug(movieEntityAfter.getName()));
         movieEntityAfter.setPoster(movieEntityBefore.getPoster());
+        movieEntityAfter.setHorizontalPoster(movieEntityBefore.getHorizontalPoster());
         movieEntityAfter.setRating(movieEntityBefore.getRating());
         movieEntityAfter.setNumberOfRatings(movieEntityBefore.getNumberOfRatings());
         MovieGenreEntity movieGenreEntity = movieGenreRepository.findById(movie.getGenre())
@@ -219,8 +220,8 @@ public class MovieService implements IMovieService {
                         List.of("Status with id: " + movie.getStatusId() + " is not exist")
                 ));
         movieEntityAfter.setStatus(movieStatusEntity);
+        movieEntityAfter.setImages(movieEntityBefore.getImages());
         movieRepository.save(movieEntityAfter);
-        return "Success";
     }
 
     @Override
