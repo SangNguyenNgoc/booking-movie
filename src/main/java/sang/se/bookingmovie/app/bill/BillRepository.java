@@ -30,7 +30,9 @@ public interface BillRepository extends JpaRepository<BillEntity, String> {
 
     @Query("SELECT SUM(b.total) FROM BillEntity b " +
             "WHERE MONTH(b.createTime) = :month " +
-            "AND YEAR(b.createTime) = :year")
+            "AND YEAR(b.createTime) = :year " +
+            "AND b.status.id = 2"
+    )
     Optional<Double> findRevenueByMonth(
             @Param("month") int month,
             @Param("year") int year
@@ -39,7 +41,9 @@ public interface BillRepository extends JpaRepository<BillEntity, String> {
     @Query("SELECT SUM(b.total) FROM BillEntity b " +
             "WHERE MONTH(b.createTime) = :month " +
             "AND YEAR(b.createTime) = :year " +
-            "AND DAY(b.createTime) = :day")
+            "AND DAY(b.createTime) = :day " +
+            "AND b.status.id = 2"
+    )
     Optional<Double> findRevenueByDayAndMonth(
             @Param("day") Integer day,
             @Param("month") Integer month,
@@ -49,7 +53,9 @@ public interface BillRepository extends JpaRepository<BillEntity, String> {
     @Query("SELECT COUNT(t) FROM TicketEntity t " +
             "JOIN t.bill b " +
             "WHERE MONTH(b.createTime) = :month " +
-            "AND YEAR(b.createTime) = :year")
+            "AND YEAR(b.createTime) = :year " +
+            "AND b.status.id = 2"
+    )
     Optional<Integer> findTotalTicketByMonth(
             @Param("month") int month,
             @Param("year") int year
@@ -59,7 +65,9 @@ public interface BillRepository extends JpaRepository<BillEntity, String> {
             "JOIN t.bill b " +
             "WHERE MONTH(b.createTime) = :month " +
             "AND YEAR(b.createTime) = :year " +
-            "AND DAY(b.createTime) = :day")
+            "AND DAY(b.createTime) = :day " +
+            "AND b.status.id = 2"
+    )
     Optional<Integer> findTotalTicketByDayAndMonth(
             @Param("day") Integer day,
             @Param("month") Integer month,
@@ -72,7 +80,8 @@ public interface BillRepository extends JpaRepository<BillEntity, String> {
             "JOIN FETCH st.room r " +
             "WHERE MONTH(b.createTime) = :month " +
             "AND YEAR(b.createTime) = :year " +
-            "AND r.cinema.id = :cinemaId"
+            "AND r.cinema.id = :cinemaId " +
+            "AND b.status.id = 2"
     )
     List<BillEntity> findRevenueByMonthAndCinema(
             @Param("month") int month,
@@ -85,7 +94,8 @@ public interface BillRepository extends JpaRepository<BillEntity, String> {
             "JOIN FETCH t.showtime st " +
             "WHERE MONTH(b.createTime) = :month " +
             "AND YEAR(b.createTime) = :year " +
-            "AND st.movie.id = :movieId"
+            "AND st.movie.id = :movieId " +
+            "AND b.status.id = 2"
     )
     List<BillEntity> findRevenueByMonthAndMovie(
             @Param("month") int month,
