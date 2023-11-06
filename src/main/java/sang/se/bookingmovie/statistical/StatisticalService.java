@@ -166,6 +166,16 @@ public class  StatisticalService implements IStatisticalService {
                 .build();
     }
 
+    @Override
+    public List<CardResponse> getStatistical(LocalDate date) {
+        List<CardResponse> cardResponseList = new ArrayList<>();
+        cardResponseList.add(getRevenue(date));
+        cardResponseList.add(getTotalTicket(date));
+        cardResponseList.add(getRevenueCinema(date.getMonth().getValue(), date.getYear()));
+        cardResponseList.add(getRevenueMovie(date.getMonth().getValue(), date.getYear()));
+        return cardResponseList;
+    }
+
     public Double getTotalSumForBills(List<BillEntity> billEntities) {
         return billEntities.stream()
                 .mapToDouble(BillEntity::getTotal)
