@@ -22,7 +22,7 @@ public class MovieGenreEntity {
 
     private String name;
 
-    @OneToMany(
+    @ManyToMany(
             mappedBy = "genre",
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL

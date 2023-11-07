@@ -82,13 +82,13 @@ public class MovieEntity {
     )
     private Set<FormatEntity> formats;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(
-            name = "genre_id",
-            referencedColumnName = "movie_genre_id",
-            nullable = false
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "movie_genre",
+            joinColumns = @JoinColumn(name = "movie_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "genre_id", nullable = false)
     )
-    private MovieGenreEntity genre;
+    private Set<MovieGenreEntity> genre;
 
     @OneToMany(
             mappedBy = "movie",
