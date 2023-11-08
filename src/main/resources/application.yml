@@ -1,7 +1,7 @@
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://booking-movie.ckiqcmvpdkd9.ap-southeast-1.rds.amazonaws.com:3306/booking_movie
+    url: jdbc:mysql://database-1.cjvzxv4pqzmf.eu-west-1.rds.amazonaws.com:3306/booking_movie
     username: admin
     password: 123456789
 #  datasource:
