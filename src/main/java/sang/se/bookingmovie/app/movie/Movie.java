@@ -57,7 +57,7 @@ public class Movie {
     private String producer;
 
     @NotNull(message = "Genre MUST not be null")
-    private Integer genre;
+    private List<Integer> genre;
 
     @NotNull(message = "Rated MUST not be null")
     @Min(value = 8, message = "Age for rated MUST be at least 8")

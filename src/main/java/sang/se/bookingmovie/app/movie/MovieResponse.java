@@ -38,9 +38,9 @@ public class MovieResponse{
         private String producer;
         private String rated;
         private String slug;
-        @JsonInclude(JsonInclude.Include.NON_NULL) private MovieGenre genre;
         @JsonInclude(JsonInclude.Include.NON_NULL) private MovieStatus status;
-        @JsonInclude(JsonInclude.Include.NON_NULL) private List<Format> formats;
+        @JsonInclude(JsonInclude.Include.NON_EMPTY) private List<MovieGenre> genre;
+        @JsonInclude(JsonInclude.Include.NON_EMPTY) private List<Format> formats;
         @JsonInclude(JsonInclude.Include.NON_EMPTY) private List<MovieImage> images;
         @JsonInclude(JsonInclude.Include.NON_EMPTY) private List<ShowtimeResponse> showtimes;
         @JsonInclude(JsonInclude.Include.NON_EMPTY) private List<CommentResponse> comment;

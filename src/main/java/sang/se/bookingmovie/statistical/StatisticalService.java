@@ -10,6 +10,8 @@ import sang.se.bookingmovie.app.movie.MovieEntity;
 import sang.se.bookingmovie.app.movie.MovieRepository;
 import sang.se.bookingmovie.exception.AllException;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,10 +55,19 @@ public class  StatisticalService implements IStatisticalService {
             percent = ((revenue - lastTimeRevenue) / lastTimeRevenue) * 100;
         }
 
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator('.');
+
+        DecimalFormat decimalFormat = new DecimalFormat("###,###", symbols);
+        String formattedNumber = decimalFormat.format(revenue);
+
+        DecimalFormat percentFormat = new DecimalFormat("#.##");
+        String stringPercent = percentFormat.format(percent) + "%";
+
         return CardResponse.builder()
                 .title("TỔNG DOANH THU")
-                .lastTime(Double.toString(percent))
-                .content(Double.toString(revenue))
+                .lastTime(stringPercent)
+                .content(formattedNumber)
                 .chart(allDatesInMonth)
                 .build();
     }
@@ -92,10 +103,20 @@ public class  StatisticalService implements IStatisticalService {
             percent = ((double) (total - lastTimeRevenue) / lastTimeRevenue) * 100;
         }
 
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator('.');
+
+        DecimalFormat decimalFormat = new DecimalFormat("###,###", symbols);
+        String formattedNumber = decimalFormat.format(total);
+
+        DecimalFormat percentFormat = new DecimalFormat("#.##");
+        String stringPercent = percentFormat.format(percent) + "%";
+
+
         return CardResponse.builder()
                 .title("VÉ ĐÃ BÁN")
-                .lastTime(Double.toString(percent))
-                .content(Integer.toString(total))
+                .lastTime(stringPercent)
+                .content(formattedNumber)
                 .chart(allDatesInMonth)
                 .build();
     }
@@ -124,10 +145,16 @@ public class  StatisticalService implements IStatisticalService {
             }
             revenue += data;
         }
-            double percent = (bestRevenue /revenue) * 100;
+        double percent = 0.0;
+        if (revenue != 0) percent = (bestRevenue /revenue) * 100;
+
+        DecimalFormat percentFormat = new DecimalFormat("#.##");
+        String stringPercent = percentFormat.format(percent) + "%";
+
+
         return CardResponse.builder()
                 .title("RẠP CAO NHẤT")
-                .lastTime(Double.toString(percent))
+                .lastTime(stringPercent)
                 .content(bestCinema)
                 .chart(allCinemaInMonth)
                 .build();
@@ -157,13 +184,28 @@ public class  StatisticalService implements IStatisticalService {
             }
             revenue += data;
         }
-        double percent = (bestRevenue /revenue) * 100;
+        double percent = 0;
+        if (revenue != 0) percent = (bestRevenue /revenue) * 100;
+
+        DecimalFormat percentFormat = new DecimalFormat("#.##");
+        String stringPercent = percentFormat.format(percent) + "%";
+
         return CardResponse.builder()
                 .title("PHIM CAO NHẤT")
-                .lastTime(Double.toString(percent))
+                .lastTime(stringPercent)
                 .content(bestMovie)
                 .chart(allMovieInMonth)
                 .build();
+    }
+
+    @Override
+    public List<CardResponse> getStatistical(LocalDate date) {
+        List<CardResponse> cardResponseList = new ArrayList<>();
+        cardResponseList.add(getRevenue(date));
+        cardResponseList.add(getTotalTicket(date));
+        cardResponseList.add(getRevenueCinema(date.getMonth().getValue(), date.getYear()));
+        cardResponseList.add(getRevenueMovie(date.getMonth().getValue(), date.getYear()));
+        return cardResponseList;
     }
 
     public Double getTotalSumForBills(List<BillEntity> billEntities) {
