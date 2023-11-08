@@ -32,8 +32,6 @@ public class MovieMapper implements IMapper<MovieEntity, Movie, MovieResponse> {
 
     private final CommentMapper commentMapper;
 
-    private final ShowtimeMapper showtimeMapper;
-
     private final ObjectMapper objectMapper;
 
     private final ObjectsValidator<Movie> validator;
@@ -52,7 +50,10 @@ public class MovieMapper implements IMapper<MovieEntity, Movie, MovieResponse> {
             MovieResponse movieResponse = mapper.map(movieEntity, MovieResponse.class);
             movieResponse.setComment(movieEntity.getComments().stream()
                     .sorted(Comparator.comparing(CommentEntity::getCreateDate).reversed())
-                    .filter(commentEntity -> commentEntity.getStatus() == CommentStatus.APPROVED)
+                    .filter(commentEntity ->
+                            commentEntity.getStatus() == CommentStatus.APPROVED ||
+                            commentEntity.getStatus() == CommentStatus.PENDING
+                    )
                     .map(commentMapper::entityToResponse)
                     .collect(Collectors.toList())
             );
