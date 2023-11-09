@@ -16,8 +16,9 @@ public class CommentResponse {
 
     private Integer id;
 
-    @NotBlank(message = "Content MUST not be blank")
     private String content;
+
+    private Integer rating;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String movie;

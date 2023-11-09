@@ -74,7 +74,6 @@ public class UserService implements IUserService {
         userEntity.setVerify(false);
         userEntity.setPoint(0);
         userEntity.setAvatar(baseAvatar);
-        var userResponse = userMapper.entityToResponse(userEntity);
         RoleEntity roleEntity = roleRepository.findById(3)
                 .orElseThrow(() -> new AllException(
                         "Server error",
@@ -83,6 +82,7 @@ public class UserService implements IUserService {
                 ));
         userEntity.setRole(roleEntity);
         userRepository.save(userEntity);
+        var userResponse = userMapper.entityToResponse(userEntity);
         return AuthResponse.builder()
                 .token(jwtService.generateToken(userEntity))
                 .user(userResponse)

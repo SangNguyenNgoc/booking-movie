@@ -75,8 +75,9 @@ public class ShowtimeService implements IShowtimeService {
 
     @Override
     public ListResponse getShowtimeByCinemaAndDate(Date date, String cinemaId) {
-        CinemaEntity cinemaEntity = cinemaRepository.findById(cinemaId)
-                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Cinema is not exits")));
+        if(!cinemaRepository.existsById(cinemaId)) {
+            throw new DataNotFoundException("Data not found", List.of("Cinema is not exits"));
+        }
         List<MovieEntity> movieEntities = showtimeRepository.findByDateAndCinema(date, cinemaId);
         return ListResponse.builder()
                 .total(movieEntities.size())
@@ -95,10 +96,11 @@ public class ShowtimeService implements IShowtimeService {
 
     @Override
     public List<CinemaResponse> getShowtimeByMovie(Date date, String movieId) {
-        MovieEntity movieEntity = movieRepository.findById(movieId)
-                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("movie is not exist")));
+        if(!movieRepository.existsById(movieId)) {
+            throw new DataNotFoundException("Data not found", List.of("movie is not exist"));
+        }
         List<CinemaEntity> cinemaEntities = showtimeRepository.findByMovieAndDate(date, movieId);
-        List<CinemaResponse> cinemaResponses = cinemaEntities.stream().map(cinemaEntity -> {
+        return cinemaEntities.stream().map(cinemaEntity -> {
                     Set<ShowtimeEntity> showtimeEntities = cinemaEntity.getRooms().stream()
                             .flatMap(roomEntity -> roomEntity.getShowtimes().stream())
                             .collect(Collectors.toSet());
@@ -111,7 +113,6 @@ public class ShowtimeService implements IShowtimeService {
                     return cinemaResponse;
                 })
                 .collect(Collectors.toList());
-        return cinemaResponses;
     }
 
     @Override
@@ -170,8 +171,6 @@ public class ShowtimeService implements IShowtimeService {
     }
 
     public List<MovieResponse> getShowtimeByCinema(String cinemaId) {
-        CinemaEntity cinemaEntity = cinemaRepository.findById(cinemaId)
-                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Cinema is not exits")));
         List<MovieEntity> movieEntities = showtimeRepository.findByStatus();
         return movieEntities.stream()
                 .peek(this::getFieldInShowtimeByCinemaAndDate)

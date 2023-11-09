@@ -30,6 +30,7 @@ public class MovieResponse{
         @JsonProperty("running_time") private Integer runningTime;
         private Double rating;
         @JsonProperty("number_of_ratings") private Integer numberOfRatings;
+        @JsonProperty("sum_of_ratings") private Integer sumOfRatings;
         private String language;
         private String description;
         private String trailer;
