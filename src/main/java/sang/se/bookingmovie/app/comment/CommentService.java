@@ -57,8 +57,8 @@ public class CommentService implements ICommentService {
                 .createDate(LocalDateTime.now())
                 .build();
         commentRepository.save(commentEntity);
-        movieEntity.setSumOfRatings(movieEntity.getSumOfRatings() + 1);
-        movieEntity.setNumberOfRatings(movieEntity.getNumberOfRatings() + comment.getRating());
+        movieEntity.setSumOfRatings(movieEntity.getSumOfRatings() + comment.getRating());
+        movieEntity.setNumberOfRatings(movieEntity.getNumberOfRatings() + 1);
         return "Success";
     }
 

@@ -188,7 +188,6 @@ public class MovieService implements IMovieService {
         movieEntityAfter.setSlug(applicationUtil.toSlug(movieEntityAfter.getName() + " " + movieEntityAfter.getSubName()));
         movieEntityAfter.setPoster(movieEntityBefore.getPoster());
         movieEntityAfter.setHorizontalPoster(movieEntityBefore.getHorizontalPoster());
-        movieEntityAfter.setRating(movieEntityBefore.getRating());
         movieEntityAfter.setNumberOfRatings(movieEntityBefore.getNumberOfRatings());
         movieEntityAfter.setSumOfRatings(movieEntityBefore.getSumOfRatings());
 
