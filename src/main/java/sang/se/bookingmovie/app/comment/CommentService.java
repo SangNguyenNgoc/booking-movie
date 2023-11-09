@@ -38,6 +38,7 @@ public class CommentService implements ICommentService {
     private final ApplicationUtil applicationUtil;
 
     @Override
+    @Transactional
     public String create(String token, Comment comment) {
         String userId = jwtService.extractSubject(jwtService.validateToken(token));
         UserEntity userEntity = userRepository.findById(userId)
@@ -56,14 +57,9 @@ public class CommentService implements ICommentService {
                 .createDate(LocalDateTime.now())
                 .build();
         commentRepository.save(commentEntity);
-        setRatingInMovie(movieEntity, comment.getRating());
-        return "Success";
-    }
-
-    @Transactional
-    public void setRatingInMovie(MovieEntity movieEntity, Integer rating) {
         movieEntity.setSumOfRatings(movieEntity.getSumOfRatings() + 1);
-        movieEntity.setNumberOfRatings(movieEntity.getNumberOfRatings() + rating);
+        movieEntity.setNumberOfRatings(movieEntity.getNumberOfRatings() + comment.getRating());
+        return "Success";
     }
 
     @Override

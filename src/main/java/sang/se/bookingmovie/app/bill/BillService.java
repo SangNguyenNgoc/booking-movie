@@ -72,16 +72,18 @@ public class BillService implements IBillService {
     @Override
     @Transactional
     public String create(String token, Bill bill) throws UnsupportedEncodingException {
-        checkSeat(bill.getShowtimeId(), bill.getSeatId());
+        ShowtimeEntity showtimeEntity = showtimeRepository.findById(bill.getShowtimeId())
+                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Showtime is not exits")));
+        List<SeatRoomEntity> seatRoomEntities = seatRoomRepository.findAllById(bill.getSeatId());
+        checkSeat(showtimeEntity, seatRoomEntities);
+
+        BillStatusEntity billStatusEntity = billStatusRepository.findById(1)
+                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill status is not exits")));
+
         String userId = jwtService.extractSubject(jwtService.validateToken(token));
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
         checkPointToUser(userEntity, bill.getChangedPoint());
-        ShowtimeEntity showtimeEntity = showtimeRepository.findById(bill.getShowtimeId())
-                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Showtime is not exits")));
-        BillStatusEntity billStatusEntity = billStatusRepository.findById(1)
-                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill status is not exits")));
-        List<SeatRoomEntity> seatRoomEntities = seatRoomRepository.findAllById(bill.getSeatId());
 
         String billId = applicationUtil.createUUID();
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
@@ -216,9 +218,12 @@ public class BillService implements IBillService {
         return seatRoomEntity.getType().getPrice();
     }
 
-    private void checkSeat(String showtimeId, List<Integer> seatIds) {
-        seatIds.forEach(seatId -> {
-            if(!ticketRepository.findByShowtime(showtimeId, seatId).isEmpty()) {
+    private void checkSeat(ShowtimeEntity showtimeEntity, List<SeatRoomEntity> seatRoomEntities) {
+        seatRoomEntities.forEach(seatRoomEntity -> {
+            if(!seatRoomEntity.getRoom().getId().equals(showtimeEntity.getRoom().getId())) {
+                throw new AllException("Data not found", 400, List.of("Seat is not exist in room"));
+            }
+            if(!ticketRepository.findByShowtime(showtimeEntity.getId(), seatRoomEntity.getId()).isEmpty()) {
                 throw new AllException("Seat already reserved", 400, List.of("Seat already reserved"));
             }
         });
