@@ -54,7 +54,7 @@ public class  StatisticalService implements IStatisticalService {
         }
 
         return CardResponse.builder()
-                .title("TỔNG DOANH THU")
+                .title("revenue")
                 .lastTime(Double.toString(percent))
                 .content(Double.toString(revenue))
                 .chart(allDatesInMonth)
@@ -93,7 +93,7 @@ public class  StatisticalService implements IStatisticalService {
         }
 
         return CardResponse.builder()
-                .title("VÉ ĐÃ BÁN")
+                .title("ticket")
                 .lastTime(Double.toString(percent))
                 .content(Integer.toString(total))
                 .chart(allDatesInMonth)
@@ -126,7 +126,7 @@ public class  StatisticalService implements IStatisticalService {
         }
             double percent = (bestRevenue /revenue) * 100;
         return CardResponse.builder()
-                .title("RẠP CAO NHẤT")
+                .title("cinema")
                 .lastTime(Double.toString(percent))
                 .content(bestCinema)
                 .chart(allCinemaInMonth)
@@ -159,7 +159,7 @@ public class  StatisticalService implements IStatisticalService {
         }
         double percent = (bestRevenue /revenue) * 100;
         return CardResponse.builder()
-                .title("PHIM CAO NHẤT")
+                .title("movie")
                 .lastTime(Double.toString(percent))
                 .content(bestMovie)
                 .chart(allMovieInMonth)
