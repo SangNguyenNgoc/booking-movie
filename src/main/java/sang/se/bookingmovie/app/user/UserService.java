@@ -20,7 +20,6 @@ import sang.se.bookingmovie.app.role.RoleRepository;
 import sang.se.bookingmovie.auth.AuthRequest;
 import sang.se.bookingmovie.auth.AuthResponse;
 import sang.se.bookingmovie.event.VerifyAccountEvent;
-import sang.se.bookingmovie.event.VerifyMailEvent;
 import sang.se.bookingmovie.event.VerifyPassEvent;
 import sang.se.bookingmovie.exception.AllException;
 import sang.se.bookingmovie.exception.DataNotFoundException;
@@ -198,41 +197,16 @@ public class UserService implements IUserService {
     public String sendToUpdateEmail(String token, String newEmail) {
         checkEmail(newEmail);
         var userEntity = getUserById(jwtService.extractSubject(jwtService.validateToken(token)));
-        userEntity.setVerifyMail(newEmail + "/" + applicationUtil.generateVerificationCode(6));
-        applicationEventPublisher.publishEvent(
-                VerifyMailEvent.builder()
-                        .oldEmail(userEntity.getEmail())
-                        .newMail(newEmail)
-                        .verifyCode(userEntity.getVerifyMail().split("/")[1])
-                        .build());
+        RoleEntity roleEntity = roleRepository.findById(3)
+                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Role is not exist")));
+        userEntity.setEmail(newEmail);
+        userEntity.setRole(roleEntity);
+        userEntity.setVerify(false);
+        sendToVerifyAccount(token);
         return "Success";
 
     }
 
-    @Override
-    @Transactional
-    public UserResponse updateEmail(String token, String verifyMail) {
-        var userEntity = getUserById(jwtService.extractSubject(jwtService.validateToken(token)));
-        if(userEntity.getVerifyMail() == null) {
-            throw new AllException("Verification failure", 404, List.of("Past the confirmation period"));
-        }
-        if(verifyMail.equals(userEntity.getVerifyMail().split("/")[1])) {
-            userEntity.setEmail(userEntity.getVerifyMail().split("/")[0]);
-            userEntity.setVerifyMail(null);
-            return userMapper.entityToResponse(userEntity);
-        } else {
-            throw new AllException("Verification failure", 401, List.of("Invalid verification code"));
-        }
-
-    }
-
-    @Transactional
-    private void deleteVerifyMailByEmail(String email) {
-        var userEntity = userRepository.findByEmail(email).orElse(null);
-        if(userEntity != null && userEntity.getVerifyMail() != null) {
-            userEntity.setVerifyMail(null);
-        }
-    }
 
     @Override
     public Boolean checkPassword(String token, String password) {
@@ -348,21 +322,6 @@ public class UserService implements IUserService {
             throw new RuntimeException(e);
         }
         deleteVerifyAccountByEmail(event.getEmail());
-    }
-
-    @EventListener
-    @Async
-    @Transactional
-    public void sendToVerifyMail(VerifyMailEvent event)  {
-        emailService.sendEmail(event.getNewMail(), "Mã xác nhận từ Cinema",
-                "Vui không cung cấp mã xác nhận cho bất kì ai, nhập mã sau để thay đổi email mới, " +
-                        "mã có hiệu lực 5 phút: " + event.getVerifyCode());
-        try {
-            Thread.sleep(verifyExpiration);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        deleteVerifyMailByEmail(event.getOldEmail());
     }
 
     @EventListener
