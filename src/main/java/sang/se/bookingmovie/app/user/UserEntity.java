@@ -49,9 +49,6 @@ public class UserEntity implements UserDetails {
     @Column(name = "verify_account")
     private String verifyAccount;
 
-    @Column(name = "verify_mail")
-    private String verifyMail;
-
     @Column(name = "verify_pass")
     private String verifyPass;
 

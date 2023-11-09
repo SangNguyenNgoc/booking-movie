@@ -24,8 +24,6 @@ public interface IUserService {
 
     String sendToUpdateEmail(String token,String newEmail);
 
-    UserResponse updateEmail(String token, String verifyMail);
-
     Boolean checkPassword(String token, String password);
 
     String changePassword(String token, String oldPassword, String newPassword);
