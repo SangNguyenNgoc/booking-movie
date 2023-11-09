@@ -94,6 +94,9 @@ public class MovieService implements IMovieService {
         movieEntity.setId(createId());
         movieEntity.setSlug(applicationUtil.toSlug(movieEntity.getName() + " " + movieEntity.getSubName()));
         movieEntity.setPoster(discordService.sendImage(poster, true));
+        movieEntity.setRating(0.0);
+        movieEntity.setNumberOfRatings(0);
+        movieEntity.setSumOfRatings(0);
         movieEntity.setHorizontalPoster(discordService.sendImage(horPoster, true));
         MovieStatusEntity movieStatusEntity = movieStatusRepository.findBySlug("coming-soon")
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("status is not exist")));
