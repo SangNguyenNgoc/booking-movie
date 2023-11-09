@@ -190,6 +190,7 @@ public class MovieService implements IMovieService {
         movieEntityAfter.setHorizontalPoster(movieEntityBefore.getHorizontalPoster());
         movieEntityAfter.setRating(movieEntityBefore.getRating());
         movieEntityAfter.setNumberOfRatings(movieEntityBefore.getNumberOfRatings());
+        movieEntityAfter.setSumOfRatings(movieEntityAfter.getSumOfRatings());
 
         Set<MovieGenreEntity> movieGenreEntities = createSetGenre(movie.getGenre());
         movieEntityAfter.setGenre(movieGenreEntities);
