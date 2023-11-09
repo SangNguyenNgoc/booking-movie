@@ -46,10 +46,14 @@ public class MovieEntity {
 
     private String language;
 
-    private Double rating = 0.0;
+    @Transient
+    private Double rating;
 
     @Column(name = "number_of_ratings")
-    private Integer numberOfRatings = 0;
+    private Integer numberOfRatings;
+
+    @Column(name = "sum_of_ratings")
+    private Integer sumOfRatings;
 
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -111,4 +115,8 @@ public class MovieEntity {
             cascade = CascadeType.ALL
     )
     private Set<CommentEntity> comments;
+
+    public Double getRating() {
+        return (double) sumOfRatings/numberOfRatings;
+    }
 }

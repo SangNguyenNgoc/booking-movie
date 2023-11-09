@@ -39,18 +39,31 @@ public class CommentService implements ICommentService {
 
     @Override
     public String create(String token, Comment comment) {
-        String userId = jwtService.validateToken(token);
-        UserEntity userEntity = userRepository.findById(jwtService.extractSubject(userId))
+        String userId = jwtService.extractSubject(jwtService.validateToken(token));
+        UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
         MovieEntity movieEntity = movieRepository.findById(comment.getMovieId())
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Movie is not exits")));
-        CommentEntity commentEntity = commentMapper.requestToEntity(comment);
-        commentEntity.setStatus(CommentStatus.PENDING);
-        commentEntity.setUser(userEntity);
-        commentEntity.setMovie(movieEntity);
-        commentEntity.setCreateDate(LocalDateTime.now());
+        if(commentRepository.hasUserCommented(userId, comment.getMovieId())) {
+            throw new AllException("Bad request", 400, List.of("User has commented"));
+        }
+        CommentEntity commentEntity = CommentEntity.builder()
+                .content(comment.getContent())
+                .rating(comment.getRating())
+                .status(CommentStatus.PENDING)
+                .user(userEntity)
+                .movie(movieEntity)
+                .createDate(LocalDateTime.now())
+                .build();
         commentRepository.save(commentEntity);
+        setRatingInMovie(movieEntity, comment.getRating());
         return "Success";
+    }
+
+    @Transactional
+    public void setRatingInMovie(MovieEntity movieEntity, Integer rating) {
+        movieEntity.setSumOfRatings(movieEntity.getSumOfRatings() + 1);
+        movieEntity.setNumberOfRatings(movieEntity.getNumberOfRatings() + rating);
     }
 
     @Override
