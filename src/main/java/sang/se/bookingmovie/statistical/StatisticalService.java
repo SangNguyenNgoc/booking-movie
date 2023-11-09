@@ -172,4 +172,13 @@ public class  StatisticalService implements IStatisticalService {
                 .sum();
     }
 
+    @Override
+    public List<CardResponse> getStatistical(LocalDate date) {
+        List<CardResponse> responses = new ArrayList<>();
+        responses.add(getRevenue(date));
+        responses.add(getTotalTicket(date));
+        responses.add(getRevenueCinema(date.getMonth().getValue(), date.getYear()));
+        responses.add(getRevenueMovie(date.getMonth().getValue(), date.getYear()));
+        return responses ;
+    }
 }
