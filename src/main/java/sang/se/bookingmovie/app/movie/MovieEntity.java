@@ -117,6 +117,11 @@ public class MovieEntity {
     private Set<CommentEntity> comments;
 
     public Double getRating() {
-        return (double) sumOfRatings/numberOfRatings;
+        if(numberOfRatings > 0) {
+            return (double) sumOfRatings/numberOfRatings;
+        } else {
+            return 0.0;
+        }
+
     }
 }
