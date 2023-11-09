@@ -94,6 +94,9 @@ public class MovieService implements IMovieService {
         movieEntity.setId(createId());
         movieEntity.setSlug(applicationUtil.toSlug(movieEntity.getName() + " " + movieEntity.getSubName()));
         movieEntity.setPoster(discordService.sendImage(poster, true));
+        movieEntity.setRating(0.0);
+        movieEntity.setNumberOfRatings(0);
+        movieEntity.setSumOfRatings(0);
         movieEntity.setHorizontalPoster(discordService.sendImage(horPoster, true));
         MovieStatusEntity movieStatusEntity = movieStatusRepository.findBySlug("coming-soon")
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("status is not exist")));
@@ -182,11 +185,12 @@ public class MovieService implements IMovieService {
         MovieEntity movieEntityBefore = findMovieById(movieId);
 
         movieEntityAfter.setId(movieId);
-        movieEntityAfter.setSlug(applicationUtil.toSlug(movieEntityAfter.getName()));
+        movieEntityAfter.setSlug(applicationUtil.toSlug(movieEntityAfter.getName()) + " " + movieEntityAfter.getSubName());
         movieEntityAfter.setPoster(movieEntityBefore.getPoster());
         movieEntityAfter.setHorizontalPoster(movieEntityBefore.getHorizontalPoster());
         movieEntityAfter.setRating(movieEntityBefore.getRating());
         movieEntityAfter.setNumberOfRatings(movieEntityBefore.getNumberOfRatings());
+        movieEntityAfter.setSumOfRatings(movieEntityBefore.getSumOfRatings());
 
         Set<MovieGenreEntity> movieGenreEntities = createSetGenre(movie.getGenre());
         movieEntityAfter.setGenre(movieGenreEntities);

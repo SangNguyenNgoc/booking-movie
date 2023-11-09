@@ -24,6 +24,8 @@ public class CommentEntity {
 
     private String content;
 
+    private Integer rating;
+
     @Enumerated(EnumType.STRING)
     private CommentStatus status;
 

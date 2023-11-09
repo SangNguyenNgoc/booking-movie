@@ -67,8 +67,8 @@ public class Movie {
     @NotNull(message = "Formats MUST not be null")
     private List<Integer> formats;
 
-    @Min(value = 1, message = "Age for rated MUST be at least 1")
-    @Max(value = 4, message = "Age for rated MUST be less than or equal to 4")
+    @Min(value = 1, message = "Status MUST be at least 1")
+    @Max(value = 4, message = "Status MUST be less than or equal to 4")
     private Integer statusId;
 
 }
