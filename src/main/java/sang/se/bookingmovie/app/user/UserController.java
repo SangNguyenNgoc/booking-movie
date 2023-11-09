@@ -188,42 +188,6 @@ public class UserController {
 
 
     @Operation(
-            summary = "Thay đổi email",
-            description = "API đổi email người dùng. " +
-                    "Cần mã xác nhận vừa mới gửi để thay đổi email. " +
-                    "API chỉ dành cho tài khoản đã xác minh.",
-            responses = {
-                    @ApiResponse(
-                            description = "Success",
-                            responseCode = "200",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = UserResponse.class)
-                            )
-                    ),
-                    @ApiResponse(
-                            description = "Unauthorized",
-                            responseCode = "401",
-                            content = @Content(mediaType = "application/json")
-                    ),
-                    @ApiResponse(
-                            description = "Forbidden",
-                            responseCode = "403",
-                            content = @Content(mediaType = "application/json")
-                    )
-            }
-    )
-    @PutMapping(value = "/customer/updateMail")
-    public ResponseEntity<?> updateMail(
-            @RequestHeader(value = "Authorization") String token,
-            @RequestParam(value = "verify") String verifyMail
-    ) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(userService.updateEmail(token, verifyMail));
-    }
-
-
-    @Operation(
             summary = "Lấy thông tin của người dùng",
             description = "API lấy thông tin của người dùng đang đăng nhập. ",
             responses = {
