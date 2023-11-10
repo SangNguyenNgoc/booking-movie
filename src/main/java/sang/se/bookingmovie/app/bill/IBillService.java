@@ -17,9 +17,7 @@ public interface IBillService {
 
     String refund(String billId, String reason);
 
-    ListResponse getBillByUser(String token, Integer page, Integer size, Date date);
-
-    ListResponse getBillByAdmin(String userId, Integer page, Integer size, Date date);
+    ListResponse getBillInUser(String token, String userId, Integer page, Integer size, Date date);
 
     BillResponse getDetail(String token, String billId);
 

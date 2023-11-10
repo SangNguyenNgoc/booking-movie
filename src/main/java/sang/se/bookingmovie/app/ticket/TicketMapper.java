@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +29,9 @@ public class TicketMapper implements IMapper<TicketEntity, TicketResponse, Ticke
     public TicketResponse entityToResponse(TicketEntity ticketEntity) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         String time = sdf.format(ticketEntity.getShowtime().getStartTime());
-        sdf = new SimpleDateFormat("EE dd/MM");
-        String date = sdf.format(ticketEntity.getShowtime().getStartDate());
+        Locale vietnameseLocale = Locale.forLanguageTag("vi-VN");
+        sdf = new SimpleDateFormat("E dd/MM", vietnameseLocale);
+        String date = sdf.format(ticketEntity.getShowtime().getStartDate()).replace("h ", "");
         SeatRoomEntity seat = ticketEntity.getSeatRoom();
         return TicketResponse.builder()
                 .id(ticketEntity.getId())
@@ -47,8 +49,9 @@ public class TicketMapper implements IMapper<TicketEntity, TicketResponse, Ticke
     public TicketResponse entityToResponseList(TicketEntity ticketEntity) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         String time = sdf.format(ticketEntity.getShowtime().getStartTime());
-        sdf = new SimpleDateFormat("EE dd/MM");
-        String date = sdf.format(ticketEntity.getShowtime().getStartDate());
+        Locale vietnameseLocale = Locale.forLanguageTag("vi-VN");
+        sdf = new SimpleDateFormat("E dd/MM", vietnameseLocale);
+        String date = sdf.format(ticketEntity.getShowtime().getStartDate()).replace("h ", "");
         SeatRoomEntity seat = ticketEntity.getSeatRoom();
         return TicketResponse.builder()
                 .id(ticketEntity.getId())

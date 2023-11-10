@@ -3,17 +3,23 @@ package sang.se.bookingmovie.app.bill;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import sang.se.bookingmovie.app.ticket.TicketMapper;
+import sang.se.bookingmovie.app.ticket.TicketResponse;
 import sang.se.bookingmovie.utils.IMapper;
 import sang.se.bookingmovie.validate.ObjectsValidator;
 
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class BillMapper implements IMapper<BillEntity, Bill, BillResponse> {
 
     private final ModelMapper mapper;
+
+    private final TicketMapper ticketMapper;
 
     private final ObjectsValidator<Bill> validator;
 
@@ -35,6 +41,10 @@ public class BillMapper implements IMapper<BillEntity, Bill, BillResponse> {
         if(billResponse.getCancelDate() != null) {
             billResponse.setCancelDate(billEntity.getCancelDate().format(dateTimeFormatter));
         }
+        List<TicketResponse> ticketResponses = billEntity.getTickets().stream()
+                .map(ticketMapper::entityToResponse)
+                .toList();
+        billResponse.setTickets(ticketResponses);
         return billResponse;
     }
 }

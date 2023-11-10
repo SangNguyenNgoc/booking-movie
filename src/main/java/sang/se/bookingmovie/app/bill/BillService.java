@@ -144,8 +144,10 @@ public class BillService implements IBillService {
     }
 
     @Override
-    public ListResponse getBillByUser(String token, Integer page, Integer size, java.sql.Date date) {
-        String userId = jwtService.extractSubject(jwtService.validateToken(token));
+    public ListResponse getBillInUser(String token, String userId, Integer page, Integer size, java.sql.Date date) {
+        if(userId == null) {
+            userId = jwtService.extractSubject(jwtService.validateToken(token));
+        }
         Pageable pageable = PageRequest.of(page-1, size, Sort.by("createTime").descending());
         userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
@@ -157,29 +159,6 @@ public class BillService implements IBillService {
                     .toList();
         } else {
             billResponses = billRepository.findByUser(userId, date, pageable).stream()
-                    .map(mapper::entityToResponse)
-                    .peek(this::getFieldToList)
-                    .toList();
-        }
-        return ListResponse.builder()
-                .total(billResponses.size())
-                .data(billResponses)
-                .build();
-    }
-
-    @Override
-    public ListResponse getBillByAdmin(String userId, Integer page, Integer size, java.sql.Date date) {
-        UserEntity userEntity = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
-        Pageable pageable = PageRequest.of(page-1, size, Sort.by("createTime").descending());
-        List<BillResponse> billResponses;
-        if(date == null) {
-            billResponses = billRepository.findByUser(userEntity.getId(), pageable).stream()
-                    .map(mapper::entityToResponse)
-                    .peek(this::getFieldToList)
-                    .toList();
-        } else {
-            billResponses = billRepository.findByUser(userEntity.getId(), date, pageable).stream()
                     .map(mapper::entityToResponse)
                     .peek(this::getFieldToList)
                     .toList();
