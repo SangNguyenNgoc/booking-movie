@@ -27,6 +27,11 @@ public interface MovieRepository extends JpaRepository<MovieEntity, String> {
     List<MovieEntity> findByStatus(@Param("slug") String slug, Pageable pageable);
 
     @Query("SELECT mv FROM MovieEntity mv " +
+            "JOIN FETCH mv.status s " +
+            "WHERE s.slug = 'coming-soon' OR s.slug = 'showing-now'")
+    List<MovieEntity> findByComingAndShowing();
+
+    @Query("SELECT mv FROM MovieEntity mv " +
             "JOIN mv.status s " +
             "WHERE mv.id = :movieId AND s.id != 4")
     Optional<MovieEntity> findByAddShowtime(@Param("movieId") String movieId);
