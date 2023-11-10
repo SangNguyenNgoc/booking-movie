@@ -272,7 +272,7 @@ public class UserService implements IUserService {
         if(userUpdate.getPhoneNumber() != null) {
             userEntity.setPhoneNumber(userUpdate.getPhoneNumber());
         }
-        if(userUpdate.getEmail() != null) {
+        if(userUpdate.getEmail() != null && !userUpdate.getEmail().equals(userEntity.getEmail())) {
             sendToUpdateEmail(token, userUpdate.getEmail());
         }
         return userMapper.entityToResponse(userEntity);
