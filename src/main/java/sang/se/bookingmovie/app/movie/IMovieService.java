@@ -14,6 +14,8 @@ public interface IMovieService {
 
     ListResponse getAll(Integer page, Integer size);
 
+    ListResponse getAllComingAndShowing();
+
     MovieResponse getMovieById(String movieId);
 
     MovieResponse getMovieBySlug(String slug);

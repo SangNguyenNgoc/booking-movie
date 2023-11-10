@@ -124,6 +124,18 @@ public class MovieService implements IMovieService {
     }
 
     @Override
+    public ListResponse getAllComingAndShowing() {
+        List<MovieResponse> movieResponses = movieRepository.findByComingAndShowing().stream()
+                .peek(this::getFieldToList)
+                .map(movieMapper::entityToResponse)
+                .toList();
+        return ListResponse.builder()
+                .total(movieResponses.size())
+                .data(movieResponses)
+                .build();
+    }
+
+    @Override
     public MovieResponse getMovieById(String movieId) {
         MovieEntity movieEntity = movieRepository.findById(movieId)
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("movie is not exist")));

@@ -265,6 +265,7 @@ public class ShowtimeService implements IShowtimeService {
         movieEntity.setStatus(null);
         movieEntity.setFormats(null);
         movieEntity.setComments(null);
+        movieEntity.setImages(null);
         movieEntity.getShowtimes().forEach(this::getFieldToList);
     }
 
