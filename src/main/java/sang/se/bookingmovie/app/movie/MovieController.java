@@ -80,6 +80,26 @@ public class MovieController {
     }
 
     @Operation(
+            summary = "Lấy danh sách phim sắp chiếu và đang chiếu từ cơ sở dữ liệu",
+            description = "API lấy danh sách phim sắp chiếu và đang chiếu từ cỡ sở dữ liệu.",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ListResponse.class)
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/landing/movies")
+    public ResponseEntity<?> getAllComingAndShowing() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(movieService.getAllComingAndShowing());
+    }
+
+    @Operation(
             summary = "Lấy chi tiết 1 phim từ cơ sở dữ liệu bằng id",
             description = "API lấy chi tiết 1 phim từ cỡ sở dữ liệu bằng id, API này chỉ dành cho trang admin",
             responses = {
