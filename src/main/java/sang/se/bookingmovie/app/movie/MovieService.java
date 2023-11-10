@@ -304,7 +304,6 @@ public class MovieService implements IMovieService {
         movieEntity.setComments(null);
         movieEntity.setImages(null);
         movieEntity.setFormats(null);
-        movieEntity.setGenre(null);
     }
 
     private void getFieldToDetail(MovieEntity movieEntity) {
