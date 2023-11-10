@@ -159,15 +159,16 @@ public class ShowtimeService implements IShowtimeService {
     @Override
     public List<CinemaResponse> getAllCinemaDetailShowtime() {
         List<CinemaEntity> cinemaEntities = cinemaRepository.findAll();
-        List<CinemaResponse> cinemaResponses = cinemaEntities.stream().map(cinemaEntity -> {
-            List<MovieResponse> movieResponseList = getShowtimeByCinema(cinemaEntity.getId()).stream()
-                    .filter(movieResponse -> movieResponse.getShowtimes().size() != 0)
-                    .toList();
-            CinemaResponse cinemaResponse = cinemaMapper.entityToResponse(cinemaEntity);
-            cinemaResponse.setMovies(movieResponseList);
-            return cinemaResponse;
-        }).collect(Collectors.toList());
-        return cinemaResponses;
+        return cinemaEntities.stream()
+                .map(cinemaEntity -> {
+                    List<MovieResponse> movieResponseList = getShowtimeByCinema(cinemaEntity.getId()).stream()
+                            .filter(movieResponse -> movieResponse.getShowtimes().size() != 0)
+                            .toList();
+                    CinemaResponse cinemaResponse = cinemaMapper.entityToResponse(cinemaEntity);
+                    cinemaResponse.setMovies(movieResponseList);
+                    return cinemaResponse;
+                })
+                .collect(Collectors.toList());
     }
 
     public List<MovieResponse> getShowtimeByCinema(String cinemaId) {
