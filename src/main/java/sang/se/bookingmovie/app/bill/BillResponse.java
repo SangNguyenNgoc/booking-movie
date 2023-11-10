@@ -9,11 +9,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import sang.se.bookingmovie.app.bill_status.BillStatus;
+import sang.se.bookingmovie.app.ticket.TicketResponse;
 import sang.se.bookingmovie.app.user.User;
 import sang.se.bookingmovie.app.user.UserResponse;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -29,4 +31,5 @@ public class BillResponse {
     @JsonProperty("cancel_date" )@JsonInclude(JsonInclude.Include.NON_NULL) private String cancelDate;
     @JsonProperty("cancel_reason") @JsonInclude(JsonInclude.Include.NON_NULL) private String cancelReason;
     private UserResponse user;
+    private List<TicketResponse> tickets;
 }

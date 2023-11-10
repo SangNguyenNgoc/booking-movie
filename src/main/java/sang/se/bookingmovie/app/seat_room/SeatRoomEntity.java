@@ -55,7 +55,7 @@ public class SeatRoomEntity {
 
     @OneToMany(
             mappedBy = "seatRoom",
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL
     )
     private Set<TicketEntity> tickets;
