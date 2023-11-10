@@ -194,7 +194,7 @@ public class BillController {
             @RequestParam(value = "date", required = false) Date date
     ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(billService.getBillByUser(token, page, size, date));
+                .body(billService.getBillInUser(token, null, page, size, date));
     }
 
 
@@ -236,7 +236,7 @@ public class BillController {
             @RequestParam(value = "date", required = false) Date date
     ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(billService.getBillByAdmin(userId, page, size, date));
+                .body(billService.getBillInUser(null, userId, page, size, date));
     }
 
     @Operation(

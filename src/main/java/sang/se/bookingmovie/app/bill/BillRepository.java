@@ -20,6 +20,13 @@ public interface BillRepository extends JpaRepository<BillEntity, String> {
 
     @Query("SELECT b FROM BillEntity b " +
             "JOIN b.user u " +
+            "JOIN FETCH b.tickets t " +
+            "JOIN FETCH t.seatRoom sr " +
+            "JOIN FETCH t.showtime s " +
+            "JOIN FETCH sr.room r " +
+            "JOIN FETCH sr.type " +
+            "JOIN FETCH s.movie " +
+            "JOIN FETCH r.cinema c " +
             "WHERE u.id = :userId")
     List<BillEntity> findByUser(String userId, Pageable pageable);
 
