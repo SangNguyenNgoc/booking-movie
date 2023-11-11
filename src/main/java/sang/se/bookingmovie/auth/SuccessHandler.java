@@ -12,9 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 import sang.se.bookingmovie.app.role.RoleEntity;
 import sang.se.bookingmovie.app.role.RoleRepository;
-import sang.se.bookingmovie.app.user.UserEntity;
-import sang.se.bookingmovie.app.user.UserRepository;
-import sang.se.bookingmovie.app.user.UserService;
+import sang.se.bookingmovie.app.user.*;
 import sang.se.bookingmovie.utils.ApplicationUtil;
 import sang.se.bookingmovie.utils.JwtService;
 
@@ -27,6 +25,8 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final UserRepository userRepository;
 
     private final RoleRepository roleRepository;
+
+    private final UserMapper userMapper;
 
     private final JwtService jwtService;
 
@@ -49,8 +49,7 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         }
     }
 
-    public String createToken(DefaultOAuth2User userDetails) {
-        System.out.println(userDetails);
+    public AuthResponse createToken(DefaultOAuth2User userDetails) {
         String email = userDetails.getAttribute("email");
         var user = userRepository.findByEmail(email)
                 .orElse(null);
@@ -63,23 +62,31 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                     .password(passwordEncoder.encode("booking-movie"))
                     .createDate(applicationUtil.getDateNow())
                     .id(applicationUtil.createUUID(email + applicationUtil.getDateNow()))
+                    .gender(Gender.UNKNOWN)
                     .role(roleEntity)
                     .point(0)
                     .verify(null)
                     .build();
             userRepository.save(userRegister);
-            return jwtService.generateToken(userRegister);
+            return AuthResponse.builder()
+                    .token(jwtService.generateToken(userRegister))
+                    .user(userMapper.entityToResponse(userRegister))
+                    .build();
         } else {
-            return jwtService.generateToken(user);
+            return AuthResponse.builder()
+                    .token(jwtService.generateToken(user))
+                    .user(userMapper.entityToResponse(user))
+                    .build();
         }
     }
 
-    protected String determineTargetUrl(String token) {
+    protected String determineTargetUrl(AuthResponse authResponse) {
 
-        String targetUrl = "http://localhost:3000";
+        String targetUrl = "https://www.pwer-dev.id.vn/";
 
         return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("token", token)
+                .queryParam("token", authResponse.getToken())
+                .queryParam("name", authResponse.getUser().getFullName())
                 .build().toUriString();
     }
 }

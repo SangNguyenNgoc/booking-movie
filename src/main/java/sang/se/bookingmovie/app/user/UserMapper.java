@@ -31,7 +31,7 @@ public class UserMapper implements IMapper<UserEntity, User, UserResponse> {
     public UserEntity requestToEntity(User user) {
         validator.validate(user);
         UserEntity userEntity = mapper.map(user, UserEntity.class);
-        userEntity.setGender(getGenderInRequest(user.getGender()));
+        userEntity.setGender(Gender.UNKNOWN);
         return userEntity;
     }
 

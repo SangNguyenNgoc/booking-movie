@@ -23,15 +23,5 @@ public class User {
     @NotBlank(message = "Password MUST not be blank")
     private String password;
 
-    @NotNull(message = "Date of birth MUST not be null")
-    @Past(message = "Date of birth MUST be past")
-    private Date dateOfBirth;
-
-    @NotNull(message = "Number phone MUST not be null")
-    @Pattern(regexp = "^[0-9]+$", message = "Invalid number phone")
-    private String phoneNumber;
-
-    @NotBlank(message = "Gender MUST not be blank")
-    private String gender;
 
 }

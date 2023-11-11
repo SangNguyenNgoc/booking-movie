@@ -16,6 +16,6 @@ public class AuthRequest {
     @Email(message = "Invalid email")
     private String email;
 
-//    @Size(min = 6, message = "Password must have at least 6 characters")
+    @Size(min = 6, message = "Password must have at least 6 characters")
     private String password;
 }
