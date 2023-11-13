@@ -1,5 +1,6 @@
 package sang.se.bookingmovie.app.seat_room;
 
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,12 +29,12 @@ public class SeatRoomService implements ISeatRoomService {
     public String create(List<SeatRoomRequest> seatRoomRequest, String roomId) {
         RoomEntity roomEntity = roomRepository.findById(roomId)
                 .orElseThrow(()->new AllException("Not found", 404, List.of("Not found room_id")));
-//        System.out.println(roomEntity.getAvailableSeats());
         List<SeatRoomEntity> seatRoomEntities = new ArrayList<>();
         seatRoomRequest.stream().map(seatRoomMapper::requestToEntity).forEach(seatRoomEntities::add);
         seatRoomEntities.forEach(e->{
             e.setRoom(roomEntity);
             e.setStatus(true);
+            e.setId(null);
         });
         seatRoomEntities.stream().forEach(seatRoomRepository::save);
         return "success";
@@ -48,6 +49,19 @@ public class SeatRoomService implements ISeatRoomService {
                         .map(seatRoomMapper::entityToResponse)
                         .collect(Collectors.toList()))
                 .build();
+    }
+
+    @Override
+    public Void createWithRoomEntity(List<SeatRoomRequest> seatRoomRequest, RoomEntity room) {
+        List<SeatRoomEntity> seatRoomEntities = new ArrayList<>();
+        seatRoomRequest.stream().map(seatRoomMapper::requestToEntity).forEach(seatRoomEntities::add);
+        seatRoomEntities.forEach(e->{
+            e.setRoom(room);
+            e.setStatus(true);
+            e.setId(null);
+        });
+        seatRoomEntities.stream().forEach(seatRoomRepository::save);
+        return null;
     }
 
     private String createSeatRoomID(){

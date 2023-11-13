@@ -51,7 +51,7 @@ public class RoomEntity {
     @OneToMany(
             mappedBy = "room",
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
+            cascade = CascadeType.PERSIST
     )
     private Set<SeatRoomEntity> seats;
 
