@@ -12,6 +12,8 @@ public class CinemaMapper implements IMapper<CinemaEntity, Cinema, CinemaRespons
     private final ModelMapper mapper;
 
     private final ObjectsValidator<Cinema> validator;
+    private final ObjectsValidator<CinemaRequest> validatorCinemaRequest;
+
     @Override
     public CinemaEntity requestToEntity(Cinema cinema) {
         validator.validate(cinema);
@@ -25,5 +27,10 @@ public class CinemaMapper implements IMapper<CinemaEntity, Cinema, CinemaRespons
 
     public Cinema entityToCinema(CinemaEntity cinemaEntity) {
         return mapper.map(cinemaEntity, Cinema.class);
+    }
+
+    public CinemaEntity cinemaRequestToEntity(CinemaRequest cinema) {
+        validatorCinemaRequest.validate(cinema);
+        return mapper.map(cinema, CinemaEntity.class);
     }
 }

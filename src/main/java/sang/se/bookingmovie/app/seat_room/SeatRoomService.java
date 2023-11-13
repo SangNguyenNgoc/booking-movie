@@ -2,6 +2,7 @@ package sang.se.bookingmovie.app.seat_room;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sang.se.bookingmovie.app.room.RoomEntity;
 import sang.se.bookingmovie.app.room.RoomRepository;
 import sang.se.bookingmovie.app.seat_type.SeatTypeRepository;
@@ -30,8 +31,11 @@ public class SeatRoomService implements ISeatRoomService {
 //        System.out.println(roomEntity.getAvailableSeats());
         List<SeatRoomEntity> seatRoomEntities = new ArrayList<>();
         seatRoomRequest.stream().map(seatRoomMapper::requestToEntity).forEach(seatRoomEntities::add);
-        seatRoomEntities.forEach(e->e.setRoom(roomEntity));
-        seatRoomRepository.saveAll(seatRoomEntities);
+        seatRoomEntities.forEach(e->{
+            e.setRoom(roomEntity);
+            e.setStatus(true);
+        });
+        seatRoomEntities.stream().forEach(seatRoomRepository::save);
         return "success";
     }
 

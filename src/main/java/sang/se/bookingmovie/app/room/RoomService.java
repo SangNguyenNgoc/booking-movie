@@ -14,13 +14,18 @@ import sang.se.bookingmovie.app.movie.MovieEntity;
 import sang.se.bookingmovie.app.movie_status.MovieStatusEntity;
 import sang.se.bookingmovie.app.room_status.RoomStatusEntity;
 import sang.se.bookingmovie.app.room_status.RoomStatusRepository;
+import sang.se.bookingmovie.app.seat_room.SeatRoomEntity;
+import sang.se.bookingmovie.app.seat_room.SeatRoomMapper;
+import sang.se.bookingmovie.app.seat_room.SeatRoomService;
 import sang.se.bookingmovie.exception.AllException;
 import sang.se.bookingmovie.exception.DataNotFoundException;
 import sang.se.bookingmovie.response.ListResponse;
 import sang.se.bookingmovie.utils.ApplicationUtil;
 import sang.se.bookingmovie.validate.ObjectsValidator;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,6 +44,10 @@ public class RoomService implements IRoomService {
 
     private final RoomStatusRepository roomStatusRepository;
 
+    private final SeatRoomService seatRoomService;
+
+    private final SeatRoomMapper seatRoomMapper;
+
     @Override
     public String create(RoomReq roomRequest, String cinemaId) {
         validator.validate(roomRequest);
@@ -48,6 +57,11 @@ public class RoomService implements IRoomService {
         newRoom.setCinema(cinema);
         newRoom.setId(createRoomID());
         newRoom.setSlug(applicationUtil.toSlug(newRoom.getName()));
+        newRoom.setStatus(roomStatusRepository.findById(1).orElseThrow());
+        Set<SeatRoomEntity> seatRoomEntities = roomRequest.getSeats().stream()
+                .map(seatRoomMapper::requestToEntity)
+                .collect(Collectors.toSet());
+        newRoom.setSeats(seatRoomEntities);
         roomRepository.save(newRoom);
         return "success";
     }
