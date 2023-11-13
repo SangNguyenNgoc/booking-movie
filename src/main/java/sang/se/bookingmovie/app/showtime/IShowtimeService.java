@@ -17,7 +17,9 @@ public interface IShowtimeService {
 
     ListResponse getShowtimeByCinemaAndDate(Date date, String cinemaId);
 
-    List<CinemaResponse> getShowtimeByMovie(Date date, String movieId);
+    ListResponse getShowtimeByMovie(Date date, String movieId);
+
+    ListResponse getShowtimeByCinemaAdmin();
 
     void updateStatusOfShowtime (LocalDate currentDate, LocalTime currentTime);
 
