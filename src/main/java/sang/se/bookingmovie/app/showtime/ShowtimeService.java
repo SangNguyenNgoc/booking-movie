@@ -95,15 +95,16 @@ public class ShowtimeService implements IShowtimeService {
     }
 
     @Override
-    public List<CinemaResponse> getShowtimeByMovie(Date date, String movieId) {
+    public ListResponse getShowtimeByMovie(Date date, String movieId) {
         if(!movieRepository.existsById(movieId)) {
             throw new DataNotFoundException("Data not found", List.of("movie is not exist"));
         }
         List<CinemaEntity> cinemaEntities = showtimeRepository.findByMovieAndDate(date, movieId);
-        return cinemaEntities.stream().map(cinemaEntity -> {
+        List<CinemaResponse> cinemaResponses =  cinemaEntities.stream().map(cinemaEntity -> {
                     Set<ShowtimeEntity> showtimeEntities = cinemaEntity.getRooms().stream()
                             .flatMap(roomEntity -> roomEntity.getShowtimes().stream())
                             .collect(Collectors.toSet());
+                    cinemaEntity.setRooms(null);
                     CinemaResponse cinemaResponse = cinemaMapper.entityToResponse(cinemaEntity);
                     cinemaResponse.setShowtime(showtimeEntities.stream()
                             .peek(this::getFieldToList)
@@ -113,6 +114,26 @@ public class ShowtimeService implements IShowtimeService {
                     return cinemaResponse;
                 })
                 .collect(Collectors.toList());
+        return ListResponse.builder()
+                .total(cinemaResponses.size())
+                .data(cinemaResponses)
+                .build();
+    }
+
+    @Override
+    public ListResponse getShowtimeByCinemaAdmin() {
+        List<CinemaEntity> cinemaEntities = showtimeRepository.findByCinema();
+        List<CinemaResponse> cinemaResponses = cinemaEntities.stream()
+                .peek(cinemaEntity -> cinemaEntity.setRooms(cinemaEntity.getRooms().stream()
+                        .peek(this::getFieldInAdminShowtime)
+                        .collect(Collectors.toSet()))
+                )
+                .map(cinemaMapper::entityToResponse)
+                .toList();
+        return ListResponse.builder()
+                .total(cinemaResponses.size())
+                .data(cinemaResponses)
+                .build();
     }
 
     @Override
@@ -161,6 +182,7 @@ public class ShowtimeService implements IShowtimeService {
         List<CinemaEntity> cinemaEntities = cinemaRepository.findAll();
         return cinemaEntities.stream()
                 .map(cinemaEntity -> {
+                    cinemaEntity.setRooms(null);
                     List<MovieResponse> movieResponseList = getShowtimeByCinema(cinemaEntity.getId()).stream()
                             .filter(movieResponse -> movieResponse.getShowtimes().size() != 0)
                             .toList();
@@ -257,6 +279,8 @@ public class ShowtimeService implements IShowtimeService {
     private void getFieldToList(ShowtimeEntity showtimeEntity) {
         showtimeEntity.getRoom().setSeats(null);
         showtimeEntity.getRoom().setStatus(null);
+        showtimeEntity.getRoom().setShowtimes(null);
+        showtimeEntity.getRoom().getCinema().setRooms(null);
         showtimeEntity.setMovie(null);
         showtimeEntity.setFormat(null);
     }
@@ -268,6 +292,22 @@ public class ShowtimeService implements IShowtimeService {
         movieEntity.setComments(null);
         movieEntity.setImages(null);
         movieEntity.getShowtimes().forEach(this::getFieldToList);
+    }
+
+    private void getFieldInAdminShowtime(RoomEntity roomEntity) {
+        roomEntity.setStatus(null);
+        roomEntity.setSeats(null);
+        roomEntity.setCinema(null);
+        roomEntity.getShowtimes().forEach(showtimeEntity -> {
+            showtimeEntity.setRoom(null);
+            showtimeEntity.setTickets(null);
+            showtimeEntity.getMovie().setShowtimes(null);
+            showtimeEntity.getMovie().setComments(null);
+            showtimeEntity.getMovie().setFormats(null);
+            showtimeEntity.getMovie().setGenre(null);
+            showtimeEntity.getMovie().setStatus(null);
+            showtimeEntity.getMovie().setImages(null);
+        });
     }
 
 

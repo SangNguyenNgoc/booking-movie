@@ -42,6 +42,7 @@ public class CinemaService implements ICinemaService {
         return ListResponse.builder()
                 .total(cinemaEntities.getTotalPages())
                 .data(cinemaEntities.stream()
+                        .peek(cinemaEntity -> cinemaEntity.setRooms(null))
                         .map(mapper::entityToResponse)
                         .collect(Collectors.toList()))
                 .build();
@@ -51,6 +52,7 @@ public class CinemaService implements ICinemaService {
     public Cinema getById(String cinemaId) {
         CinemaEntity cinemaEntity = cinemaRepository.findById(cinemaId)
                 .orElseThrow(()-> new AllException("Not Found", 404, List.of("cinemaId not found")));
+        cinemaEntity.setRooms(null);
         return mapper.entityToCinema(cinemaEntity);
 
     }

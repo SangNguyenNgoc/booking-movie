@@ -22,14 +22,20 @@ public interface ShowtimeRepository extends JpaRepository<ShowtimeEntity, String
             "WHERE s.movie.id = :movieId AND s.startDate = :date AND s.status = true")
     List<CinemaEntity> findByMovieAndDate(@Param("date") Date date, @Param("movieId") String movieId);
 
+    @Query("SELECT c FROM CinemaEntity c " +
+            "JOIN FETCH c.rooms r " +
+            "JOIN FETCH r.showtimes s " +
+            "JOIN FETCH s.movie " +
+            "WHERE s.status = true AND r.status.id = 1")
+    List<CinemaEntity> findByCinema();
+
     @Query("SELECT st FROM ShowtimeEntity st " +
             "JOIN st.room r " +
             "WHERE r.cinema.id = :cinemaId AND st.startDate = :date")
     List<ShowtimeEntity> findByCinemaId(@Param("date") Date date, @Param("cinemaId") String movieId);
 
     @Query("SELECT st FROM ShowtimeEntity st " +
-            "WHERE st.startDate = :date AND st.room.id = :roomId"
-    )
+            "WHERE st.startDate = :date AND st.room.id = :roomId")
     List<ShowtimeEntity> findByDateAndRoom(@Param("date") Date date, @Param("roomId") String roomId);
 
 

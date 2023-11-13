@@ -100,6 +100,25 @@ public class ShowtimeController {
         return ResponseEntity.ok(showtimeService.getShowtimeByMovie(date, movieId));
     }
 
+    @Operation(
+            summary = "Lấy thời khóa biểu suất chiếu",
+            description = "Lấy thời khóa biểu suất chiếu(rạp > phòng > suất chiếu > phim) từ sơ sở dữ liệu, api chỉ dành cho admi.",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = MovieResponse.class)
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/admin/cinema/room/showtime")
+    public ResponseEntity<?> getByCinemaAdmin() {
+        return ResponseEntity.ok(showtimeService.getShowtimeByCinemaAdmin());
+    }
+
 
     @Operation(
             summary = "Api lấy ghế của suất chiếu",
