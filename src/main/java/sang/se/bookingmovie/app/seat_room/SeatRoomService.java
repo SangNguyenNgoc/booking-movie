@@ -36,7 +36,7 @@ public class SeatRoomService implements ISeatRoomService {
             e.setStatus(true);
             e.setId(null);
         });
-        seatRoomEntities.stream().forEach(seatRoomRepository::save);
+        seatRoomEntities.forEach(seatRoomRepository::save);
         return "success";
     }
 
@@ -64,7 +64,7 @@ public class SeatRoomService implements ISeatRoomService {
     }
 
     private String createSeatRoomID(){
-        Long count = seatRoomRepository.count() + 1;
+        long count = seatRoomRepository.count() + 1;
         return applicationUtil.addZeros(count,3);
     }
 }

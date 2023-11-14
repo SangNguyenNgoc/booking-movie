@@ -68,7 +68,7 @@ public class CinemaController {
             }
     )
     @PostMapping("admin/cinemaRoom")
-    public ResponseEntity<?> create1(@RequestBody CinemaRequest cinema){
+    public ResponseEntity<?> createCinemaWithRoom(@RequestBody CinemaRequest cinema){
         return ResponseEntity.status(201)
                 .body(cinemaService.createCinemaWithRoom(cinema));
     }
