@@ -1,5 +1,6 @@
 package sang.se.bookingmovie.app.room;
 
+import sang.se.bookingmovie.app.cinema.CinemaEntity;
 import sang.se.bookingmovie.response.ListResponse;
 
 public interface IRoomService {
@@ -12,4 +13,6 @@ public interface IRoomService {
     ListResponse getAllByName(String cinemaId, String name, Integer page, Integer size);
 
     String updateStatusOfRoom(String roomId, Integer statusId);
+
+    void createWithCinema(RoomReq roomReqRequest, CinemaEntity cinema);
 }
