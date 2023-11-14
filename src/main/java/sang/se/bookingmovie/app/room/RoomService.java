@@ -58,6 +58,7 @@ public class RoomService implements IRoomService {
         return ListResponse.builder()
                 .total(roomEntities.size())
                 .data(roomEntities.stream()
+                        .peek(roomEntity -> roomEntity.setShowtimes(null))
                         .map(mapper::entityToResponse)
                         .collect(Collectors.toList()))
                 .build();
@@ -70,6 +71,7 @@ public class RoomService implements IRoomService {
         return ListResponse.builder()
                 .total(roomEntities.size())
                 .data(roomEntities.stream()
+                        .peek(roomEntity -> roomEntity.setShowtimes(null))
                         .map(mapper::entityToResponse)
                         .collect(Collectors.toList()))
                 .build();
@@ -84,6 +86,7 @@ public class RoomService implements IRoomService {
         return ListResponse.builder()
                 .total(roomEntities.getTotalPages())
                 .data(roomEntities.stream()
+                        .peek(roomEntity -> roomEntity.setShowtimes(null))
                         .map(mapper::entityToResponse)
                         .collect(Collectors.toList()))
                 .build();

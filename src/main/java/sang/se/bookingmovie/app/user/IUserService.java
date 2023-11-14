@@ -16,7 +16,7 @@ public interface IUserService {
 
     String sendToVerifyAccount(String userId);
 
-    String verify(String email, String verifyCode);
+    String verify(String email, VerifyRequest verify);
 
     UserResponse getCurrentUser(String token, String userId);
 
@@ -26,11 +26,11 @@ public interface IUserService {
 
     Boolean checkPassword(String token, String password);
 
-    String changePassword(String token, String oldPassword, String newPassword);
+    String changePassword(String token, ChangePassRequest verifyPass);
 
     String sendToResetPassword(String email);
 
-    String resetPassword(String email, String verifyPass, String pass);
+    String resetPassword(ResetPassRequest verify);
 
     UserResponse updateUser(String token, UserUpdate userUpdate);
 

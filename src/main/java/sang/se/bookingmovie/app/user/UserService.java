@@ -29,6 +29,7 @@ import sang.se.bookingmovie.utils.ApplicationUtil;
 import sang.se.bookingmovie.utils.DiscordService;
 import sang.se.bookingmovie.utils.EmailService;
 import sang.se.bookingmovie.utils.JwtService;
+import sang.se.bookingmovie.validate.ObjectsValidator;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,6 +63,12 @@ public class UserService implements IUserService {
     private final AuthenticationManager authenticationManager;
 
     private final ApplicationEventPublisher applicationEventPublisher;
+
+    private final ObjectsValidator<VerifyRequest> verifyValidator;
+
+    private final ObjectsValidator<ChangePassRequest> verifyPassValidator;
+
+    private final ObjectsValidator<ResetPassRequest> verifyResetValidator;
 
     @Override
     public AuthResponse register(User user) {
@@ -125,7 +132,8 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
-    public String verify(String token, String verifyCode) {
+    public String verify(String token, VerifyRequest verify) {
+        verifyValidator.validate(verify);
         var userEntity = userRepository.findById(jwtService.extractSubject(jwtService.validateToken(token)))
                 .orElseThrow(() -> new AllException(
                         "Verification failure",
@@ -135,7 +143,7 @@ public class UserService implements IUserService {
         if(userEntity.getVerifyAccount() == null) {
             throw new AllException("Verification failure", 404, List.of("Past the confirmation period"));
         }
-        if(userEntity.getVerifyAccount().equals(verifyCode)) {
+        if(userEntity.getVerifyAccount().equals(verify.getVerify())) {
             userEntity.setVerify(true);
             userEntity.setVerifyAccount(null);
             var roleEntity = roleRepository.findById(2)
@@ -216,10 +224,11 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
-    public String changePassword(String token, String oldPassword, String newPassword) {
+    public String changePassword(String token, ChangePassRequest verifyPass) {
+        verifyPassValidator.validate(verifyPass);
         var userEntity = getUserById(jwtService.extractSubject(jwtService.validateToken(token)));
-        if(passwordEncoder.matches(oldPassword, userEntity.getPassword())) {
-            userEntity.setPassword(passwordEncoder.encode(newPassword));
+        if(passwordEncoder.matches(verifyPass.getOldPass(), userEntity.getPassword())) {
+            userEntity.setPassword(passwordEncoder.encode(verifyPass.getNewPass()));
             return "Success";
         } else {
             throw new AllException("Change failure", 400, List.of("Invalid password"));
@@ -243,11 +252,12 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
-    public String resetPassword(String email, String verifyPass, String pass) {
-        var userEntity = userRepository.findByEmail(email)
+    public String resetPassword(ResetPassRequest verify) {
+        verifyResetValidator.validate(verify);
+        var userEntity = userRepository.findByEmail(verify.getEmail())
                 .orElseThrow(() -> new AllException("Conflict", 404, List.of("User is not exits")));
-        if(userEntity.getVerifyPass().equals(verifyPass)) {
-            userEntity.setPassword(passwordEncoder.encode(pass));
+        if(userEntity.getVerifyPass().equals(verify.getVerify())) {
+            userEntity.setPassword(passwordEncoder.encode(verify.getPass()));
             userEntity.setVerifyPass(null);
             return "Success";
         } else {
