@@ -45,5 +45,9 @@ public class CinemaRequest {
     @Pattern(regexp = "^[0-9]+$", message = "Invalid number phone")
     private String phoneNumber;
 
+    @NotBlank(message = "Cinema status must not be blank")
+    @NotNull(message = "Cinema status must not be null")
+    private String status;
+
     private List<RoomReq> rooms;
 }
