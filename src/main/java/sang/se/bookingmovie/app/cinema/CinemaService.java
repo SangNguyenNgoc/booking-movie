@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import sang.se.bookingmovie.app.movie_genre.MovieGenre;
 import sang.se.bookingmovie.app.movie_genre.MovieGenreEntity;
+import sang.se.bookingmovie.app.room.RoomService;
 import sang.se.bookingmovie.exception.AllException;
 import sang.se.bookingmovie.response.ListResponse;
 import sang.se.bookingmovie.utils.ApplicationUtil;
@@ -25,6 +26,8 @@ public class CinemaService implements ICinemaService {
     private final CinemaMapper mapper;
 
     private final ApplicationUtil applicationUtil;
+
+    private final RoomService roomService;
 
     @Override
     public String create(Cinema cinemaRequest) {
@@ -63,6 +66,17 @@ public class CinemaService implements ICinemaService {
                 .orElseThrow(()-> new AllException("Not Found", 404, List.of("cinemaId not found")));
         update(cinemaEntity, cinemaRequest);
         cinemaRepository.save(cinemaEntity);
+        return "success";
+    }
+
+    @Override
+    public String createCinemaWithRoom(CinemaRequest cinemaRequest) {
+        CinemaEntity cinemaEntity = mapper.cinemaRequestToEntity(cinemaRequest);
+        cinemaEntity.setId(createCinemaID());
+        cinemaEntity.setSlug(applicationUtil.toSlug(cinemaEntity.getName()));
+        cinemaEntity.setRooms(null);
+        cinemaRepository.save(cinemaEntity);
+        cinemaRequest.getRooms().forEach(roomReq -> roomService.createWithCinema(roomReq, cinemaEntity));
         return "success";
     }
 

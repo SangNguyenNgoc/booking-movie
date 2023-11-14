@@ -15,10 +15,6 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @Builder
 public class SeatRoomRequest {
-
-    @NotBlank(message = "seat room name must not be blank")
-    @NotNull(message = "seat room name must not be null")
-    private String name;
     @NotBlank(message = "seat room row must not be blank")
     @NotNull(message = "seat room row must not be null")
     private String row;

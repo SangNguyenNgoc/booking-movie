@@ -47,6 +47,33 @@ public class CinemaController {
     }
 
     @Operation(
+            summary = "Api thêm rạp phim và phòng chiếu",
+            description = "Tạo rạp phim và phòng chiếu và thêm vào cơ sở dữ liệu",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "201",
+                            content = @Content(
+                                    mediaType = "application/json"
+                            )
+                    ),
+                    @ApiResponse(
+                            description = "Data invalid",
+                            responseCode = "400",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
+                    )
+            }
+    )
+    @PostMapping("admin/cinemaRoom")
+    public ResponseEntity<?> create1(@RequestBody CinemaRequest cinema){
+        return ResponseEntity.status(201)
+                .body(cinemaService.createCinemaWithRoom(cinema));
+    }
+
+    @Operation(
             summary = "Lấy tất cả rạp phim",
             description = "Lấy tất cả rạp phim từ sơ sở dữ liệu",
             responses = {
