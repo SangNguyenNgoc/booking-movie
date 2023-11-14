@@ -157,7 +157,7 @@ public class ShowtimeService implements IShowtimeService {
 
     @Override
     public ShowtimeResponse getSeatInShowTime(String showtimeId) {
-        ShowtimeEntity showtimeEntity = showtimeRepository.findById(showtimeId)
+        ShowtimeEntity showtimeEntity = showtimeRepository.findShowtimeAndSeat(showtimeId)
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Showtime is not exits")));
         if(!showtimeEntity.getStatus()) {
             throw new DataNotFoundException("Data not found", List.of("Showtime is not exits"));
@@ -269,10 +269,14 @@ public class ShowtimeService implements IShowtimeService {
     private void getFieldToGetSeat(ShowtimeEntity showtimeEntity) {
         getFieldToDetail(showtimeEntity.getMovie());
         showtimeEntity.setTickets(null);
+        showtimeEntity.getRoom().getCinema().setRooms(null);
+        showtimeEntity.getRoom().setShowtimes(null);
     }
 
     private void getFieldToDetail(MovieEntity movieEntity) {
         movieEntity.setShowtimes(null);
+        movieEntity.setImages(null);
+        movieEntity.setGenre(null);
         movieEntity.getStatus().setMovies(null);
     }
 

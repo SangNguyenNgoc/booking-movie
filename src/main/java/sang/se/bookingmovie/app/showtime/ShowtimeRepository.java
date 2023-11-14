@@ -8,6 +8,7 @@ import sang.se.bookingmovie.app.movie.MovieEntity;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface ShowtimeRepository extends JpaRepository<ShowtimeEntity, String> {
     @Query("SELECT mv FROM MovieEntity mv " +
@@ -45,4 +46,17 @@ public interface ShowtimeRepository extends JpaRepository<ShowtimeEntity, String
             "JOIN FETCH r.cinema c " +
             "WHERE s.status = true")
     List<MovieEntity> findByStatus();
+
+    @Query("SELECT st FROM ShowtimeEntity st " +
+            "JOIN FETCH st.room r " +
+            "JOIN FETCH r.status " +
+            "JOIN FETCH r.seats s " +
+            "LEFT JOIN FETCH s.tickets " +
+            "JOIN FETCH s.type " +
+            "JOIN FETCH r.cinema " +
+            "JOIN FETCH st.movie mv " +
+            "JOIN FETCH mv.status " +
+            "JOIN FETCH mv.formats " +
+            "WHERE st.id = :showtimeId")
+    Optional<ShowtimeEntity> findShowtimeAndSeat(@Param("showtimeId") String showtimeId);
 }
