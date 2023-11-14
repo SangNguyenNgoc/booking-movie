@@ -74,7 +74,7 @@ public class CinemaService implements ICinemaService {
         cinemaEntity.setSlug(applicationUtil.toSlug(cinemaEntity.getName()));
         cinemaEntity.setRooms(null);
         cinemaRepository.save(cinemaEntity);
-        cinemaRequest.getRooms().stream().forEach(roomReq -> roomService.createWithCinema(roomReq, cinemaEntity));
+        cinemaRequest.getRooms().forEach(roomReq -> roomService.createWithCinema(roomReq, cinemaEntity));
         return "success";
     }
 

@@ -14,5 +14,5 @@ public interface IRoomService {
 
     String updateStatusOfRoom(String roomId, Integer statusId);
 
-    Void createWithCinema(RoomReq roomReqRequest, CinemaEntity cinema);
+    void createWithCinema(RoomReq roomReqRequest, CinemaEntity cinema);
 }

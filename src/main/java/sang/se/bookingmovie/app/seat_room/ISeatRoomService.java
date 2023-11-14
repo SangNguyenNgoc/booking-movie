@@ -10,5 +10,5 @@ public interface ISeatRoomService {
 
     ListResponse getSeatRoom(String roomId);
 
-    Void createWithRoomEntity(List<SeatRoomRequest> seatRoomRequest, RoomEntity room);
+    void createWithRoomEntity(List<SeatRoomRequest> seatRoomRequest, RoomEntity room);
 }

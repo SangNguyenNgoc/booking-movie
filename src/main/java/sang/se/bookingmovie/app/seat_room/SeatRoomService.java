@@ -52,7 +52,7 @@ public class SeatRoomService implements ISeatRoomService {
     }
 
     @Override
-    public Void createWithRoomEntity(List<SeatRoomRequest> seatRoomRequest, RoomEntity room) {
+    public void createWithRoomEntity(List<SeatRoomRequest> seatRoomRequest, RoomEntity room) {
         List<SeatRoomEntity> seatRoomEntities = new ArrayList<>();
         seatRoomRequest.stream().map(seatRoomMapper::requestToEntity).forEach(seatRoomEntities::add);
         seatRoomEntities.forEach(e->{
@@ -60,8 +60,7 @@ public class SeatRoomService implements ISeatRoomService {
             e.setStatus(true);
             e.setId(null);
         });
-        seatRoomEntities.stream().forEach(seatRoomRepository::save);
-        return null;
+        seatRoomEntities.forEach(seatRoomRepository::save);
     }
 
     private String createSeatRoomID(){
