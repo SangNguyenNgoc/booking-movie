@@ -68,7 +68,10 @@ public class RoomService implements IRoomService {
         return ListResponse.builder()
                 .total(roomEntities.size())
                 .data(roomEntities.stream()
-                        .peek(roomEntity -> roomEntity.setShowtimes(null))
+                        .peek(roomEntity -> {
+                            roomEntity.setShowtimes(null);
+                            roomEntity.setCinema(null);
+                        })
                         .map(mapper::entityToResponse)
                         .collect(Collectors.toList()))
                 .build();
