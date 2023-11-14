@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -108,7 +109,7 @@ public class UserController {
                     )
             }
     )
-    @PutMapping(value = "/guest/sendToVerifyAccount")
+    @GetMapping(value = "/guest/sendToVerifyAccount")
     public ResponseEntity<?> sendToVerifyAccount(
             @RequestHeader(value = "Authorization") String token
     ) {
@@ -145,10 +146,10 @@ public class UserController {
     @PutMapping(value = "/guest/verifyAccount")
     public ResponseEntity<?> verifyAccount(
             @RequestHeader(value = "Authorization") String token,
-            @RequestParam(value = "verify") String verifyAccount
+            @RequestBody VerifyRequest verify
     ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(userService.verify(token, verifyAccount));
+                .body(userService.verify(token, verify));
     }
 
 
@@ -177,7 +178,7 @@ public class UserController {
                     )
             }
     )
-    @PutMapping(value = "/customer/sendToUpdateMail")
+    @GetMapping(value = "/customer/sendToUpdateMail")
     public ResponseEntity<?> sendToUpdateMail(
             @RequestHeader(value = "Authorization") String token,
             @RequestParam(value = "email") String newMail
@@ -320,7 +321,7 @@ public class UserController {
 
             }
     )
-    @PutMapping(value = "/checkPassword")
+    @GetMapping(value = "/checkPassword")
     public ResponseEntity<?> checkPassword(
             @RequestHeader(value = "Authorization") String token,
             @RequestParam(value = "password") String password
@@ -358,11 +359,10 @@ public class UserController {
     @PutMapping(value = "/changePassword")
     public ResponseEntity<?> changePassword(
             @RequestHeader(value = "Authorization") String token,
-            @RequestParam(value = "oldPassword") String oldPassword,
-            @RequestParam(value = "newPassword") String newPassword
+            @RequestBody ChangePassRequest verifyRequest
     ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(userService.changePassword(token, oldPassword, newPassword));
+                .body(userService.changePassword(token, verifyRequest));
     }
 
 
@@ -387,7 +387,7 @@ public class UserController {
 
             }
     )
-    @PutMapping(value = "/auth/sendToResetPass")
+    @GetMapping(value = "/auth/sendToResetPass")
     public ResponseEntity<?> sendToResetPass(
             @RequestParam(value = "email") String email
     ) {
@@ -427,12 +427,10 @@ public class UserController {
     )
     @PutMapping(value = "/auth/resetPass")
     public ResponseEntity<?> sendToRetPass(
-            @RequestParam(value = "email") String email,
-            @RequestParam(value = "verify") String verifyPass,
-            @RequestParam(value = "pass") String pass
+            @RequestBody ResetPassRequest verify
     ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(userService.resetPassword(email, verifyPass, pass));
+                .body(userService.resetPassword(verify));
     }
 
 
