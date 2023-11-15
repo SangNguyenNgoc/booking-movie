@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class VerifyAccountEvent {
+    private String name;
     private String email;
     private String verifyCode;
 }

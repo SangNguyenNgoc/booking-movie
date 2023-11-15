@@ -31,7 +31,8 @@ public class CinemaEntity {
 
     private String slug;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private CinemaStatus status;
 
     @Column(name = "phone_number")
     private String phoneNumber;

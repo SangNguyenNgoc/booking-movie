@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import sang.se.bookingmovie.app.movie_genre.MovieGenre;
 import sang.se.bookingmovie.app.movie_genre.MovieGenreEntity;
 import sang.se.bookingmovie.app.room.RoomService;
+import sang.se.bookingmovie.app.user.Gender;
 import sang.se.bookingmovie.exception.AllException;
 import sang.se.bookingmovie.response.ListResponse;
 import sang.se.bookingmovie.utils.ApplicationUtil;
@@ -34,6 +35,7 @@ public class CinemaService implements ICinemaService {
         CinemaEntity cinemaEntity = mapper.requestToEntity(cinemaRequest);
         cinemaEntity.setId(createCinemaID());
         cinemaEntity.setSlug(applicationUtil.toSlug(cinemaEntity.getName()));
+        cinemaEntity.setStatus(getStatusInRequest(cinemaRequest.getStatus()));
         cinemaRepository.save(cinemaEntity);
         return "success";
     }
@@ -43,7 +45,7 @@ public class CinemaService implements ICinemaService {
         Pageable pageable = PageRequest.of(page-1, size, Sort.by("id"));
         Page<CinemaEntity> cinemaEntities = cinemaRepository.findAll(pageable);
         return ListResponse.builder()
-                .total(cinemaEntities.getTotalPages())
+                .total(cinemaEntities.getSize())
                 .data(cinemaEntities.stream()
                         .peek(cinemaEntity -> cinemaEntity.setRooms(null))
                         .map(mapper::entityToResponse)
@@ -85,11 +87,21 @@ public class CinemaService implements ICinemaService {
         return "Cinema" + applicationUtil.addZeros(count,3);
     }
 
-    public void update(CinemaEntity cinemaEntity, Cinema cinema){
+    private void update(CinemaEntity cinemaEntity, Cinema cinema){
         cinemaEntity.setName(cinema.getName());
         cinemaEntity.setAddress(cinema.getAddress());
         cinemaEntity.setCity(cinema.getCity());
         cinemaEntity.setDistrict(cinema.getDistrict());
         cinemaEntity.setPhoneNumber(cinema.getPhoneNumber());
+        cinemaEntity.setStatus(getStatusInRequest(cinema.getStatus()));
+    }
+
+    private CinemaStatus getStatusInRequest(String input) {
+        switch (applicationUtil.toSlug(input)) {
+            case "hoat-dong" -> {return CinemaStatus.OPENING;}
+            case "dong-cua" -> {return CinemaStatus.CLOSED;}
+            case "dang-bao-tri" -> {return CinemaStatus.MAINTAINED;}
+            default -> throw new AllException("Data invalid", 404, List.of("Cinema status invalid"));
+        }
     }
 }

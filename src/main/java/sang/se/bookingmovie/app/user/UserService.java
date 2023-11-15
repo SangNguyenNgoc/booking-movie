@@ -1,5 +1,7 @@
 package sang.se.bookingmovie.app.user;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -15,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 import sang.se.bookingmovie.app.role.RoleEntity;
 import sang.se.bookingmovie.app.role.RoleRepository;
 import sang.se.bookingmovie.auth.AuthRequest;
@@ -32,6 +36,7 @@ import sang.se.bookingmovie.utils.JwtService;
 import sang.se.bookingmovie.validate.ObjectsValidator;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,6 +74,8 @@ public class UserService implements IUserService {
     private final ObjectsValidator<ChangePassRequest> verifyPassValidator;
 
     private final ObjectsValidator<ResetPassRequest> verifyResetValidator;
+
+    private final TemplateEngine templateEngine;
 
     @Override
     public AuthResponse register(User user) {
@@ -124,6 +131,7 @@ public class UserService implements IUserService {
         userEntity.setVerifyAccount(applicationUtil.generateVerificationCode(6));
         applicationEventPublisher.publishEvent(
                 VerifyAccountEvent.builder()
+                        .name(userEntity.getFullName())
                         .email(userEntity.getEmail())
                         .verifyCode(userEntity.getVerifyAccount())
                         .build());
@@ -241,9 +249,12 @@ public class UserService implements IUserService {
     public String sendToResetPassword(String email) {
         var userEntity = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AllException("Conflict", 409, List.of("User is not exits")));
-        userEntity.setVerifyPass(applicationUtil.generateVerificationCode(6));
+        String code = applicationUtil.generateVerificationCode(6);
+        userEntity.setVerifyPass(passwordEncoder.encode(code));
         applicationEventPublisher.publishEvent(
                 VerifyPassEvent.builder()
+                        .id(userEntity.getId())
+                        .name(userEntity.getFullName())
                         .email(userEntity.getEmail())
                         .verifyCode(userEntity.getVerifyPass())
                         .build());
@@ -254,7 +265,7 @@ public class UserService implements IUserService {
     @Transactional
     public String resetPassword(ResetPassRequest verify) {
         verifyResetValidator.validate(verify);
-        var userEntity = userRepository.findByEmail(verify.getEmail())
+        var userEntity = userRepository.findById(verify.getId())
                 .orElseThrow(() -> new AllException("Conflict", 404, List.of("User is not exits")));
         if(userEntity.getVerifyPass().equals(verify.getVerify())) {
             userEntity.setPassword(passwordEncoder.encode(verify.getPass()));
@@ -323,13 +334,18 @@ public class UserService implements IUserService {
     @Async
     @Transactional
     public void sendToVerifyAccount(VerifyAccountEvent event)  {
-        emailService.sendEmail(event.getEmail(), "Mã xác nhận từ Cinema",
-                "Vui không cung cấp mã xác nhận cho bất kì ai, nhập mã sau để xác nhận tài khoản, " +
-                        "mã có hiệu lực 5 phút: " + event.getVerifyCode());
         try {
+            Context context = new Context();
+            context.setVariables(Map.of(
+                    "name", event.getName(),
+                    "mail", event.getEmail(),
+                    "otp", event.getVerifyCode()
+            ));
+            String text = templateEngine.process("EmailOTPTemplate", context);
+            emailService.sendEmailHtml(event.getEmail(), "Mã xác nhận từ Cinema", text);
             Thread.sleep(verifyExpiration);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        } catch (InterruptedException | MessagingException e) {
+            throw new AllException("Server error", 500, List.of("Email send error."));
         }
         deleteVerifyAccountByEmail(event.getEmail());
     }
@@ -338,13 +354,18 @@ public class UserService implements IUserService {
     @Async
     @Transactional
     public void sendToVerifyPass(VerifyPassEvent event)  {
-        emailService.sendEmail(event.getEmail(), "Mã xác nhận từ Cinema",
-                "Vui không cung cấp mã xác nhận cho bất kì ai, nhập mã sau để đặt lại mật khẩu mới, " +
-                        "mã có hiệu lực 5 phút: " + event.getVerifyCode());
         try {
+            Context context = new Context();
+            context.setVariables(Map.of(
+                    "name", event.getName(),
+                    "url", "https://www.pwer-dev.id.vn/forgot-password?code=" + event.getVerifyCode()
+                    + "+" + event.getId()
+            ));
+            String text = templateEngine.process("EmailURLTemplate", context);
+            emailService.sendEmailHtml(event.getEmail(), "Xác nhận từ Cinema", text);
             Thread.sleep(verifyExpiration);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        } catch (InterruptedException | MessagingException e) {
+            throw new AllException("Server error", 500, List.of("Email send error."));
         }
         deleteVerifyPassByEmail(event.getEmail());
     }
