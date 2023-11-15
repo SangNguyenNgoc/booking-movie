@@ -22,7 +22,9 @@ public class CinemaMapper implements IMapper<CinemaEntity, Cinema, CinemaRespons
 
     @Override
     public CinemaResponse entityToResponse(CinemaEntity cinemaEntity) {
-        return mapper.map(cinemaEntity, CinemaResponse.class);
+        CinemaResponse cinemaResponse = mapper.map(cinemaEntity, CinemaResponse.class);
+        cinemaResponse.setStatus(cinemaEntity.getStatus().getValue());
+        return cinemaResponse;
     }
 
     public Cinema entityToCinema(CinemaEntity cinemaEntity) {

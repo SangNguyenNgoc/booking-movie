@@ -13,8 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ResetPassRequest {
     @NotBlank(message = "Email MUST not be blank")
-    @Email
-    private String email;
+    private String id;
     @NotBlank(message = "Password MUST not be blank")
     private String pass;
     @NotBlank(message = "Verify code MUST not be blank")

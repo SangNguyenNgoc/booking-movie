@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sang.se.bookingmovie.app.cinema.CinemaEntity;
-import sang.se.bookingmovie.app.cinema.CinemaMapper;
-import sang.se.bookingmovie.app.cinema.CinemaRepository;
-import sang.se.bookingmovie.app.cinema.CinemaResponse;
+import sang.se.bookingmovie.app.cinema.*;
 import sang.se.bookingmovie.app.format.FormatEntity;
 import sang.se.bookingmovie.app.format.FormatRepository;
 import sang.se.bookingmovie.app.movie.MovieEntity;
@@ -122,7 +119,7 @@ public class ShowtimeService implements IShowtimeService {
 
     @Override
     public ListResponse getShowtimeByCinemaAdmin() {
-        List<CinemaEntity> cinemaEntities = showtimeRepository.findByCinema();
+        List<CinemaEntity> cinemaEntities = showtimeRepository.findByCinemaWithRoom();
         List<CinemaResponse> cinemaResponses = cinemaEntities.stream()
                 .peek(cinemaEntity -> cinemaEntity.setRooms(cinemaEntity.getRooms().stream()
                         .peek(this::getFieldInAdminShowtime)
@@ -181,6 +178,7 @@ public class ShowtimeService implements IShowtimeService {
     public List<CinemaResponse> getAllCinemaDetailShowtime() {
         List<CinemaEntity> cinemaEntities = cinemaRepository.findAll();
         return cinemaEntities.stream()
+                .filter(cinemaEntity -> cinemaEntity.getStatus() == CinemaStatus.OPENING)
                 .map(cinemaEntity -> {
                     cinemaEntity.setRooms(null);
                     List<MovieResponse> movieResponseList = getShowtimeByCinema(cinemaEntity.getId()).stream()
