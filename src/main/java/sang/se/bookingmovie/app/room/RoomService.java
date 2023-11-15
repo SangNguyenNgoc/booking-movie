@@ -120,7 +120,11 @@ public class RoomService implements IRoomService {
 
     @Override
     public void createWithCinema(RoomReq roomRequest, CinemaEntity cinema) {
-        RoomEntity newRoom =  new RoomEntity(roomRequest.getName(), roomRequest.getTotalSeats(), roomRequest.getTotalSeats());
+        RoomEntity newRoom =  RoomEntity.builder()
+                .name(roomRequest.getName())
+                .totalSeats(roomRequest.getTotalSeats())
+                .availableSeats(roomRequest.getTotalSeats())
+                .build();
         newRoom.setCinema(cinema);
         newRoom.setId(createRoomID());
         newRoom.setSlug(applicationUtil.toSlug(newRoom.getName()));

@@ -53,14 +53,15 @@ public class SeatRoomService implements ISeatRoomService {
 
     @Override
     public void createWithRoomEntity(List<SeatRoomRequest> seatRoomRequest, RoomEntity room) {
-        List<SeatRoomEntity> seatRoomEntities = new ArrayList<>();
-        seatRoomRequest.stream().map(seatRoomMapper::requestToEntity).forEach(seatRoomEntities::add);
-        seatRoomEntities.forEach(e->{
-            e.setRoom(room);
-            e.setStatus(true);
-            e.setId(null);
-        });
-        seatRoomEntities.forEach(seatRoomRepository::save);
+        List<SeatRoomEntity> seatRoomEntities = seatRoomRequest.stream()
+                .map(seatRoomMapper::requestToEntity)
+                .peek(seatRoomEntity-> {
+                    seatRoomEntity.setRoom(room);
+                    seatRoomEntity.setStatus(true);
+                    seatRoomEntity.setId(null);
+                })
+                .toList();
+        seatRoomRepository.saveAll(seatRoomEntities);
     }
 
     private String createSeatRoomID(){
