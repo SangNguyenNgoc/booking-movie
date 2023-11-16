@@ -1,7 +1,6 @@
 package sang.se.bookingmovie.app.user;
 
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -35,6 +34,7 @@ import sang.se.bookingmovie.utils.EmailService;
 import sang.se.bookingmovie.utils.JwtService;
 import sang.se.bookingmovie.validate.ObjectsValidator;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -249,8 +249,7 @@ public class UserService implements IUserService {
     public String sendToResetPassword(String email) {
         var userEntity = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AllException("Conflict", 409, List.of("User is not exits")));
-        String code = applicationUtil.generateVerificationCode(6);
-        userEntity.setVerifyPass(passwordEncoder.encode(code));
+        userEntity.setVerifyPass(applicationUtil.generateVerificationCode(6));
         applicationEventPublisher.publishEvent(
                 VerifyPassEvent.builder()
                         .id(userEntity.getId())
@@ -265,9 +264,12 @@ public class UserService implements IUserService {
     @Transactional
     public String resetPassword(ResetPassRequest verify) {
         verifyResetValidator.validate(verify);
-        var userEntity = userRepository.findById(verify.getId())
+        String verifySubject = jwtService.extractSubject(verify.getVerifyToken());
+        String userId = verifySubject.split("_")[0];
+        String verifyCode = verifySubject.split("_")[1];
+        var userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new AllException("Conflict", 404, List.of("User is not exits")));
-        if(userEntity.getVerifyPass().equals(verify.getVerify())) {
+        if(userEntity.getVerifyPass().equals(verifyCode)) {
             userEntity.setPassword(passwordEncoder.encode(verify.getPass()));
             userEntity.setVerifyPass(null);
             return "Success";
@@ -344,8 +346,8 @@ public class UserService implements IUserService {
             String text = templateEngine.process("EmailOTPTemplate", context);
             emailService.sendEmailHtml(event.getEmail(), "Mã xác nhận từ Cinema", text);
             Thread.sleep(verifyExpiration);
-        } catch (InterruptedException | MessagingException e) {
-            throw new AllException("Server error", 500, List.of("Email send error."));
+        } catch (InterruptedException | MessagingException | UnsupportedEncodingException e) {
+            System.out.println(e.getMessage());
         }
         deleteVerifyAccountByEmail(event.getEmail());
     }
@@ -355,17 +357,17 @@ public class UserService implements IUserService {
     @Transactional
     public void sendToVerifyPass(VerifyPassEvent event)  {
         try {
+            String param = jwtService.generateVerify(event.getId(), event.getVerifyCode());
             Context context = new Context();
             context.setVariables(Map.of(
                     "name", event.getName(),
-                    "url", "https://www.pwer-dev.id.vn/forgot-password?code=" + event.getVerifyCode()
-                    + "+" + event.getId()
+                    "url", "https://www.pwer-dev.id.vn/forgot-password?verify=" + param
             ));
             String text = templateEngine.process("EmailURLTemplate", context);
             emailService.sendEmailHtml(event.getEmail(), "Xác nhận từ Cinema", text);
             Thread.sleep(verifyExpiration);
-        } catch (InterruptedException | MessagingException e) {
-            throw new AllException("Server error", 500, List.of("Email send error."));
+        } catch (InterruptedException | MessagingException | UnsupportedEncodingException e) {
+            System.out.println(e.getMessage());
         }
         deleteVerifyPassByEmail(event.getEmail());
     }

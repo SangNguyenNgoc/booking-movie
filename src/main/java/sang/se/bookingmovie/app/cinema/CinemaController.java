@@ -115,6 +115,25 @@ public class CinemaController {
     }
 
     @Operation(
+            summary = "Lấy thông tin rạp phim",
+            description = "Lấy thông tin rạp phim từ sơ sở dữ liệu theo id, api của admin.",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = Cinema.class)
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/admin/cinema/{cinemaId}")
+    public ResponseEntity<?> getByIdAdmin(@PathVariable("cinemaId") String cinemaId) {
+        return ResponseEntity.ok(cinemaService.getByIdInAdmin(cinemaId));
+    }
+
+    @Operation(
             summary = "Sửa thông tin rạp phim",
             description = "Sửa thông tin rạp phim từ sơ sở dữ liệu",
             responses = {

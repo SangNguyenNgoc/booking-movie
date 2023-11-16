@@ -9,6 +9,8 @@ public interface ICinemaService {
 
     Cinema getById(String cinemaId);
 
+    CinemaResponse getByIdInAdmin(String cinemaId);
+
     String update(Cinema cinemaRequest, String cinemaId);
 
     String createCinemaWithRoom(CinemaRequest cinemaRequest);

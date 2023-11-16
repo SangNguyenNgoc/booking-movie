@@ -26,6 +26,9 @@ public class JwtService {
     @Value("${jwt.auth_expiration}")
     private Long authExpiration;
 
+    @Value("${verify.verify_expiration}")
+    private Long verifyExpiration;
+
     public String extractSubject(String token) {
         return extractClaims(token, Claims::getSubject);
     }
@@ -49,6 +52,24 @@ public class JwtService {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + authExpiration))
+                .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
+    }
+
+    public String generateVerify(String userId, String verifyCode) {
+        return generateVerify(new HashMap<>(), userId, verifyCode);
+    }
+
+    public String generateVerify(
+            Map<String, Object> extraClaims,
+            String userId,
+            String verifyCode
+    ) {
+        return Jwts
+                .builder()
+                .setClaims(extraClaims)
+                .setSubject(userId + "_" + verifyCode)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + verifyExpiration))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }
 
