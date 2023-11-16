@@ -56,10 +56,13 @@ public class SeatRoomService implements ISeatRoomService {
         List<SeatRoomEntity> seatRoomEntities = seatRoomRequest.stream()
                 .map(seatRoomMapper::requestToEntity)
                 .peek(seatRoomEntity-> {
-                    seatRoomEntity.setRoom(room);
-                    seatRoomEntity.setStatus(true);
-                    seatRoomEntity.setId(null);
-                    seatRoomRepository.save(seatRoomEntity);
+                    seatRoomRepository.insertSeatRoom(
+                            seatRoomEntity.getRow(),
+                            seatRoomEntity.getRowIndex(),
+                            1,
+                            room.getId(),
+                            1
+                    );
                 })
                 .toList();
     }
