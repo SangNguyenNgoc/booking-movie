@@ -31,6 +31,7 @@ public class CinemaMapper implements IMapper<CinemaEntity, Cinema, CinemaRespons
         return mapper.map(cinemaEntity, Cinema.class);
     }
 
+
     public CinemaEntity cinemaRequestToEntity(CinemaRequest cinema) {
         validatorCinemaRequest.validate(cinema);
         return mapper.map(cinema, CinemaEntity.class);

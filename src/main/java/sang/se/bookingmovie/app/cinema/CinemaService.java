@@ -10,13 +10,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import sang.se.bookingmovie.app.movie_genre.MovieGenre;
 import sang.se.bookingmovie.app.movie_genre.MovieGenreEntity;
+import sang.se.bookingmovie.app.room.RoomEntity;
+import sang.se.bookingmovie.app.room.RoomResponse;
 import sang.se.bookingmovie.app.room.RoomService;
 import sang.se.bookingmovie.app.user.Gender;
 import sang.se.bookingmovie.exception.AllException;
 import sang.se.bookingmovie.response.ListResponse;
 import sang.se.bookingmovie.utils.ApplicationUtil;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,6 +63,26 @@ public class CinemaService implements ICinemaService {
                 .orElseThrow(()-> new AllException("Not Found", 404, List.of("cinemaId not found")));
         cinemaEntity.setRooms(null);
         return mapper.entityToCinema(cinemaEntity);
+    }
+
+    @Override
+    public CinemaResponse getByIdInAdmin(String cinemaId) {
+        CinemaEntity cinemaEntity = cinemaRepository.findById(cinemaId)
+                .orElseThrow(()-> new AllException("Not Found", 404, List.of("cinemaId not found")));
+        Set<RoomEntity> roomEntities = cinemaEntity.getRooms().stream()
+                .peek(roomEntity -> {
+                    roomEntity.setCinema(null);
+                    roomEntity.setShowtimes(null);
+                    roomEntity.setSeats(null);
+                })
+                .collect(Collectors.toSet());
+        cinemaEntity.setRooms(roomEntities);
+        CinemaResponse cinemaResponse = mapper.entityToResponse(cinemaEntity);
+        cinemaResponse.setRooms(cinemaResponse.getRooms().stream()
+                .sorted(Comparator.comparing(RoomResponse::getId))
+                .collect(Collectors.toList())
+        );
+        return cinemaResponse;
 
     }
 

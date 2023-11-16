@@ -86,7 +86,7 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("token", authResponse.getToken())
-                .queryParam("name", authResponse.getUser().getFullName())
+//                .queryParam("name", authResponse.getUser().getFullName())
                 .build().toUriString();
     }
 }

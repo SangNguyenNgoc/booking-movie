@@ -8,11 +8,7 @@
 </head>
 <!-- https://www.pwer-dev.id.vn/assets/images/Logo.png -->
 
-
-
 <body>
-
-
     <div style="">
         <div
             style="max-width: 600px; margin:0 auto; background-image: linear-gradient(  rgba(0, 18, 50, 0.8),rgba(0, 18, 50, 0.8) ) ,url('https://www.pwer-dev.id.vn/assets/images/bg-01.jpg');  background-position: center ;display: block; background-repeat: no-repeat;;background-size: cover;">
@@ -118,8 +114,8 @@
                                                                                         style="margin:0;padding:0;border:none;border-spacing:0;border-collapse:collapse;font-family:inherit">
                                                                                         <td
                                                                                             style="margin:0;padding:0;border:none;border-spacing:0;border-collapse:collapse;font-family:inherit">
-                                                                                            <p>Xin chào, <span th:text="${name}"></span> </p>
-                                                                                            <p> Hệ thống đã nhận được yêu
+                                                                                            <p style="color:white;">Xin chào, <span th:text="${name}"></span> </p>
+                                                                                            <p style="color:white;"> Hệ thống đã nhận được yêu
                                                                                                 cầu tạo lại mật khẩu của
                                                                                                 bạn. Nếu đó không phải
                                                                                                 yêu cầu từ bạn, chúng
@@ -136,16 +132,12 @@
                                                                                     </tr>
                                                                                     <tr
                                                                                         style="margin:0;padding:0;border:none;border-spacing:0;border-collapse:collapse;font-family:inherit">
-                                                                                        <td
-                                                                                            style="margin:0;padding:0;border:none;border-spacing:0;border-collapse:collapse;font-family:inherit">
-                                                                                            <p>
-                                                                                                Vui lòng truy cập vào
-                                                                                                đường dẫn <span th:text="${url}"><a th:href="${url}"></a></span> để tạo
-                                                                                                mật khẩu mới hoặc click
-                                                                                                vào nút <span
-                                                                                                    style="color:#31D7A9">Khôi
-                                                                                                    phục</span> bên dưới
-                                                                                            </p>
+                                                                                        <td style="margin:0;padding:0;border:none;border-spacing:0;border-collapse:collapse;font-family:inherit">
+                                                                                            Vui lòng truy cập vào
+                                                                                                đường dẫn: <p th:text="${url}"><a th:href="${url}"></a></p> để tạo
+                                                                                            mật khẩu mới hoặc click
+                                                                                            vào nút <span style="color:#31D7A9">Khôi phục</span>
+                                                                                            bên dưới.
                                                                                         </td>
                                                                                     </tr>
                                                                                     <tr
@@ -228,8 +220,6 @@
             </table>
         </div>
     </div>
-
-
 </body>
 
 </html>
