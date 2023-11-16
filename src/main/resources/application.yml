@@ -42,8 +42,8 @@ spring:
       client:
         registration:
           google:
-            clientId: 310995540967-b9inrvsgfmsukraofttpjuhjs8dg2qbv.apps.googleusercontent.com
-            clientSecret: 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
+            clientId: 377651689335-blb5air7ps01keo2ri4ij3f5kennirio.apps.googleusercontent.com
+            clientSecret: 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
             redirect_uri: https://booking-movie-backend-3a547b1ac2e9.herokuapp.com/oauth2/callback/google
 
 jwt:
