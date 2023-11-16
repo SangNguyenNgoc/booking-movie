@@ -59,9 +59,9 @@ public class SeatRoomService implements ISeatRoomService {
                     seatRoomEntity.setRoom(room);
                     seatRoomEntity.setStatus(true);
                     seatRoomEntity.setId(null);
+                    seatRoomRepository.save(seatRoomEntity);
                 })
                 .toList();
-        seatRoomRepository.saveAll(seatRoomEntities);
     }
 
     private String createSeatRoomID(){

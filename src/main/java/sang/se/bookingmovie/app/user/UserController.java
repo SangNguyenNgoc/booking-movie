@@ -433,6 +433,43 @@ public class UserController {
                 .body(userService.resetPassword(verify));
     }
 
+    @Operation(
+            summary = "Đặt lại mật khẩu",
+            description = "API đặt lại mật khẩu. " +
+                    "Cần truyền email đã được đăng kí, mã xác nhân vừa nhận được và mật khẩu mới.",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(mediaType = "application/json")
+                    ),
+                    @ApiResponse(
+                            description = "Conflict",
+                            responseCode = "409",
+                            content = @Content(mediaType = "application/json")
+                    ),
+                    @ApiResponse(
+                            description = "Not found",
+                            responseCode = "404",
+                            content = @Content(mediaType = "application/json")
+                    ),
+                    @ApiResponse(
+                            description = "Unauthorized",
+                            responseCode = "409",
+                            content = @Content(mediaType = "application/json")
+                    ),
+
+
+            }
+    )
+    @GetMapping(value = "/auth/checkUrlToResetPass")
+    public ResponseEntity<?> checkUrlToResetPass(
+            @RequestParam(value = "verify") String verifyToken
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(userService.checkUrlToReset(verifyToken));
+    }
+
 
     @Operation(
             summary = "Cập nhật thông tin ngươì dùng",

@@ -269,10 +269,30 @@ public class UserService implements IUserService {
         String verifyCode = verifySubject.split("_")[1];
         var userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new AllException("Conflict", 404, List.of("User is not exits")));
+        if(userEntity.getVerifyPass() == null) {
+            throw new AllException("Verification failure", 404, List.of("Past the confirmation period"));
+        }
         if(userEntity.getVerifyPass().equals(verifyCode)) {
             userEntity.setPassword(passwordEncoder.encode(verify.getPass()));
             userEntity.setVerifyPass(null);
             return "Success";
+        } else {
+            throw new AllException("Verification failure", 401, List.of("Invalid verification code"));
+        }
+    }
+
+    @Override
+    public String checkUrlToReset(String verifyToken) {
+        String verifySubject = jwtService.extractSubject(verifyToken);
+        String userId = verifySubject.split("_")[0];
+        String verifyCode = verifySubject.split("_")[1];
+        var userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new AllException("Conflict", 404, List.of("User is not exits")));
+        if(userEntity.getVerifyPass() == null) {
+            throw new AllException("Verification failure", 404, List.of("Past the confirmation period"));
+        }
+        if(userEntity.getVerifyPass().equals(verifyCode)) {
+            return "Ok";
         } else {
             throw new AllException("Verification failure", 401, List.of("Invalid verification code"));
         }

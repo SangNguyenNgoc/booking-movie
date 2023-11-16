@@ -32,6 +32,8 @@ public interface IUserService {
 
     String resetPassword(ResetPassRequest verify);
 
+    String checkUrlToReset(String verify);
+
     UserResponse updateUser(String token, UserUpdate userUpdate);
 
     UserResponse updateAvatar(String token, MultipartFile avatar);
