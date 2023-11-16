@@ -18,7 +18,7 @@ public interface SeatRoomRepository extends JpaRepository<SeatRoomEntity, Intege
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO `booking_movie`.`seats_rooms` (`row`, `row_index`, `room_id`, `status`,`seat_type_id`) " +
+    @Query(value = "INSERT INTO `booking_movie`.`seats_rooms` (`row`, `row_index`,  `status`, `room_id`, `seat_type_id`) " +
             "VALUES (:row, :rowIndex, :status, :roomId, :seatTypeId)", nativeQuery = true)
     void insertSeatRoom(@Param("row") String row,
                         @Param("rowIndex") Integer rowIndex,
