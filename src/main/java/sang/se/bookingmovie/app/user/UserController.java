@@ -399,7 +399,7 @@ public class UserController {
     @Operation(
             summary = "Đặt lại mật khẩu",
             description = "API đặt lại mật khẩu. " +
-                    "Cần truyền email đã được đăng kí, mã xác nhân vừa nhận được và mật khẩu mới.",
+                    "Cần truyền những thông tin cần thiết trong body.",
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -434,9 +434,9 @@ public class UserController {
     }
 
     @Operation(
-            summary = "Đặt lại mật khẩu",
-            description = "API đặt lại mật khẩu. " +
-                    "Cần truyền email đã được đăng kí, mã xác nhân vừa nhận được và mật khẩu mới.",
+            summary = "Kiểm tra đường link đặt lại mật khẩu",
+            description = "API kiểm tra đường link đặt lại mật khẩu. " +
+                    "Truyền tham số `verify` của url để tiến hành kiểm tra.",
             responses = {
                     @ApiResponse(
                             description = "Success",
