@@ -48,26 +48,24 @@ public class ShowtimeService implements IShowtimeService {
     }
 
     @Override
-    public String create(List<ShowtimeRequest> showtimeRequests) {
-        if (!checkShowtimeInData(showtimeRequests) || !checkShowtimeInList(showtimeRequests))
+    public ShowtimeResponse create(ShowtimeRequest showtimeRequest) {
+        if (!checkShowtimeInData(showtimeRequest))
             throw new AllException("Data in valid", 400, List.of("The room already has showtime"));
-        for (ShowtimeRequest showtimeRequest : showtimeRequests) {
-            RoomEntity roomEntity = roomRepository.findById(showtimeRequest.getRoom())
-                    .orElseThrow(() -> new AllException("Not Found", 404, List.of("Not found room id")));
-            FormatEntity format = formatRepository.findById(showtimeRequest.getFormat())
-                    .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found format id")));
-            MovieEntity movie = movieRepository.findById(showtimeRequest.getMovie())
-                    .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found movie id")));
-            ShowtimeEntity showtimeEntity = showtimeMapper.requestToEntity(showtimeRequest);
-            showtimeEntity.setId(createShowTimeID());
-            showtimeEntity.setRoom(roomEntity);
-            showtimeEntity.setFormat(format);
-            showtimeEntity.setMovie(movie);
-            showtimeEntity.setStatus(true);
-            showtimeEntity.setRunningTime(movie.getRunningTime() + waitShowtime);
-            showtimeRepository.save(showtimeEntity);
-        }
-        return "success";
+        RoomEntity roomEntity = roomRepository.findById(showtimeRequest.getRoom())
+                .orElseThrow(() -> new AllException("Not Found", 404, List.of("Not found room id")));
+        FormatEntity format = formatRepository.findById(showtimeRequest.getFormat())
+                .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found format id")));
+        MovieEntity movie = movieRepository.findById(showtimeRequest.getMovie())
+                .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found movie id")));
+        ShowtimeEntity showtimeEntity = showtimeMapper.requestToEntity(showtimeRequest);
+        showtimeEntity.setId(createShowTimeID());
+        showtimeEntity.setRoom(roomEntity);
+        showtimeEntity.setFormat(format);
+        showtimeEntity.setMovie(movie);
+        showtimeEntity.setStatus(true);
+        showtimeEntity.setRunningTime(movie.getRunningTime() + waitShowtime);
+        showtimeRepository.save(showtimeEntity);
+        return showtimeMapper.entityToResponse(showtimeEntity);
     }
 
     @Override
@@ -207,26 +205,24 @@ public class ShowtimeService implements IShowtimeService {
                 .toList();
     }
 
-    private Boolean checkShowtimeInData(List<ShowtimeRequest> showtimeRequests){
-        for (ShowtimeRequest newShowtime : showtimeRequests) {
-            List<ShowtimeEntity> showtimeEntities = showtimeRepository.findByDateAndRoom(newShowtime.getStartDate(), newShowtime.getRoom());
-            MovieEntity movieEntity = movieRepository.findByAddShowtime(newShowtime.getMovie())
-                    .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found movie id")));
+    private Boolean checkShowtimeInData(ShowtimeRequest newShowtime){
+        List<ShowtimeEntity> showtimeEntities = showtimeRepository.findByDateAndRoom(newShowtime.getStartDate(), newShowtime.getRoom());
+        MovieEntity movieEntity = movieRepository.findByAddShowtime(newShowtime.getMovie())
+                .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found movie id")));
 
-            LocalTime startTimeTesting = newShowtime.getStartTime().toLocalTime();
-            LocalTime endTimeTesting = startTimeTesting.plusMinutes(movieEntity.getRunningTime() + waitShowtime);
+        LocalTime startTimeTesting = newShowtime.getStartTime().toLocalTime();
+        LocalTime endTimeTesting = startTimeTesting.plusMinutes(movieEntity.getRunningTime() + waitShowtime);
 
-            for (ShowtimeEntity showtimeEntity : showtimeEntities ) {
+        for (ShowtimeEntity showtimeEntity : showtimeEntities ) {
 
-                LocalTime startTimeInData = showtimeEntity.getStartTime().toLocalTime();
-                LocalTime endTimeInData = startTimeInData.plusMinutes(showtimeEntity.getRunningTime());
+            LocalTime startTimeInData = showtimeEntity.getStartTime().toLocalTime();
+            LocalTime endTimeInData = startTimeInData.plusMinutes(showtimeEntity.getRunningTime());
 
-                if ( (startTimeTesting.isAfter(startTimeInData) && startTimeTesting.isBefore(endTimeInData)) ||
-                        (startTimeInData.isAfter(startTimeTesting) && startTimeInData.isBefore(endTimeTesting)) ||
-                                (startTimeTesting.equals(startTimeInData))
-                ) {
-                    return false;
-                }
+            if ( (startTimeTesting.isAfter(startTimeInData) && startTimeTesting.isBefore(endTimeInData)) ||
+                    (startTimeInData.isAfter(startTimeTesting) && startTimeInData.isBefore(endTimeTesting)) ||
+                    (startTimeTesting.equals(startTimeInData))
+            ) {
+                return false;
             }
         }
         return true;
@@ -263,6 +259,8 @@ public class ShowtimeService implements IShowtimeService {
         }
         return true;
     }
+
+
 
     private void getFieldToGetSeat(ShowtimeEntity showtimeEntity) {
         getFieldToDetail(showtimeEntity.getMovie());

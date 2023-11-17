@@ -13,7 +13,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 public interface IShowtimeService {
-    String create(List<ShowtimeRequest> showtimeRequest);
+    ShowtimeResponse create(ShowtimeRequest showtimeRequest);
 
     ListResponse getShowtimeByCinemaAndDate(Date date, String cinemaId);
 
