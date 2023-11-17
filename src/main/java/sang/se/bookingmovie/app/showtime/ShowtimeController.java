@@ -49,7 +49,7 @@ public class ShowtimeController {
             }
     )
     @PostMapping("/admin/showtime")
-    public ResponseEntity<?> createShowtime(@RequestBody List<ShowtimeRequest> showtimeRequests){
+    public ResponseEntity<?> createShowtime(@RequestBody ShowtimeRequest showtimeRequests){
         return ResponseEntity.status(201)
                 .body(showtimeService.create(showtimeRequests));
     }
