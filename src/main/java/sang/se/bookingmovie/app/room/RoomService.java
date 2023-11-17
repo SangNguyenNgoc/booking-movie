@@ -119,21 +119,33 @@ public class RoomService implements IRoomService {
     }
 
     @Override
-    public void createWithCinema(RoomReq roomRequest, CinemaEntity cinema) {
+    public void createWithCinema(RoomReq roomRequest, CinemaEntity cinema, int index) {
         RoomEntity newRoom =  RoomEntity.builder()
                 .name(roomRequest.getName())
                 .totalSeats(roomRequest.getTotalSeats())
                 .availableSeats(roomRequest.getTotalSeats())
                 .build();
-        newRoom.setCinema(cinema);
-        newRoom.setId(createRoomID());
+        newRoom.setId(createRoomID(index));
         newRoom.setSlug(applicationUtil.toSlug(newRoom.getName()));
         newRoom.setStatus(roomStatusRepository.findById(1).orElseThrow());
-        seatRoomService.createWithRoomEntity(roomRequest.getSeats(), roomRepository.save(newRoom));
+        roomRepository.insertRoom(
+                newRoom.getId(),
+                newRoom.getAvailableSeats(),
+                newRoom.getName(),
+                newRoom.getTotalSeats(),
+                cinema.getId(),
+                newRoom.getSlug()
+        );
+        seatRoomService.createWithRoomEntity(roomRequest.getSeats(), newRoom);
     }
 
     private String createRoomID(){
         long count = roomRepository.count() + 1;
+        return "Room" + applicationUtil.addZeros(count,3);
+    }
+
+    private String createRoomID(int index){
+        long count = roomRepository.count() + 1 + index;
         return "Room" + applicationUtil.addZeros(count,3);
     }
 }
