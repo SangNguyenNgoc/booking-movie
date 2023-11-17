@@ -36,7 +36,7 @@ public class ShowtimeEntity {
     @Column(name = "status", columnDefinition = "boolean default true")
     private Boolean status;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "movie_id",
             referencedColumnName = "movie_id",

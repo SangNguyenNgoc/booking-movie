@@ -29,7 +29,7 @@ public class ShowtimeController {
 
     @Operation(
             summary = "Tạo thêm suất chiếu",
-            description = "Thêm suất chiếu vào cơ ở dữ liệu.",
+            description = "Thêm suất chiếu vào cơ sở dữ liệu.",
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -52,6 +52,33 @@ public class ShowtimeController {
     public ResponseEntity<?> createShowtime(@RequestBody ShowtimeRequest showtimeRequests){
         return ResponseEntity.status(201)
                 .body(showtimeService.create(showtimeRequests));
+    }
+
+    @Operation(
+            summary = "Xóa suất chiếu",
+            description = "Xóa suất chiếu khỏi cơ sở dữ liệu.",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "201",
+                            content = @Content(
+                                    mediaType = "application/json"
+                            )
+                    ),
+                    @ApiResponse(
+                            description = "Data invalid",
+                            responseCode = "400",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
+                    )
+            }
+    )
+    @DeleteMapping("/admin/showtime/{showtimeId}")
+    public ResponseEntity<?> deleteShowtime(@PathVariable(value = "showtimeId") String showtimeId){
+        return ResponseEntity.status(200)
+                .body(showtimeService.delete(showtimeId));
     }
 
 
