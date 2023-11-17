@@ -26,4 +26,6 @@ public interface IShowtimeService {
     ShowtimeResponse getSeatInShowTime(String showtimeId);
 
     List<CinemaResponse> getAllCinemaDetailShowtime();
+
+    String delete(String id);
 }

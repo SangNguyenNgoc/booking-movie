@@ -58,7 +58,7 @@ public class ShowtimeService implements IShowtimeService {
         MovieEntity movie = movieRepository.findById(showtimeRequest.getMovie())
                 .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found movie id")));
         ShowtimeEntity showtimeEntity = showtimeMapper.requestToEntity(showtimeRequest);
-        showtimeEntity.setId(createShowTimeID());
+        showtimeEntity.setId(applicationUtil.createUUID());
         showtimeEntity.setRoom(roomEntity);
         showtimeEntity.setFormat(format);
         showtimeEntity.setMovie(movie);
@@ -187,6 +187,17 @@ public class ShowtimeService implements IShowtimeService {
                     return cinemaResponse;
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public String delete(String id) {
+        ShowtimeEntity showtimeEntity = showtimeRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Show time is not exist")));
+        if(!showtimeEntity.getStatus()) {
+            throw new AllException("Bad request", 400, List.of("Showtime is expired"));
+        }
+        showtimeRepository.deleteById(id);
+        return "Success";
     }
 
     public List<MovieResponse> getShowtimeByCinema(String cinemaId) {
