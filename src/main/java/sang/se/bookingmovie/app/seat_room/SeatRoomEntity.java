@@ -45,7 +45,7 @@ public class SeatRoomEntity {
 //    )
 //    private SeatEntity seat;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "seat_type_id",
             referencedColumnName = "seat_type_id",
