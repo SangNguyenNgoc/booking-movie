@@ -14,7 +14,7 @@ import java.util.*;
 @Configuration
 public class VnpayConfig {
     public String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public String vnp_ReturnUrl = "https://movie-booking-2frx7utwa-vmhoafng.vercel.app/";
+    public String vnp_ReturnUrl = "https://www.pwer-dev.id.vn/payment-result";
     public String vnp_TmnCode = "RXZGQQOT";
     public String vnp_Version = "2.1.0";
     public String vnp_Command = "pay";
