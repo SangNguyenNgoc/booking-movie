@@ -87,7 +87,8 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         String targetUrl = "https://www.pwer-dev.id.vn/";
 
         return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("token", authResponse.getToken(), "exist" , authResponse.getExist() ? 1 : 0)
+                .queryParam("token", authResponse.getToken())
+                .queryParam("exist",  authResponse.getExist() ? 1 : 0)
                 .build().toUriString();
     }
 }
