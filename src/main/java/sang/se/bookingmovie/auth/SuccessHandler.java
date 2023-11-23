@@ -71,11 +71,13 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             return AuthResponse.builder()
                     .token(jwtService.generateToken(userRegister))
                     .user(userMapper.entityToResponse(userRegister))
+                    .exist(false)
                     .build();
         } else {
             return AuthResponse.builder()
                     .token(jwtService.generateToken(user))
                     .user(userMapper.entityToResponse(user))
+                    .exist(true)
                     .build();
         }
     }
@@ -85,7 +87,7 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         String targetUrl = "https://www.pwer-dev.id.vn/";
 
         return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("token", authResponse.getToken())
+                .queryParam("token", authResponse.getToken(), "exist" , authResponse.getExist() ? 1 : 0)
                 .build().toUriString();
     }
 }
