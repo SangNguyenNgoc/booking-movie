@@ -36,7 +36,7 @@ public class SeatRoomService implements ISeatRoomService {
             e.setStatus(true);
             e.setId(null);
         });
-        seatRoomEntities.forEach(seatRoomRepository::save);
+        seatRoomRepository.saveAll(seatRoomEntities);
         return "success";
     }
 

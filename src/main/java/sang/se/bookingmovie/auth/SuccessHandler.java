@@ -54,18 +54,18 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         var user = userRepository.findByEmail(email)
                 .orElse(null);
         if (user == null) {
-            RoleEntity roleEntity = roleRepository.findById(2).orElseThrow();
+            RoleEntity roleEntity = roleRepository.findById(3).orElseThrow();
             var userRegister = UserEntity.builder()
                     .fullName(userDetails.getAttribute("name"))
                     .email(email)
                     .avatar(userDetails.getAttribute("picture"))
-                    .password(passwordEncoder.encode("booking-movie"))
+                    .password(passwordEncoder.encode("2a075e92-89c3-11ee-b9d1-0242ac120002"))
                     .createDate(applicationUtil.getDateNow())
                     .id(applicationUtil.createUUID(email + applicationUtil.getDateNow()))
                     .gender(Gender.UNKNOWN)
                     .role(roleEntity)
                     .point(0)
-                    .verify(null)
+                    .verify(false)
                     .build();
             userRepository.save(userRegister);
             return AuthResponse.builder()
@@ -86,7 +86,6 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("token", authResponse.getToken())
-//                .queryParam("name", authResponse.getUser().getFullName())
                 .build().toUriString();
     }
 }

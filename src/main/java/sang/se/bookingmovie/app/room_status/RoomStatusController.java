@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import sang.se.bookingmovie.response.ListResponse;
 
@@ -18,7 +17,7 @@ import sang.se.bookingmovie.response.ListResponse;
 @SecurityRequirement(name = "Bearer Authentication")
 @RequiredArgsConstructor
 public class RoomStatusController {
-    private final RoomStatusSevice roomStatusSevice;
+    private final RoomStatusService roomStatusSevice;
 
     @Operation(
             summary = "Lấy trạng thái của phòng chiếu phim",
