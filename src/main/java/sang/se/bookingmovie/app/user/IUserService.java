@@ -32,6 +32,8 @@ public interface IUserService {
 
     String resetPassword(ResetPassRequest verify);
 
+    UserResponse setPassToGoogleAccount(ResetPassRequest request);
+
     String checkUrlToReset(String verify);
 
     UserResponse updateUser(String token, UserUpdate userUpdate);

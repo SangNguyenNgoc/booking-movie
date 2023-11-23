@@ -92,7 +92,7 @@ public class MovieService implements IMovieService {
         Movie movie = movieMapper.jsonToRequest(movieJson);
         MovieEntity movieEntity = movieMapper.requestToEntity(movie);
         movieEntity.setId(createId());
-        movieEntity.setSlug(applicationUtil.toSlug(movieEntity.getName() + " " + movieEntity.getSubName()));
+        movieEntity.setSlug(applicationUtil.toSlug(movieEntity.getName()));
         movieEntity.setPoster(discordService.sendImage(poster, true));
         movieEntity.setRating(0.0);
         movieEntity.setNumberOfRatings(0);
@@ -197,7 +197,7 @@ public class MovieService implements IMovieService {
         MovieEntity movieEntityBefore = findMovieById(movieId);
 
         movieEntityAfter.setId(movieId);
-        movieEntityAfter.setSlug(applicationUtil.toSlug(movieEntityAfter.getName()) + " " + movieEntityAfter.getSubName());
+        movieEntityAfter.setSlug(applicationUtil.toSlug(movieEntityAfter.getName()));
         movieEntityAfter.setPoster(movieEntityBefore.getPoster());
         movieEntityAfter.setHorizontalPoster(movieEntityBefore.getHorizontalPoster());
         movieEntityAfter.setNumberOfRatings(movieEntityBefore.getNumberOfRatings());

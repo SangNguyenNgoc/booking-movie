@@ -535,4 +535,34 @@ public class UserController {
                 .body(userService.updateAvatar(token, avatar));
     }
 
+
+    @Operation(
+            summary = "Đặt mật khẩu cho ngươ dùng đăng kí với google",
+            description = "API đặt mật khẩu cho ngươ dùng đăng kí với google, truyền vào body token " +
+                    "và mật khẩu người dùng đã nhập.",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = UserResponse.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            description = "Unauthorized",
+                            responseCode = "401",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
+                    )
+            }
+    )
+    @PutMapping(value = "/guest/verify/google")
+    public ResponseEntity<?> verifyGoogle(@RequestBody ResetPassRequest request) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(userService.setPassToGoogleAccount(request));
+    }
+
 }

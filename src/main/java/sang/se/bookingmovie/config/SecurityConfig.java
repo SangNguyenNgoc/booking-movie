@@ -15,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import sang.se.bookingmovie.auth.SuccessHandler;
+import sang.se.bookingmovie.exception.AllException;
 import sang.se.bookingmovie.filter.AuthFilter;
 import sang.se.bookingmovie.filter.MyCorsFilter;
 
@@ -46,7 +47,7 @@ public class SecurityConfig {
                 )
                 .exceptionHandling()
                 .authenticationEntryPoint((request, response, authException) -> {
-                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server error");
                 })
                 .and()
                 .sessionManagement()
