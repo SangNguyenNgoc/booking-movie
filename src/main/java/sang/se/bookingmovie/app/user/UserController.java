@@ -560,9 +560,12 @@ public class UserController {
             }
     )
     @PutMapping(value = "/guest/verify/google")
-    public ResponseEntity<?> verifyGoogle(@RequestBody ResetPassRequest request) {
+    public ResponseEntity<?> verifyGoogle(
+            @RequestHeader(value = "Authorization") String token,
+            @RequestBody String pass
+    ) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(userService.setPassToGoogleAccount(request));
+                .body(userService.setPassToGoogleAccount(token, pass));
     }
 
 }
