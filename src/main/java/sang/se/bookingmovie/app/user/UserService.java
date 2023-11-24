@@ -339,7 +339,7 @@ public class UserService implements IUserService {
         String userId = jwtService.extractSubject(jwtService.validateToken(token));
         UserEntity userEntity = getUserById(userId);
         if(!passwordEncoder.matches("2a075e92-89c3-11ee-b9d1-0242ac120002", userEntity.getPassword())) {
-            throw new AllException("Unauthorized", 401, List.of("Your account is verify"));
+            throw new AllException("Unauthorized", 401, List.of("Your account not linked to Google"));
         }
         userEntity.setPassword(pass);
         userEntity.setVerify(true);
