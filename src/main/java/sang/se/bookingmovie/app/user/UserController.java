@@ -538,8 +538,7 @@ public class UserController {
 
     @Operation(
             summary = "Đặt mật khẩu cho ngươ dùng đăng kí với google",
-            description = "API đặt mật khẩu cho ngươ dùng đăng kí với google, truyền vào body token " +
-                    "và mật khẩu người dùng đã nhập.",
+            description = "API đặt mật khẩu cho ngươ dùng đăng kí với google, truyền vào body mật khẩu người dùng đã nhập.",
             responses = {
                     @ApiResponse(
                             description = "Success",
