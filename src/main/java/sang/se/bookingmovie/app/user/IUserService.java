@@ -32,7 +32,7 @@ public interface IUserService {
 
     String resetPassword(ResetPassRequest verify);
 
-    UserResponse setPassToGoogleAccount(ResetPassRequest request);
+    UserResponse setPassToGoogleAccount(String token, String pass);
 
     String checkUrlToReset(String verify);
 

@@ -335,19 +335,19 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
-    public UserResponse setPassToGoogleAccount(ResetPassRequest request) {
-        String userId = jwtService.extractSubject(jwtService.validateToken(request.getVerifyToken()));
+    public UserResponse setPassToGoogleAccount(String token, String pass) {
+        String userId = jwtService.extractSubject(jwtService.validateToken(token));
         UserEntity userEntity = getUserById(userId);
         if(!passwordEncoder.matches("2a075e92-89c3-11ee-b9d1-0242ac120002", userEntity.getPassword())) {
             throw new AllException("Unauthorized", 401, List.of("Your account is verify"));
         }
-        userEntity.setPassword(request.getPass());
+        userEntity.setPassword(pass);
         userEntity.setVerify(true);
         return userMapper.entityToResponse(userEntity);
     }
 
-    @Transactional
-    public void deleteVerifyPassByEmail(String email) {
+
+    private void deleteVerifyPassByEmail(String email) {
         var userEntity = userRepository.findByEmail(email).orElse(null);
         if(userEntity != null && userEntity.getVerifyPass() != null) {
             userEntity.setVerifyPass(null);
