@@ -54,7 +54,7 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         var user = userRepository.findByEmail(email)
                 .orElse(null);
         if (user == null) {
-            RoleEntity roleEntity = roleRepository.findById(3).orElseThrow();
+            RoleEntity roleEntity = roleRepository.findById(2).orElseThrow();
             var userRegister = UserEntity.builder()
                     .fullName(userDetails.getAttribute("name"))
                     .email(email)
@@ -65,7 +65,7 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                     .gender(Gender.UNKNOWN)
                     .role(roleEntity)
                     .point(0)
-                    .verify(false)
+                    .verify(true)
                     .build();
             userRepository.save(userRegister);
             return AuthResponse.builder()
