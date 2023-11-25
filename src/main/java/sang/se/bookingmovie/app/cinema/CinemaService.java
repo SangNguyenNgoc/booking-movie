@@ -13,6 +13,7 @@ import sang.se.bookingmovie.app.movie_genre.MovieGenreEntity;
 import sang.se.bookingmovie.app.room.RoomEntity;
 import sang.se.bookingmovie.app.room.RoomResponse;
 import sang.se.bookingmovie.app.room.RoomService;
+import sang.se.bookingmovie.app.showtime.ShowtimeEntity;
 import sang.se.bookingmovie.app.user.Gender;
 import sang.se.bookingmovie.exception.AllException;
 import sang.se.bookingmovie.response.ListResponse;
@@ -90,9 +91,21 @@ public class CinemaService implements ICinemaService {
     public String update(Cinema cinemaRequest, String cinemaId) {
         CinemaEntity cinemaEntity = cinemaRepository.findById(cinemaId)
                 .orElseThrow(()-> new AllException("Not Found", 404, List.of("cinemaId not found")));
+        if(getStatusInRequest(cinemaRequest.getStatus()) != CinemaStatus.OPENING) {
+            int showtimeInCinema = cinemaEntity.getRooms().stream()
+                    .flatMap(roomEntity -> roomEntity.getShowtimes().stream())
+                    .filter(ShowtimeEntity::getStatus)
+                    .toList().size();
+            if(showtimeInCinema > 0) {
+                throw new AllException("Bad request",
+                        400,
+                        List.of("It is not possible to close or maintain this cinema because screenings still exist")
+                );
+            }
+        }
         update(cinemaEntity, cinemaRequest);
         cinemaRepository.save(cinemaEntity);
-        return "success";
+        return "Success";
     }
 
     @Override
