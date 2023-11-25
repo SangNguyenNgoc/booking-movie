@@ -53,8 +53,11 @@ discord:
   base_avatar: https://cdn.discordapp.com/attachments/1168144426141499412/1169264779769155594/c6e56503cfdd87da299f72dc416023d4.jpg?ex=6554c5af&is=654250af&hm=440ebc745e441103a1824a80edb22f2d1c371743e8d7a4d413dbbc62eae31554&
 
 verify:
-  url: http://localhost:3000
+  url: https://www.pwer-dev.id.vn/forgot-password
   verify_expiration: 300000
+
+oauth2:
+  targetUrl: https://www.pwer-dev.id.vn/
 
 promotion:
   point: 10

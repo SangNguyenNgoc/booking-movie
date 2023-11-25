@@ -49,6 +49,9 @@ public class UserService implements IUserService {
     @Value("${discord.base_avatar}")
     private String baseAvatar;
 
+    @Value("${verify.url}")
+    private String verifyUrl;
+
     private final UserRepository userRepository;
 
     private final RoleRepository roleRepository;
@@ -394,7 +397,7 @@ public class UserService implements IUserService {
             Context context = new Context();
             context.setVariables(Map.of(
                     "name", event.getName(),
-                    "url", "https://www.pwer-dev.id.vn/forgot-password?verify=" + param
+                    "url", verifyUrl + "?verify=" + param
             ));
             String text = templateEngine.process("EmailURLTemplate", context);
             emailService.sendEmailHtml(event.getEmail(), "Xác nhận từ Cinema", text);
