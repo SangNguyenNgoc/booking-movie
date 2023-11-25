@@ -4,6 +4,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
@@ -33,6 +34,9 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final PasswordEncoder passwordEncoder;
 
     private final ApplicationUtil applicationUtil;
+
+    @Value("${oauth2.targetUrl}")
+    private String targetUrl;
 
     @Override
     public void onAuthenticationSuccess(
@@ -83,12 +87,10 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     }
 
     protected String determineTargetUrl(AuthResponse authResponse) {
-
-        String targetUrl = "https://www.pwer-dev.id.vn/";
-
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("token", authResponse.getToken())
                 .queryParam("exist",  authResponse.getExist() ? 1 : 0)
-                .build().toUriString();
+                .build()
+                .toUriString();
     }
 }
