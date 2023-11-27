@@ -65,6 +65,7 @@ public class ShowtimeService implements IShowtimeService {
         showtimeEntity.setStatus(true);
         showtimeEntity.setRunningTime(movie.getRunningTime() + waitShowtime);
         showtimeRepository.save(showtimeEntity);
+        getFieldToCreate(showtimeEntity);
         return showtimeMapper.entityToResponse(showtimeEntity);
     }
 
@@ -279,7 +280,6 @@ public class ShowtimeService implements IShowtimeService {
     }
 
 
-
     private void getFieldToGetSeat(ShowtimeEntity showtimeEntity) {
         getFieldToDetail(showtimeEntity.getMovie());
         showtimeEntity.setTickets(null);
@@ -321,12 +321,20 @@ public class ShowtimeService implements IShowtimeService {
             showtimeEntity.setTickets(null);
             showtimeEntity.getMovie().setShowtimes(null);
             showtimeEntity.getMovie().setComments(null);
-            showtimeEntity.getMovie().setFormats(null);
-            showtimeEntity.getMovie().setGenre(null);
             showtimeEntity.getMovie().setStatus(null);
             showtimeEntity.getMovie().setImages(null);
         });
     }
 
+    private void getFieldToCreate(ShowtimeEntity showtimeEntity) {
+        showtimeEntity.getRoom().setShowtimes(null);
+        showtimeEntity.getRoom().setSeats(null);
+        showtimeEntity.getRoom().setCinema(null);
+        showtimeEntity.setTickets(null);
+        showtimeEntity.getMovie().setShowtimes(null);
+        showtimeEntity.getMovie().setComments(null);
+        showtimeEntity.getMovie().getStatus().setMovies(null);
+        showtimeEntity.getMovie().setImages(null);
+    }
 
 }
