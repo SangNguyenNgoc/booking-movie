@@ -126,7 +126,7 @@ public class MovieService implements IMovieService {
     @Override
     public ListResponse getAllComingAndShowing() {
         List<MovieResponse> movieResponses = movieRepository.findByComingAndShowing().stream()
-                .peek(this::getFieldToList)
+                .peek(this::getFieldToDashboard)
                 .map(movieMapper::entityToResponse)
                 .toList();
         return ListResponse.builder()
@@ -304,6 +304,13 @@ public class MovieService implements IMovieService {
         movieEntity.setComments(null);
         movieEntity.setImages(null);
         movieEntity.setFormats(null);
+    }
+
+    private void getFieldToDashboard(MovieEntity movieEntity) {
+        movieEntity.getStatus().setMovies(null);
+        movieEntity.setShowtimes(null);
+        movieEntity.setComments(null);
+        movieEntity.setImages(null);
     }
 
     private void getFieldToDetail(MovieEntity movieEntity) {
