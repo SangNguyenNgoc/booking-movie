@@ -1,23 +1,31 @@
 package sang.se.bookingmovie.auth;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 import sang.se.bookingmovie.app.role.RoleEntity;
 import sang.se.bookingmovie.app.role.RoleRepository;
 import sang.se.bookingmovie.app.user.*;
 import sang.se.bookingmovie.utils.ApplicationUtil;
+import sang.se.bookingmovie.utils.EmailService;
 import sang.se.bookingmovie.utils.JwtService;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -34,6 +42,10 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final PasswordEncoder passwordEncoder;
 
     private final ApplicationUtil applicationUtil;
+
+    private final TemplateEngine templateEngine;
+
+    private final EmailService emailService;
 
     @Value("${oauth2.targetUrl}")
     private String targetUrl;
@@ -58,12 +70,13 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         var user = userRepository.findByEmail(email)
                 .orElse(null);
         if (user == null) {
+            String pass = applicationUtil.generateRandomString(6);
             RoleEntity roleEntity = roleRepository.findById(2).orElseThrow();
             var userRegister = UserEntity.builder()
                     .fullName(userDetails.getAttribute("name"))
                     .email(email)
                     .avatar(userDetails.getAttribute("picture"))
-                    .password(passwordEncoder.encode("2a075e92-89c3-11ee-b9d1-0242ac120002"))
+                    .password(passwordEncoder.encode(pass))
                     .createDate(applicationUtil.getDateNow())
                     .id(applicationUtil.createUUID(email + applicationUtil.getDateNow()))
                     .gender(Gender.UNKNOWN)
@@ -72,6 +85,7 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                     .verify(true)
                     .build();
             userRepository.save(userRegister);
+            sendPass(userRegister, pass);
             return AuthResponse.builder()
                     .token(jwtService.generateToken(userRegister))
                     .user(userMapper.entityToResponse(userRegister))
@@ -92,5 +106,20 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                 .queryParam("exist",  authResponse.getExist() ? 1 : 0)
                 .build()
                 .toUriString();
+    }
+
+    public void sendPass(UserEntity userEntity, String pass) {
+        Context context = new Context();
+        context.setVariables(Map.of(
+                "name", userEntity.getFullName(),
+                "mail", userEntity.getEmail(),
+                "pass", pass
+        ));
+        String text = templateEngine.process("EmailPassTemplate", context);
+        try {
+            emailService.sendEmailHtml(userEntity.getEmail(), "Mật khẩu tài khoản The Cinema của bạn", text);
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

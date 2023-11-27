@@ -26,8 +26,7 @@ public interface ShowtimeRepository extends JpaRepository<ShowtimeEntity, String
     @Query("SELECT c FROM CinemaEntity c " +
             "LEFT JOIN FETCH c.rooms r " +
             "LEFT JOIN FETCH r.showtimes s " +
-            "JOIN FETCH s.movie mv " +
-            "WHERE s.status = true AND r.status.id = 1")
+            "LEFT JOIN FETCH s.movie mv ")
     List<CinemaEntity> findByCinemaWithRoom();
 
     @Query("SELECT st FROM ShowtimeEntity st " +
