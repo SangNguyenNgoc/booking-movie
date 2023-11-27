@@ -120,7 +120,14 @@ public class ShowtimeService implements IShowtimeService {
         List<CinemaEntity> cinemaEntities = showtimeRepository.findByCinemaWithRoom();
         List<CinemaResponse> cinemaResponses = cinemaEntities.stream()
                 .peek(cinemaEntity -> cinemaEntity.setRooms(cinemaEntity.getRooms().stream()
-                        .peek(this::getFieldInAdminShowtime)
+                        .filter(roomEntity -> roomEntity.getStatus().getId() == 1)
+                        .peek(roomEntity -> {
+                            getFieldInAdminShowtime(roomEntity);
+                            Set<ShowtimeEntity> showtimeEntities = roomEntity.getShowtimes().stream()
+                                    .filter(ShowtimeEntity::getStatus)
+                                    .collect(Collectors.toSet());
+                            roomEntity.setShowtimes(showtimeEntities);
+                        })
                         .collect(Collectors.toSet()))
                 )
                 .map(cinemaMapper::entityToResponse)
