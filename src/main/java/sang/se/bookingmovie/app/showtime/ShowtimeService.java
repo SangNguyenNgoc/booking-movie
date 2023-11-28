@@ -194,7 +194,7 @@ public class ShowtimeService implements IShowtimeService {
                 .map(cinemaEntity -> {
                     cinemaEntity.setRooms(null);
                     List<MovieResponse> movieResponseList = getShowtimeByCinema(cinemaEntity.getId()).stream()
-                            .filter(movieResponse -> movieResponse.getShowtimes().size() != 0)
+                            .filter(movieResponse -> !movieResponse.getShowtimes().isEmpty())
                             .toList();
                     CinemaResponse cinemaResponse = cinemaMapper.entityToResponse(cinemaEntity);
                     cinemaResponse.setMovies(movieResponseList);
@@ -210,8 +210,11 @@ public class ShowtimeService implements IShowtimeService {
         if(!showtimeEntity.getStatus()) {
             throw new AllException("Bad request", 400, List.of("Showtime is expired"));
         }
+        if(!showtimeEntity.getTickets().isEmpty()) {
+            throw new AllException("Bad request", 400, List.of("Showtime already have seats booked"));
+        }
         showtimeRepository.deleteById(id);
-        return "Success";
+        return id;
     }
 
     public List<MovieResponse> getShowtimeByCinema(String cinemaId) {
