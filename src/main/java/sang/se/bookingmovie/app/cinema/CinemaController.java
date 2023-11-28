@@ -147,25 +147,11 @@ public class CinemaController {
             }
     )
     @PatchMapping("admin/cinema/{cinemaId}")
-    public ResponseEntity<?> update(@PathVariable("cinemaId") String cinemaId, @RequestBody Cinema cinemaRequest){
+    public ResponseEntity<?> update(
+            @PathVariable("cinemaId") String cinemaId,
+            @RequestBody Cinema cinemaRequest
+    ){
         return ResponseEntity.ok(cinemaService.update(cinemaRequest, cinemaId));
     }
-//    @Operation(
-//            description = "Lấy thông tin rạp phim có điều kiện từ sơ sở dữ liệu",
-//            summary = "Api lấy thông tin rạp phim có điều kiện",
-//            responses = {
-//                    @ApiResponse(
-//                            description = "Success",
-//                            responseCode = "200",
-//                            content = @Content(
-//                                    mediaType = "application/json",
-//                                    schema = @Schema(implementation = ListResponse.class)
-//                            )
-//                    )
-//            }
-//    )
-//    @GetMapping(value = "/cinemas")
-//    public ResponseEntity<?> getByField(@RequestParam("search") String search, @RequestParam()) {
-//        return ResponseEntity.ok("");
-//    }
+
 }

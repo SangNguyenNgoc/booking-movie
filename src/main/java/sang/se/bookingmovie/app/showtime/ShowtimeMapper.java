@@ -33,4 +33,11 @@ public class ShowtimeMapper implements IMapper<ShowtimeEntity, ShowtimeRequest, 
         return showtimeResponse;
     }
 
+    public ShowtimeResponse entityToResponseCreate(ShowtimeEntity showtimeEntity) {
+        ShowtimeResponse showtimeResponse = mapper.map(showtimeEntity, ShowtimeResponse.class);
+//        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+//        showtimeResponse.setStartTime(sdf.format(showtimeEntity.getStartTime()));
+        return showtimeResponse;
+    }
+
 }
