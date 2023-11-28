@@ -53,10 +53,16 @@ public class ShowtimeService implements IShowtimeService {
             throw new AllException("Data in valid", 400, List.of("The room already has showtime"));
         RoomEntity roomEntity = roomRepository.findById(showtimeRequest.getRoom())
                 .orElseThrow(() -> new AllException("Not Found", 404, List.of("Not found room id")));
-        FormatEntity format = formatRepository.findById(showtimeRequest.getFormat())
-                .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found format id")));
         MovieEntity movie = movieRepository.findById(showtimeRequest.getMovie())
                 .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found movie id")));
+        if(movie.getStatus().getId().equals(4)) {
+            throw new AllException("Not found", 404, List.of("Not found movie id"));
+        }
+        Set<FormatEntity> formatEntities = movie.getFormats();
+        FormatEntity format = formatEntities.stream()
+                .filter(formatEntity -> formatEntity.getId().equals(showtimeRequest.getFormat()))
+                .findFirst()
+                .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found format in movie")));
         ShowtimeEntity showtimeEntity = showtimeMapper.requestToEntity(showtimeRequest);
         showtimeEntity.setId(applicationUtil.createUUID());
         showtimeEntity.setRoom(roomEntity);
@@ -66,7 +72,7 @@ public class ShowtimeService implements IShowtimeService {
         showtimeEntity.setRunningTime(movie.getRunningTime() + waitShowtime);
         showtimeRepository.save(showtimeEntity);
         getFieldToCreate(showtimeEntity);
-        return showtimeMapper.entityToResponse(showtimeEntity);
+        return showtimeMapper.entityToResponseCreate(showtimeEntity);
     }
 
     @Override
