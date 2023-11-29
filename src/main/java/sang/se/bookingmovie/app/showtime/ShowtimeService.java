@@ -201,7 +201,7 @@ public class ShowtimeService implements IShowtimeService {
                     cinemaEntity.setRooms(null);
                     List<MovieResponse> movieResponseList = getShowtimeByCinema(cinemaEntity.getId()).stream()
                             .filter(movieResponse -> !movieResponse.getShowtimes().isEmpty())
-                            .toList();
+                            .collect(Collectors.toList());
                     CinemaResponse cinemaResponse = cinemaMapper.entityToResponse(cinemaEntity);
                     cinemaResponse.setMovies(movieResponseList);
                     return cinemaResponse;
@@ -236,7 +236,7 @@ public class ShowtimeService implements IShowtimeService {
                             .collect(Collectors.toList())
                     );
                 })
-                .toList();
+                .collect(Collectors.toList());
     }
 
     private Boolean checkShowtimeInData(ShowtimeRequest newShowtime){
