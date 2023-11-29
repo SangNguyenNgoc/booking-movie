@@ -204,7 +204,7 @@ public class UserService implements IUserService {
         Pageable pageable = PageRequest.of(page-1, size, Sort.by("createDate").descending());
         Page<UserEntity> userEntities = userRepository.findAll(pageable);
         return ListResponse.builder()
-                .total(userEntities.getTotalPages())
+                .total(userEntities.getSize())
                 .data(userEntities.stream()
                         .map(userMapper::entityToResponse)
                         .collect(Collectors.toList()))
