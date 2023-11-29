@@ -1,5 +1,8 @@
 package sang.se.bookingmovie.app.cinema;
 
+import lombok.Getter;
+
+@Getter
 public enum CinemaStatus {
     OPENING("Hoạt động"),
     CLOSED("Đóng cửa"),
@@ -11,7 +14,4 @@ public enum CinemaStatus {
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
 }
