@@ -36,9 +36,16 @@ public class MovieMapper implements IMapper<MovieEntity, Movie, MovieResponse> {
 
     private final ObjectsValidator<Movie> validator;
 
+    private final ObjectsValidator<MovieUpdate> validatorUpdate;
+
     @Override
     public MovieEntity requestToEntity(Movie movie) {
         validator.validate(movie);
+        return mapper.map(movie, MovieEntity.class);
+    }
+
+    public MovieEntity requestToEntity(MovieUpdate movie) {
+        validatorUpdate.validate(movie);
         return mapper.map(movie, MovieEntity.class);
     }
 
@@ -90,6 +97,14 @@ public class MovieMapper implements IMapper<MovieEntity, Movie, MovieResponse> {
     public Movie jsonToRequest(String movieJson) {
         try {
             return objectMapper.readValue(movieJson, Movie.class);
+        } catch (JsonProcessingException e) {
+            throw new JsonException("Json error", List.of("Parse json failure"));
+        }
+    }
+
+    public MovieUpdate jsonToRequestUpdate(String movieJson) {
+        try {
+            return objectMapper.readValue(movieJson, MovieUpdate.class);
         } catch (JsonProcessingException e) {
             throw new JsonException("Json error", List.of("Parse json failure"));
         }

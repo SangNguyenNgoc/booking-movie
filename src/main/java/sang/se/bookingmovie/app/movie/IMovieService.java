@@ -24,7 +24,7 @@ public interface IMovieService {
 
     void updateStatusOfMovie(LocalDate currentDate);
 
-    void updateMovie(String movieId, Movie movie);
+    void updateMovie(String movieId, MovieUpdate movie);
 
     String updatePoster(String movieId, MultipartFile poster);
 

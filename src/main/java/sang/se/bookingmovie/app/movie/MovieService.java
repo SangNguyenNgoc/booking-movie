@@ -192,7 +192,7 @@ public class MovieService implements IMovieService {
     }
 
     @Override
-    public void updateMovie(String movieId, Movie movie) {
+    public void updateMovie(String movieId, MovieUpdate movie) {
         MovieEntity movieEntityAfter = movieMapper.requestToEntity(movie);
         MovieEntity movieEntityBefore = findMovieById(movieId);
 
@@ -355,7 +355,7 @@ public class MovieService implements IMovieService {
             MultipartFile poster, MultipartFile horPoster
     ) {
         if(movieJson != null) {
-            updateMovie(movieId, movieMapper.jsonToRequest(movieJson));
+            updateMovie(movieId, movieMapper.jsonToRequestUpdate(movieJson));
         }
         if(images != null || imageIds != null) {
             updateImages(movieId, images, imageIds);
