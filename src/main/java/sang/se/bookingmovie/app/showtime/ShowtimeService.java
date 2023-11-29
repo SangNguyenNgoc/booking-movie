@@ -126,6 +126,7 @@ public class ShowtimeService implements IShowtimeService {
     public ListResponse getShowtimeByCinemaAdmin() {
         List<CinemaEntity> cinemaEntities = showtimeRepository.findByCinemaWithRoom();
         List<CinemaResponse> cinemaResponses = cinemaEntities.stream()
+                .filter(cinemaEntity -> cinemaEntity.getStatus() == CinemaStatus.OPENING)
                 .peek(cinemaEntity -> cinemaEntity.setRooms(cinemaEntity.getRooms().stream()
                         .filter(roomEntity -> roomEntity.getStatus().getId() == 1)
                         .peek(roomEntity -> {
