@@ -13,6 +13,7 @@ import sang.se.bookingmovie.app.movie.MovieRepository;
 import sang.se.bookingmovie.app.movie.MovieResponse;
 import sang.se.bookingmovie.app.room.RoomEntity;
 import sang.se.bookingmovie.app.room.RoomRepository;
+import sang.se.bookingmovie.app.room.RoomResponse;
 import sang.se.bookingmovie.app.seat_room.SeatRoomResponse;
 import sang.se.bookingmovie.exception.AllException;
 import sang.se.bookingmovie.exception.DataNotFoundException;
@@ -142,7 +143,11 @@ public class ShowtimeService implements IShowtimeService {
                 .toList();
         return ListResponse.builder()
                 .total(cinemaResponses.size())
-                .data(cinemaResponses)
+                .data(cinemaResponses.stream()
+                        .peek(cinemaResponse -> cinemaResponse.setRooms(cinemaResponse.getRooms().stream()
+                                .sorted(Comparator.comparing(RoomResponse::getId))
+                                .toList()))
+                        .toList())
                 .build();
     }
 
