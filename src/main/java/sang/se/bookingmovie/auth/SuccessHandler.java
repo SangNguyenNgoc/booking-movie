@@ -92,7 +92,8 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                     .exist(false)
                     .build();
         } else {
-            userRepository.updateVerifyById(true, user.getId());
+            RoleEntity roleEntity = roleRepository.findById(2).orElseThrow();
+            userRepository.updateVerifyAndRoleByEmail(true, roleEntity, user.getEmail());
             return AuthResponse.builder()
                     .token(jwtService.generateToken(user))
                     .user(userMapper.entityToResponse(user))
