@@ -39,7 +39,7 @@ public class CommentService implements ICommentService {
 
     @Override
     @Transactional
-    public String create(String token, Comment comment) {
+    public CommentResponse create(String token, Comment comment) {
         String userId = jwtService.extractSubject(jwtService.validateToken(token));
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
@@ -59,7 +59,7 @@ public class CommentService implements ICommentService {
         commentRepository.save(commentEntity);
         movieEntity.setSumOfRatings(movieEntity.getSumOfRatings() + comment.getRating());
         movieEntity.setNumberOfRatings(movieEntity.getNumberOfRatings() + 1);
-        return "Success";
+        return commentMapper.entityToResponse(commentEntity);
     }
 
     @Override

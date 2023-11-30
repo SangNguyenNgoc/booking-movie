@@ -28,6 +28,9 @@ public class CommentResponse {
 
     private String user;
 
+    @JsonProperty("user_id")
+    private String userId;
+
     private CommentStatus status;
 
     @JsonProperty("avatar_user")

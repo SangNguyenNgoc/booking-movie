@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public interface ICommentService {
 
-    String create(String token, Comment comment);
+    CommentResponse create(String token, Comment comment);
 
     ListResponse getAll();
 
