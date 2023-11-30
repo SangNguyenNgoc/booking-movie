@@ -55,7 +55,7 @@ public class UserMapper implements IMapper<UserEntity, User, UserResponse> {
         switch (applicationUtil.toSlug(gender)) {
             case "nam" -> {return Gender.MALE;}
             case "nu" -> {return Gender.FEMALE;}
-            case "khong-xac-dinh" -> {return Gender.UNKNOWN;}
+            case "khac" -> {return Gender.UNKNOWN;}
             default -> throw new AllException("Data invalid", 404, List.of("Gender invalid"));
         }
     }

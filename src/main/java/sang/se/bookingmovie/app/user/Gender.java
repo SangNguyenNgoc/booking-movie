@@ -1,9 +1,12 @@
 package sang.se.bookingmovie.app.user;
 
+import lombok.Getter;
+
+@Getter
 public enum Gender {
     MALE("Nam"),
     FEMALE("Nữ"),
-    UNKNOWN("Không xác định");
+    UNKNOWN("Khác");
 
     private final String value;
 
@@ -11,7 +14,4 @@ public enum Gender {
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
 }
