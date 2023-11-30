@@ -92,6 +92,7 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                     .exist(false)
                     .build();
         } else {
+            userRepository.updateVerifyById(true, user.getId());
             return AuthResponse.builder()
                     .token(jwtService.generateToken(user))
                     .user(userMapper.entityToResponse(user))
