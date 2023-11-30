@@ -1,17 +1,15 @@
 package sang.se.bookingmovie.app.format;
 
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import sang.se.bookingmovie.response.ListResponse;
-import sang.se.bookingmovie.validate.ObjectsValidator;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class FormatService implements IFormatService{
+public class FormatService implements IFormatService {
 
     private final FormatMapper mapper;
 

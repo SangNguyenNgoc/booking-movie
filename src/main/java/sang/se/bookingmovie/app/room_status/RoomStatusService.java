@@ -8,8 +8,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class RoomStatusService implements IRoomStatusService{
+public class RoomStatusService implements IRoomStatusService {
     private final RoomStatusRepository roomStatusRepository;
+
     @Override
     public ListResponse getAll() {
         List<RoomStatusEntity> roomStatusEntities = roomStatusRepository.findAll();

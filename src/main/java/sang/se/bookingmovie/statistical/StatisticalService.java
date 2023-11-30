@@ -18,7 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class  StatisticalService implements IStatisticalService {
+public class StatisticalService implements IStatisticalService {
 
     private final BillRepository billRepository;
     private final CinemaRepository cinemaRepository;
@@ -51,7 +51,7 @@ public class  StatisticalService implements IStatisticalService {
         Double lastTimeRevenue = billRepository.findRevenueByMonth(date.getMonth().getValue() - 1, date.getYear())
                 .orElse(null);
         double percent = 100.0;
-        if(lastTimeRevenue != null) {
+        if (lastTimeRevenue != null) {
             percent = ((revenue - lastTimeRevenue) / lastTimeRevenue) * 100;
         }
 
@@ -98,7 +98,7 @@ public class  StatisticalService implements IStatisticalService {
         Integer lastTimeRevenue = billRepository.findTotalTicketByMonth(date.getMonth().getValue() - 1, date.getYear())
                 .orElse(0);
         double percent = 100.0;
-        if(lastTimeRevenue != 0) {
+        if (lastTimeRevenue != 0) {
             percent = ((double) (total - lastTimeRevenue) / lastTimeRevenue) * 100;
         }
 
@@ -122,13 +122,13 @@ public class  StatisticalService implements IStatisticalService {
 
     @Override
     public CardResponse getRevenueCinema(Integer month, Integer year) {
-        if (month < 1 || month > 12) throw new AllException("Data invalid!", 400 , List.of("Month must be from 0 - 12"));
+        if (month < 1 || month > 12) throw new AllException("Data invalid!", 400, List.of("Month must be from 0 - 12"));
         Double revenue = 0.0;
         List<CinemaEntity> cinemaEntities = cinemaRepository.findAll();
         List<ColumnResponse> allCinemaInMonth = new ArrayList<>();
         String bestCinema = null;
         double bestRevenue = 0.0;
-        for(CinemaEntity cinemaEntity : cinemaEntities){
+        for (CinemaEntity cinemaEntity : cinemaEntities) {
             Double data = getTotalSumForBills(billRepository.findRevenueByMonthAndCinema(
                     month,
                     year,
@@ -138,14 +138,14 @@ public class  StatisticalService implements IStatisticalService {
                     .content(data.toString())
                     .title(cinemaEntity.getName())
                     .build());
-            if(data > bestRevenue){
+            if (data > bestRevenue) {
                 bestRevenue = data;
                 bestCinema = cinemaEntity.getName();
             }
             revenue += data;
         }
         double percent = 0.0;
-        if (revenue != 0) percent = (bestRevenue /revenue) * 100;
+        if (revenue != 0) percent = (bestRevenue / revenue) * 100;
 
         DecimalFormat percentFormat = new DecimalFormat("#.##");
         String stringPercent = percentFormat.format(percent);
@@ -161,13 +161,13 @@ public class  StatisticalService implements IStatisticalService {
 
     @Override
     public CardResponse getRevenueMovie(Integer month, Integer year) {
-        if (month < 1 || month > 12) throw new AllException("Data invalid!", 400 , List.of("Month must be from 0 - 12"));
+        if (month < 1 || month > 12) throw new AllException("Data invalid!", 400, List.of("Month must be from 0 - 12"));
         Double revenue = 0.0;
-        List< MovieEntity> movieEntities = movieRepository.findByMonthYear(month, year);
+        List<MovieEntity> movieEntities = movieRepository.findByMonthYear(month, year);
         List<ColumnResponse> allMovieInMonth = new ArrayList<>();
         String bestMovie = null;
         double bestRevenue = 0.0;
-        for(MovieEntity movieEntity : movieEntities){
+        for (MovieEntity movieEntity : movieEntities) {
             Double data = getTotalSumForBills(billRepository.findRevenueByMonthAndMovie(
                     month,
                     year,
@@ -177,14 +177,14 @@ public class  StatisticalService implements IStatisticalService {
                     .content(data.toString())
                     .title(movieEntity.getName())
                     .build());
-            if(data > bestRevenue){
+            if (data > bestRevenue) {
                 bestRevenue = data;
                 bestMovie = movieEntity.getName();
             }
             revenue += data;
         }
         double percent = 0;
-        if (revenue != 0) percent = (bestRevenue /revenue) * 100;
+        if (revenue != 0) percent = (bestRevenue / revenue) * 100;
 
         DecimalFormat percentFormat = new DecimalFormat("#.##");
         String stringPercent = percentFormat.format(percent);

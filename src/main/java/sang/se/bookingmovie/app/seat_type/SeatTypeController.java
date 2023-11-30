@@ -7,7 +7,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import sang.se.bookingmovie.error.ErrorResponse;
 import sang.se.bookingmovie.response.ListResponse;
 
@@ -40,7 +43,7 @@ public class SeatTypeController {
             }
     )
     @PostMapping("/admin/seat_type")
-    public ResponseEntity<?> create(SeatType seatType){
+    public ResponseEntity<?> create(SeatType seatType) {
         return ResponseEntity.status(201)
                 .body(seatTypeService.create(seatType));
     }
@@ -60,7 +63,7 @@ public class SeatTypeController {
             }
     )
     @GetMapping("/admin/seat_type")
-    public ResponseEntity<?> getAll(){
+    public ResponseEntity<?> getAll() {
         return ResponseEntity.status(200)
                 .body(seatTypeService.getAll());
     }

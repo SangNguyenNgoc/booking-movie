@@ -14,14 +14,8 @@ import sang.se.bookingmovie.exception.JsonException;
 import sang.se.bookingmovie.utils.IMapper;
 import sang.se.bookingmovie.validate.ObjectsValidator;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,7 +45,7 @@ public class MovieMapper implements IMapper<MovieEntity, Movie, MovieResponse> {
 
     @Override
     public MovieResponse entityToResponse(MovieEntity movieEntity) {
-        if(movieEntity.getComments() == null) {
+        if (movieEntity.getComments() == null) {
             return mapper.map(movieEntity, MovieResponse.class);
         } else {
             MovieResponse movieResponse = mapper.map(movieEntity, MovieResponse.class);
@@ -69,17 +63,17 @@ public class MovieMapper implements IMapper<MovieEntity, Movie, MovieResponse> {
     }
 
     public MovieResponse entityCinemaDetailShowtime(MovieEntity movieEntity) {
-        if(movieEntity.getShowtimes() == null) {
+        if (movieEntity.getShowtimes() == null) {
             return mapper.map(movieEntity, MovieResponse.class);
         } else {
             MovieResponse movieResponse = mapper.map(movieEntity, MovieResponse.class);
             movieResponse.setShowtimes(movieResponse.getShowtimes().stream()
-                            .sorted(Comparator.comparing(ShowtimeResponse::getStartTime))
-                            .peek(showtimeResponse -> {
-                                int lastIndex = showtimeResponse.getStartTime().lastIndexOf(":");
-                                showtimeResponse.setStartTime(showtimeResponse.getStartTime().substring(0, lastIndex));
-                            })
-                            .collect(Collectors.toList())
+                    .sorted(Comparator.comparing(ShowtimeResponse::getStartTime))
+                    .peek(showtimeResponse -> {
+                        int lastIndex = showtimeResponse.getStartTime().lastIndexOf(":");
+                        showtimeResponse.setStartTime(showtimeResponse.getStartTime().substring(0, lastIndex));
+                    })
+                    .collect(Collectors.toList())
             );
             return movieResponse;
         }
@@ -109,7 +103,6 @@ public class MovieMapper implements IMapper<MovieEntity, Movie, MovieResponse> {
             throw new JsonException("Json error", List.of("Parse json failure"));
         }
     }
-
 
 
 }

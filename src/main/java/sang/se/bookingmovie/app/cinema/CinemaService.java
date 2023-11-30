@@ -1,20 +1,15 @@
 package sang.se.bookingmovie.app.cinema;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import sang.se.bookingmovie.app.movie_genre.MovieGenre;
-import sang.se.bookingmovie.app.movie_genre.MovieGenreEntity;
 import sang.se.bookingmovie.app.room.RoomEntity;
 import sang.se.bookingmovie.app.room.RoomResponse;
 import sang.se.bookingmovie.app.room.RoomService;
 import sang.se.bookingmovie.app.showtime.ShowtimeEntity;
-import sang.se.bookingmovie.app.user.Gender;
 import sang.se.bookingmovie.exception.AllException;
 import sang.se.bookingmovie.response.ListResponse;
 import sang.se.bookingmovie.utils.ApplicationUtil;
@@ -47,7 +42,7 @@ public class CinemaService implements ICinemaService {
 
     @Override
     public ListResponse getAll(Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page-1, size, Sort.by("id"));
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id"));
         Page<CinemaEntity> cinemaEntities = cinemaRepository.findAll(pageable);
         return ListResponse.builder()
                 .total(cinemaEntities.getSize())
@@ -61,7 +56,7 @@ public class CinemaService implements ICinemaService {
     @Override
     public Cinema getById(String cinemaId) {
         CinemaEntity cinemaEntity = cinemaRepository.findById(cinemaId)
-                .orElseThrow(()-> new AllException("Not Found", 404, List.of("cinemaId not found")));
+                .orElseThrow(() -> new AllException("Not Found", 404, List.of("cinemaId not found")));
         cinemaEntity.setRooms(null);
         return mapper.entityToCinema(cinemaEntity);
     }
@@ -69,7 +64,7 @@ public class CinemaService implements ICinemaService {
     @Override
     public CinemaResponse getByIdInAdmin(String cinemaId) {
         CinemaEntity cinemaEntity = cinemaRepository.findById(cinemaId)
-                .orElseThrow(()-> new AllException("Not Found", 404, List.of("cinemaId not found")));
+                .orElseThrow(() -> new AllException("Not Found", 404, List.of("cinemaId not found")));
         Set<RoomEntity> roomEntities = cinemaEntity.getRooms().stream()
                 .peek(roomEntity -> {
                     roomEntity.setCinema(null);
@@ -90,13 +85,13 @@ public class CinemaService implements ICinemaService {
     @Override
     public String update(Cinema cinemaRequest, String cinemaId) {
         CinemaEntity cinemaEntity = cinemaRepository.findById(cinemaId)
-                .orElseThrow(()-> new AllException("Not Found", 404, List.of("cinemaId not found")));
-        if(getStatusInRequest(cinemaRequest.getStatus()) != CinemaStatus.OPENING) {
+                .orElseThrow(() -> new AllException("Not Found", 404, List.of("cinemaId not found")));
+        if (getStatusInRequest(cinemaRequest.getStatus()) != CinemaStatus.OPENING) {
             int showtimeInCinema = cinemaEntity.getRooms().stream()
                     .flatMap(roomEntity -> roomEntity.getShowtimes().stream())
                     .filter(ShowtimeEntity::getStatus)
                     .toList().size();
-            if(showtimeInCinema > 0) {
+            if (showtimeInCinema > 0) {
                 throw new AllException("Bad request",
                         400,
                         List.of("It is not possible to close or maintain this cinema because screenings still exist")
@@ -120,12 +115,12 @@ public class CinemaService implements ICinemaService {
         return "success";
     }
 
-    private String createCinemaID(){
+    private String createCinemaID() {
         long count = cinemaRepository.count() + 1;
-        return "Cinema" + applicationUtil.addZeros(count,3);
+        return "Cinema" + applicationUtil.addZeros(count, 3);
     }
 
-    private void update(CinemaEntity cinemaEntity, Cinema cinema){
+    private void update(CinemaEntity cinemaEntity, Cinema cinema) {
         cinemaEntity.setName(cinema.getName());
         cinemaEntity.setAddress(cinema.getAddress());
         cinemaEntity.setCity(cinema.getCity());
@@ -136,9 +131,15 @@ public class CinemaService implements ICinemaService {
 
     private CinemaStatus getStatusInRequest(String input) {
         switch (applicationUtil.toSlug(input)) {
-            case "hoat-dong" -> {return CinemaStatus.OPENING;}
-            case "dong-cua" -> {return CinemaStatus.CLOSED;}
-            case "dang-bao-tri" -> {return CinemaStatus.MAINTAINED;}
+            case "hoat-dong" -> {
+                return CinemaStatus.OPENING;
+            }
+            case "dong-cua" -> {
+                return CinemaStatus.CLOSED;
+            }
+            case "dang-bao-tri" -> {
+                return CinemaStatus.MAINTAINED;
+            }
             default -> throw new AllException("Data invalid", 404, List.of("Cinema status invalid"));
         }
     }

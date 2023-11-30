@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import sang.se.bookingmovie.response.ErrorResponse;
 import sang.se.bookingmovie.response.ListResponse;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(value = "/api/v1")
 @SecurityRequirement(name = "Bearer Authentication")

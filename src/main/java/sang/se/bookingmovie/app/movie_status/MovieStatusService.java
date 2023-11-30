@@ -2,9 +2,6 @@ package sang.se.bookingmovie.app.movie_status;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import sang.se.bookingmovie.app.movie_genre.MovieGenreEntity;
-import sang.se.bookingmovie.app.movie_genre.MovieGenreMapper;
-import sang.se.bookingmovie.app.movie_genre.MovieGenreRepository;
 import sang.se.bookingmovie.response.ListResponse;
 import sang.se.bookingmovie.utils.ApplicationUtil;
 
@@ -14,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class MovieStatusService implements IMovieStatusService{
+public class MovieStatusService implements IMovieStatusService {
 
 
     private final MovieStatusRepository movieStatusRepository;

@@ -6,18 +6,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sang.se.bookingmovie.app.cinema.CinemaResponse;
 import sang.se.bookingmovie.app.movie.MovieResponse;
 import sang.se.bookingmovie.error.ErrorResponse;
-import sang.se.bookingmovie.response.ListResponse;
 
 import java.sql.Date;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1")
@@ -49,7 +45,7 @@ public class ShowtimeController {
             }
     )
     @PostMapping("/admin/showtime")
-    public ResponseEntity<?> createShowtime(@RequestBody ShowtimeRequest showtimeRequests){
+    public ResponseEntity<?> createShowtime(@RequestBody ShowtimeRequest showtimeRequests) {
         return ResponseEntity.status(201)
                 .body(showtimeService.create(showtimeRequests));
     }
@@ -76,7 +72,7 @@ public class ShowtimeController {
             }
     )
     @DeleteMapping("/admin/showtime/{showtimeId}")
-    public ResponseEntity<?> deleteShowtime(@PathVariable(value = "showtimeId") String showtimeId){
+    public ResponseEntity<?> deleteShowtime(@PathVariable(value = "showtimeId") String showtimeId) {
         return ResponseEntity.status(200)
                 .body(showtimeService.delete(showtimeId));
     }
@@ -183,7 +179,7 @@ public class ShowtimeController {
     )
 
     @GetMapping(value = "/landing/cinema/movie/showtime")
-    public ResponseEntity<?> getAllShowtime(){
+    public ResponseEntity<?> getAllShowtime() {
         return ResponseEntity.ok(showtimeService.getAllCinemaDetailShowtime());
     }
 

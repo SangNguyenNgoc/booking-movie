@@ -3,16 +3,13 @@ package sang.se.bookingmovie.app.ticket;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import sang.se.bookingmovie.app.room.RoomEntity;
 import sang.se.bookingmovie.app.seat_room.SeatRoomEntity;
 import sang.se.bookingmovie.app.showtime.ShowtimeEntity;
 import sang.se.bookingmovie.utils.IMapper;
 
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.Locale;
 
 @Service
@@ -20,6 +17,7 @@ import java.util.Locale;
 public class TicketMapper implements IMapper<TicketEntity, TicketResponse, TicketResponse> {
 
     private ModelMapper mapper;
+
     @Override
     public TicketEntity requestToEntity(TicketResponse ticketResponse) {
         return null;
@@ -63,7 +61,7 @@ public class TicketMapper implements IMapper<TicketEntity, TicketResponse, Ticke
     }
 
     public Boolean checkTicketValid(ShowtimeEntity showtimeEntity) {
-        if(showtimeEntity.getStartDate().toLocalDate().isBefore(LocalDate.now())) {
+        if (showtimeEntity.getStartDate().toLocalDate().isBefore(LocalDate.now())) {
             return false;
         } else if (showtimeEntity.getStartDate().toLocalDate().isAfter(LocalDate.now())) {
             return true;

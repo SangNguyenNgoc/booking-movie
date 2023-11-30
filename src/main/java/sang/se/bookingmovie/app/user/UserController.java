@@ -5,8 +5,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +14,6 @@ import sang.se.bookingmovie.auth.AuthRequest;
 import sang.se.bookingmovie.auth.AuthResponse;
 import sang.se.bookingmovie.response.ErrorResponse;
 import sang.se.bookingmovie.response.ListResponse;
-
-import java.sql.Date;
 
 @RestController
 @RequestMapping(value = "/api/v1")

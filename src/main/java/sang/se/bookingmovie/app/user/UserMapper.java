@@ -1,10 +1,8 @@
 package sang.se.bookingmovie.app.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import sang.se.bookingmovie.app.movie.Movie;
 import sang.se.bookingmovie.auth.AuthRequest;
 import sang.se.bookingmovie.exception.AllException;
 import sang.se.bookingmovie.utils.ApplicationUtil;
@@ -53,9 +51,15 @@ public class UserMapper implements IMapper<UserEntity, User, UserResponse> {
 
     public Gender getGenderInRequest(String gender) {
         switch (applicationUtil.toSlug(gender)) {
-            case "nam" -> {return Gender.MALE;}
-            case "nu" -> {return Gender.FEMALE;}
-            case "khac" -> {return Gender.UNKNOWN;}
+            case "nam" -> {
+                return Gender.MALE;
+            }
+            case "nu" -> {
+                return Gender.FEMALE;
+            }
+            case "khac" -> {
+                return Gender.UNKNOWN;
+            }
             default -> throw new AllException("Data invalid", 404, List.of("Gender invalid"));
         }
     }

@@ -4,5 +4,6 @@ import sang.se.bookingmovie.response.ListResponse;
 
 public interface ISeatTypeService {
     String create(SeatType seatType);
+
     ListResponse getAll();
 }

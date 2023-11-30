@@ -12,8 +12,6 @@ import sang.se.bookingmovie.exception.UserNotFoundException;
 import sang.se.bookingmovie.response.ListResponse;
 import sang.se.bookingmovie.utils.JwtService;
 
-import java.sql.Date;
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -37,7 +35,7 @@ public class TicketService implements ITicketService {
                 .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
         List<TicketEntity> ticketEntities;
         List<TicketResponse> ticketResponses;
-        if(stillValid) {
+        if (stillValid) {
             ticketEntities = ticketRepository.findByUser(userEntity.getId());
             ticketResponses = ticketEntities.stream()
                     .filter(ticketEntity -> ticketMapper.checkTicketValid(ticketEntity.getShowtime()))
@@ -82,7 +80,7 @@ public class TicketService implements ITicketService {
         String userId = jwtService.extractSubject(jwtService.validateToken(token));
         TicketEntity ticketEntity = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Ticket is not exits")));
-        if(!ticketEntity.getBill().getUser().getId().equals(userId)) {
+        if (!ticketEntity.getBill().getUser().getId().equals(userId)) {
             throw new AllException("Access denied", 403, List.of("Access denied"));
         }
         return ticketMapper.entityToResponse(ticketEntity);

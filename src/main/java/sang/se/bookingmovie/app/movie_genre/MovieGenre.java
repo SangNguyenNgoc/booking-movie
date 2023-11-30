@@ -1,6 +1,5 @@
 package sang.se.bookingmovie.app.movie_genre;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

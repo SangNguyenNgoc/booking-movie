@@ -1,12 +1,8 @@
 package sang.se.bookingmovie.app.seat_room;
 
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DialectOverride;
 import sang.se.bookingmovie.app.room.RoomEntity;
-import sang.se.bookingmovie.app.seat.SeatEntity;
 import sang.se.bookingmovie.app.seat_type.SeatTypeEntity;
 import sang.se.bookingmovie.app.ticket.TicketEntity;
 

@@ -1,10 +1,8 @@
 package sang.se.bookingmovie.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,7 +25,9 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public ObjectMapper objectMapper() { return new ObjectMapper(); }
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

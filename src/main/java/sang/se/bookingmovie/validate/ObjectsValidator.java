@@ -19,7 +19,7 @@ public class ObjectsValidator<T> {
 
     public void validate(T objectToValidate) {
         Set<ConstraintViolation<T>> validations = validator.validate(objectToValidate);
-        if(!validations.isEmpty()) {
+        if (!validations.isEmpty()) {
             List<String> messages = validations.stream()
                     .map(ConstraintViolation::getMessage)
                     .collect(Collectors.toList());

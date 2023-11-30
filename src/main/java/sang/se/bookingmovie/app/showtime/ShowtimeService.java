@@ -23,9 +23,10 @@ import sang.se.bookingmovie.utils.ApplicationUtil;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -56,7 +57,7 @@ public class ShowtimeService implements IShowtimeService {
                 .orElseThrow(() -> new AllException("Not Found", 404, List.of("Not found room id")));
         MovieEntity movie = movieRepository.findById(showtimeRequest.getMovie())
                 .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found movie id")));
-        if(movie.getStatus().getId().equals(4)) {
+        if (movie.getStatus().getId().equals(4)) {
             throw new AllException("Not found", 404, List.of("Not found movie id"));
         }
         Set<FormatEntity> formatEntities = movie.getFormats();
@@ -78,7 +79,7 @@ public class ShowtimeService implements IShowtimeService {
 
     @Override
     public ListResponse getShowtimeByCinemaAndDate(Date date, String cinemaId) {
-        if(!cinemaRepository.existsById(cinemaId)) {
+        if (!cinemaRepository.existsById(cinemaId)) {
             throw new DataNotFoundException("Data not found", List.of("Cinema is not exits"));
         }
         List<MovieEntity> movieEntities = showtimeRepository.findByDateAndCinema(date, cinemaId);
@@ -99,11 +100,11 @@ public class ShowtimeService implements IShowtimeService {
 
     @Override
     public ListResponse getShowtimeByMovie(Date date, String movieId) {
-        if(!movieRepository.existsById(movieId)) {
+        if (!movieRepository.existsById(movieId)) {
             throw new DataNotFoundException("Data not found", List.of("movie is not exist"));
         }
         List<CinemaEntity> cinemaEntities = showtimeRepository.findByMovieAndDate(date, movieId);
-        List<CinemaResponse> cinemaResponses =  cinemaEntities.stream().map(cinemaEntity -> {
+        List<CinemaResponse> cinemaResponses = cinemaEntities.stream().map(cinemaEntity -> {
                     Set<ShowtimeEntity> showtimeEntities = cinemaEntity.getRooms().stream()
                             .flatMap(roomEntity -> roomEntity.getShowtimes().stream())
                             .collect(Collectors.toSet());
@@ -157,7 +158,7 @@ public class ShowtimeService implements IShowtimeService {
         List<ShowtimeEntity> showtimeEntities = showtimeRepository.findAll();
         showtimeEntities.forEach(showtimeEntity -> {
             LocalDate startDate = showtimeEntity.getStartDate().toLocalDate();
-            if(startDate.isBefore(currentDate)) {
+            if (startDate.isBefore(currentDate)) {
                 showtimeEntity.setStatus(false);
             } else {
                 if (startDate.equals(currentDate)) {
@@ -174,7 +175,7 @@ public class ShowtimeService implements IShowtimeService {
     public ShowtimeResponse getSeatInShowTime(String showtimeId) {
         ShowtimeEntity showtimeEntity = showtimeRepository.findShowtimeAndSeat(showtimeId)
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Showtime is not exits")));
-        if(!showtimeEntity.getStatus()) {
+        if (!showtimeEntity.getStatus()) {
             throw new DataNotFoundException("Data not found", List.of("Showtime is not exits"));
         }
         getFieldToGetSeat(showtimeEntity);
@@ -213,10 +214,10 @@ public class ShowtimeService implements IShowtimeService {
     public String delete(String id) {
         ShowtimeEntity showtimeEntity = showtimeRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Show time is not exist")));
-        if(!showtimeEntity.getStatus()) {
+        if (!showtimeEntity.getStatus()) {
             throw new AllException("Bad request", 400, List.of("Showtime is expired"));
         }
-        if(!showtimeEntity.getTickets().isEmpty()) {
+        if (!showtimeEntity.getTickets().isEmpty()) {
             throw new AllException("Bad request", 400, List.of("Showtime already have seats booked"));
         }
         showtimeRepository.deleteById(id);
@@ -239,7 +240,7 @@ public class ShowtimeService implements IShowtimeService {
                 .collect(Collectors.toList());
     }
 
-    private Boolean checkShowtimeInData(ShowtimeRequest newShowtime){
+    private Boolean checkShowtimeInData(ShowtimeRequest newShowtime) {
         List<ShowtimeEntity> showtimeEntities = showtimeRepository.findByDateAndRoom(newShowtime.getStartDate(), newShowtime.getRoom());
         MovieEntity movieEntity = movieRepository.findByAddShowtime(newShowtime.getMovie())
                 .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found movie id")));
@@ -247,12 +248,12 @@ public class ShowtimeService implements IShowtimeService {
         LocalTime startTimeTesting = newShowtime.getStartTime().toLocalTime();
         LocalTime endTimeTesting = startTimeTesting.plusMinutes(movieEntity.getRunningTime() + waitShowtime);
 
-        for (ShowtimeEntity showtimeEntity : showtimeEntities ) {
+        for (ShowtimeEntity showtimeEntity : showtimeEntities) {
 
             LocalTime startTimeInData = showtimeEntity.getStartTime().toLocalTime();
             LocalTime endTimeInData = startTimeInData.plusMinutes(showtimeEntity.getRunningTime());
 
-            if ( (startTimeTesting.isAfter(startTimeInData) && startTimeTesting.isBefore(endTimeInData)) ||
+            if ((startTimeTesting.isAfter(startTimeInData) && startTimeTesting.isBefore(endTimeInData)) ||
                     (startTimeInData.isAfter(startTimeTesting) && startTimeInData.isBefore(endTimeTesting)) ||
                     (startTimeTesting.equals(startTimeInData))
             ) {
@@ -262,7 +263,7 @@ public class ShowtimeService implements IShowtimeService {
         return true;
     }
 
-    private Boolean checkShowtimeInList(List<ShowtimeRequest> showtimeRequests){
+    private Boolean checkShowtimeInList(List<ShowtimeRequest> showtimeRequests) {
 
         for (int i = 0; i < showtimeRequests.size() - 1; i++) {
 
@@ -271,19 +272,19 @@ public class ShowtimeService implements IShowtimeService {
             LocalTime startTimeTesting = showtimeRequests.get(i).getStartTime().toLocalTime();
             LocalTime endTimeTesting = startTimeTesting.plusMinutes(movieEntityTesting.getRunningTime() + waitShowtime);
 
-            for (int j = i+1; j < showtimeRequests.size(); j++) {
+            for (int j = i + 1; j < showtimeRequests.size(); j++) {
 
                 MovieEntity movieEntityInList = movieRepository.findByAddShowtime(showtimeRequests.get(i).getMovie())
                         .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found movie id")));
                 LocalTime startTimeInList = showtimeRequests.get(j).getStartTime().toLocalTime();
                 LocalTime endTimeInList = startTimeInList.plusMinutes(movieEntityInList.getRunningTime() + waitShowtime);
 
-                if(showtimeRequests.get(i).getStartDate().equals(showtimeRequests.get(j).getStartDate())) {
+                if (showtimeRequests.get(i).getStartDate().equals(showtimeRequests.get(j).getStartDate())) {
                     if ((
                             (startTimeTesting.isAfter(startTimeInList) && startTimeTesting.isBefore(endTimeInList)) ||
-                            (startTimeInList.isAfter(startTimeTesting) && startTimeInList.isBefore(endTimeTesting)) ||
+                                    (startTimeInList.isAfter(startTimeTesting) && startTimeInList.isBefore(endTimeTesting)) ||
                                     startTimeTesting.equals(startTimeInList)
-                        )
+                    )
                             && showtimeRequests.get(i).getRoom().equals(showtimeRequests.get(j).getRoom())
                     ) {
                         return false;

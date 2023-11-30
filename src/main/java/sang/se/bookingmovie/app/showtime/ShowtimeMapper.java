@@ -29,7 +29,7 @@ public class ShowtimeMapper implements IMapper<ShowtimeEntity, ShowtimeRequest, 
         showtimeResponse.setStartTime(sdf.format(showtimeEntity.getStartTime()));
         Locale vietnameseLocale = Locale.forLanguageTag("vi-VN");
         sdf = new SimpleDateFormat("E dd/MM", vietnameseLocale);
-        showtimeResponse.setStartDate(sdf.format(showtimeEntity.getStartDate()).replace("h ",""));
+        showtimeResponse.setStartDate(sdf.format(showtimeEntity.getStartDate()).replace("h ", ""));
         return showtimeResponse;
     }
 

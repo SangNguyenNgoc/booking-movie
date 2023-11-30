@@ -5,16 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sang.se.bookingmovie.app.cinema.CinemaEntity;
 import sang.se.bookingmovie.app.cinema.CinemaRepository;
-import sang.se.bookingmovie.app.movie.MovieEntity;
-import sang.se.bookingmovie.app.movie_status.MovieStatusEntity;
 import sang.se.bookingmovie.app.room_status.RoomStatusEntity;
 import sang.se.bookingmovie.app.room_status.RoomStatusRepository;
-import sang.se.bookingmovie.app.seat_room.SeatRoomEntity;
 import sang.se.bookingmovie.app.seat_room.SeatRoomMapper;
 import sang.se.bookingmovie.app.seat_room.SeatRoomService;
 import sang.se.bookingmovie.exception.AllException;
@@ -23,9 +19,7 @@ import sang.se.bookingmovie.response.ListResponse;
 import sang.se.bookingmovie.utils.ApplicationUtil;
 import sang.se.bookingmovie.validate.ObjectsValidator;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,7 +47,7 @@ public class RoomService implements IRoomService {
         validator.validate(roomRequest);
         CinemaEntity cinema = cinemaRepository.findById(cinemaId)
                 .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found id" + cinemaId)));
-        RoomEntity newRoom =  new RoomEntity(roomRequest.getName(), roomRequest.getTotalSeats(), roomRequest.getTotalSeats());
+        RoomEntity newRoom = new RoomEntity(roomRequest.getName(), roomRequest.getTotalSeats(), roomRequest.getTotalSeats());
         newRoom.setCinema(cinema);
         newRoom.setId(createRoomID());
         newRoom.setSlug(applicationUtil.toSlug(newRoom.getName()));
@@ -94,7 +88,7 @@ public class RoomService implements IRoomService {
     public ListResponse getAllByName(String cinemaId, String name, Integer page, Integer size) {
         cinemaRepository.findById(cinemaId)
                 .orElseThrow(() -> new AllException("Not found", 404, List.of(cinemaId + " not found")));
-        Pageable pageable = PageRequest.of(page-1, size, Sort.by("id"));
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id"));
         Page<RoomEntity> roomEntities = roomRepository.findByNameInCinema(cinemaId, name, pageable);
         return ListResponse.builder()
                 .total(roomEntities.getTotalPages())
@@ -120,7 +114,7 @@ public class RoomService implements IRoomService {
 
     @Override
     public void createWithCinema(RoomReq roomRequest, CinemaEntity cinema) {
-        RoomEntity newRoom =  RoomEntity.builder()
+        RoomEntity newRoom = RoomEntity.builder()
                 .name(roomRequest.getName())
                 .totalSeats(roomRequest.getTotalSeats())
                 .availableSeats(roomRequest.getTotalSeats())
@@ -132,13 +126,13 @@ public class RoomService implements IRoomService {
         seatRoomService.createWithRoomEntity(roomRequest.getSeats(), roomRepository.save(newRoom));
     }
 
-    private String createRoomID(){
+    private String createRoomID() {
         long count = roomRepository.count() + 1;
-        return "Room" + applicationUtil.addZeros(count,3);
+        return "Room" + applicationUtil.addZeros(count, 3);
     }
 
-    private String createRoomID(int index){
+    private String createRoomID(int index) {
         long count = roomRepository.count() + 1 + index;
-        return "Room" + applicationUtil.addZeros(count,3);
+        return "Room" + applicationUtil.addZeros(count, 3);
     }
 }

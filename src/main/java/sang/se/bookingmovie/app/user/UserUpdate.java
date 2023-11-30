@@ -1,7 +1,8 @@
 package sang.se.bookingmovie.app.user;
 
-import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

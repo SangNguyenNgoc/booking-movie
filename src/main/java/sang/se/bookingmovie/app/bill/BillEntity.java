@@ -8,7 +8,6 @@ import sang.se.bookingmovie.app.user.UserEntity;
 
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.time.LocalDate;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -48,7 +47,7 @@ public class BillEntity {
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL
     )
-    private Set<TicketEntity> tickets ;
+    private Set<TicketEntity> tickets;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(

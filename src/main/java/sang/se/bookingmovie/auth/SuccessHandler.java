@@ -6,8 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
@@ -18,7 +16,10 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import sang.se.bookingmovie.app.role.RoleEntity;
 import sang.se.bookingmovie.app.role.RoleRepository;
-import sang.se.bookingmovie.app.user.*;
+import sang.se.bookingmovie.app.user.Gender;
+import sang.se.bookingmovie.app.user.UserEntity;
+import sang.se.bookingmovie.app.user.UserMapper;
+import sang.se.bookingmovie.app.user.UserRepository;
 import sang.se.bookingmovie.utils.ApplicationUtil;
 import sang.se.bookingmovie.utils.EmailService;
 import sang.se.bookingmovie.utils.JwtService;
@@ -92,7 +93,7 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                     .exist(false)
                     .build();
         } else {
-            if(user.getRole().getId() == 3) {
+            if (user.getRole().getId() == 3) {
                 RoleEntity roleEntity = roleRepository.findById(2).orElseThrow();
                 userRepository.updateVerifyAndRoleByEmail(true, roleEntity, user.getEmail());
             }
@@ -107,7 +108,7 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     protected String determineTargetUrl(AuthResponse authResponse) {
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("token", authResponse.getToken())
-                .queryParam("exist",  authResponse.getExist() ? 1 : 0)
+                .queryParam("exist", authResponse.getExist() ? 1 : 0)
                 .build()
                 .toUriString();
     }

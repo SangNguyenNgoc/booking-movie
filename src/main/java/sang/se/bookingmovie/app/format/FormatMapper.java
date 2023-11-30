@@ -3,11 +3,8 @@ package sang.se.bookingmovie.app.format;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import sang.se.bookingmovie.app.movie.MovieMapper;
 import sang.se.bookingmovie.utils.IMapper;
 import sang.se.bookingmovie.validate.ObjectsValidator;
-
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

@@ -6,7 +6,6 @@ import sang.se.bookingmovie.response.ListResponse;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.time.LocalDateTime;
 import java.sql.Date;
 
 public interface IBillService {

@@ -5,18 +5,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import sang.se.bookingmovie.app.movie_status.MovieStatus;
-import sang.se.bookingmovie.app.movie_status.MovieStatusEntity;
-import sang.se.bookingmovie.exception.AllException;
-import sang.se.bookingmovie.exception.ValidException;
 import sang.se.bookingmovie.response.ErrorResponse;
 import sang.se.bookingmovie.response.ListResponse;
 

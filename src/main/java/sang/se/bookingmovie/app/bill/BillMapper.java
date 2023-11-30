@@ -11,7 +11,6 @@ import sang.se.bookingmovie.validate.ObjectsValidator;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,10 +34,10 @@ public class BillMapper implements IMapper<BillEntity, Bill, BillResponse> {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         billResponse.setCreateTime(formatter.format(billEntity.getCreateTime()));
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        if(billResponse.getPaymentAt() != null) {
+        if (billResponse.getPaymentAt() != null) {
             billResponse.setPaymentAt(billEntity.getPaymentAt().format(dateTimeFormatter));
         }
-        if(billResponse.getCancelDate() != null) {
+        if (billResponse.getCancelDate() != null) {
             billResponse.setCancelDate(billEntity.getCancelDate().format(dateTimeFormatter));
         }
         List<TicketResponse> ticketResponses = billEntity.getTickets().stream()
