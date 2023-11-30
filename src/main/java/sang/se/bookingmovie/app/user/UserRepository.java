@@ -15,7 +15,7 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
     @Transactional
     @Modifying
     @Query("UPDATE UserEntity u SET u.verify = ?1, u.role = ?2 WHERE u.email = ?3")
-    int updateVerifyAndRoleByEmail(Boolean verify, RoleEntity role, String email);
+    void updateVerifyAndRoleByEmail(Boolean verify, RoleEntity role, String email);
 
     Optional<UserEntity> findByEmail(String email);
 
