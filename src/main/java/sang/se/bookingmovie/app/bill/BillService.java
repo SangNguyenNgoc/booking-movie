@@ -19,20 +19,18 @@ import sang.se.bookingmovie.app.ticket.TicketEntity;
 import sang.se.bookingmovie.app.ticket.TicketRepository;
 import sang.se.bookingmovie.app.user.UserEntity;
 import sang.se.bookingmovie.app.user.UserRepository;
+import sang.se.bookingmovie.event.DeleteBillTask;
 import sang.se.bookingmovie.exception.AllException;
 import sang.se.bookingmovie.exception.DataNotFoundException;
 import sang.se.bookingmovie.exception.UserNotFoundException;
 import sang.se.bookingmovie.response.ListResponse;
 import sang.se.bookingmovie.utils.ApplicationUtil;
-import sang.se.bookingmovie.event.DeleteBillTask;
 import sang.se.bookingmovie.utils.JwtService;
 import sang.se.bookingmovie.vnpay.VnpayService;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -112,9 +110,9 @@ public class BillService implements IBillService {
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill is not exits")));
         String userId = jwtService.extractSubject(jwtService.validateToken(token));
         int result = vnpayService.verifyPay(billEntity);
-        if(result == 0) {
+        if (result == 0) {
             BillStatusEntity billStatusEntity = billStatusRepository.findById(2)
-                            .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill status is not exits")));
+                    .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill status is not exits")));
             billEntity.setStatus(billStatusEntity);
             billEntity.setPaymentAt(LocalDateTime.now());
             setPointToUser(userId);
@@ -127,11 +125,11 @@ public class BillService implements IBillService {
     public String refund(String billId, String reason) {
         BillEntity billEntity = billRepository.findById(billId)
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill is not exits")));
-        if(billEntity.getStatus().getId() != 1) {
-            throw new AllException("Can not refund",400 , List.of("The bill has been paid or cancelled."));
+        if (billEntity.getStatus().getId() != 1) {
+            throw new AllException("Can not refund", 400, List.of("The bill has been paid or cancelled."));
         }
         BillStatusEntity billStatusEntity = billStatusRepository.findById(3)
-                        .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill status is not exits")));
+                .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill status is not exits")));
         billEntity.setCancelDate(LocalDateTime.now());
         billEntity.setCancelReason(reason);
         billEntity.setStatus(billStatusEntity);
@@ -145,14 +143,14 @@ public class BillService implements IBillService {
 
     @Override
     public ListResponse getBillInUser(String token, String userId, Integer page, Integer size, java.sql.Date date) {
-        if(userId == null) {
+        if (userId == null) {
             userId = jwtService.extractSubject(jwtService.validateToken(token));
         }
-        Pageable pageable = PageRequest.of(page-1, size, Sort.by("createTime").descending());
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("createTime").descending());
         userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
         List<BillResponse> billResponses;
-        if(date == null) {
+        if (date == null) {
             billResponses = billRepository.findByUser(userId, pageable).stream()
                     .map(mapper::entityToResponse)
                     .peek(this::getFieldToList)
@@ -176,7 +174,7 @@ public class BillService implements IBillService {
                 .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
         BillEntity billEntity = billRepository.findById(billId)
                 .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("Bill is not exits")));
-        if(!billEntity.getUser().getId().equals(userEntity.getId())) {
+        if (!billEntity.getUser().getId().equals(userEntity.getId())) {
             throw new DataNotFoundException("Data not found", List.of("Bill is not exits"));
         }
         BillResponse billResponse = mapper.entityToResponse(billEntity);
@@ -199,17 +197,17 @@ public class BillService implements IBillService {
 
     private void checkSeat(ShowtimeEntity showtimeEntity, List<SeatRoomEntity> seatRoomEntities) {
         seatRoomEntities.forEach(seatRoomEntity -> {
-            if(!seatRoomEntity.getRoom().getId().equals(showtimeEntity.getRoom().getId())) {
+            if (!seatRoomEntity.getRoom().getId().equals(showtimeEntity.getRoom().getId())) {
                 throw new AllException("Data not found", 400, List.of("Seat is not exist in room"));
             }
-            if(!ticketRepository.findByShowtime(showtimeEntity.getId(), seatRoomEntity.getId()).isEmpty()) {
+            if (!ticketRepository.findByShowtime(showtimeEntity.getId(), seatRoomEntity.getId()).isEmpty()) {
                 throw new AllException("Seat already reserved", 400, List.of("Seat already reserved"));
             }
         });
     }
 
     private void checkPointToUser(UserEntity userEntity, Integer promo) {
-        if(userEntity.getPoint() >= promo) {
+        if (userEntity.getPoint() >= promo) {
             userEntity.setPoint(userEntity.getPoint() - promo);
         } else {
             throw new AllException("Not Enough Points", 404, List.of("Not Enough Points"));

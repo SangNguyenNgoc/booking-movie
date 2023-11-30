@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +40,7 @@ public class CinemaController {
             }
     )
     @PostMapping("admin/cinema")
-    public ResponseEntity<?> create(@RequestBody Cinema cinema){
+    public ResponseEntity<?> create(@RequestBody Cinema cinema) {
         return ResponseEntity.status(201)
                 .body(cinemaService.create(cinema));
     }
@@ -68,7 +67,7 @@ public class CinemaController {
             }
     )
     @PostMapping("admin/cinemaRoom")
-    public ResponseEntity<?> createCinemaWithRoom(@RequestBody CinemaRequest cinema){
+    public ResponseEntity<?> createCinemaWithRoom(@RequestBody CinemaRequest cinema) {
         return ResponseEntity.status(201)
                 .body(cinemaService.createCinemaWithRoom(cinema));
     }
@@ -91,7 +90,7 @@ public class CinemaController {
     public ResponseEntity<?> getAll(
             @RequestParam(value = "page") Integer page,
             @RequestParam(value = "size") Integer size
-            ) {
+    ) {
         return ResponseEntity.ok(cinemaService.getAll(page, size));
     }
 
@@ -150,7 +149,7 @@ public class CinemaController {
     public ResponseEntity<?> update(
             @PathVariable("cinemaId") String cinemaId,
             @RequestBody Cinema cinemaRequest
-    ){
+    ) {
         return ResponseEntity.ok(cinemaService.update(cinemaRequest, cinemaId));
     }
 

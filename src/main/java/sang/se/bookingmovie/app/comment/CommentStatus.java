@@ -1,8 +1,5 @@
 package sang.se.bookingmovie.app.comment;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 public enum CommentStatus {
     APPROVED("Duyệt"),
     PENDING("Chưa duyệt"),

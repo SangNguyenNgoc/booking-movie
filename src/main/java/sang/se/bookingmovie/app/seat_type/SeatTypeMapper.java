@@ -3,7 +3,6 @@ package sang.se.bookingmovie.app.seat_type;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import sang.se.bookingmovie.app.seat_room.SeatRoomRequest;
 import sang.se.bookingmovie.utils.IMapper;
 import sang.se.bookingmovie.validate.ObjectsValidator;
 

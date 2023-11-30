@@ -97,12 +97,12 @@ public class JwtService {
     }
 
     private Key getSignKey() {
-        byte[] keyBytes= Decoders.BASE64.decode(secretKey);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String validateToken(String token) {
-        if(token == null || !token.startsWith("Bearer ")) {
+        if (token == null || !token.startsWith("Bearer ")) {
             throw new AllException("Unauthorized", 401, List.of("Unauthorized"));
         } else {
             token = token.substring(7);

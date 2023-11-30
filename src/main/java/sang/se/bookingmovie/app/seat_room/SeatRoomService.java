@@ -1,9 +1,7 @@
 package sang.se.bookingmovie.app.seat_room;
 
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import sang.se.bookingmovie.app.room.RoomEntity;
 import sang.se.bookingmovie.app.room.RoomRepository;
 import sang.se.bookingmovie.app.seat_type.SeatTypeRepository;
@@ -28,10 +26,10 @@ public class SeatRoomService implements ISeatRoomService {
     @Override
     public String create(List<SeatRoomRequest> seatRoomRequest, String roomId) {
         RoomEntity roomEntity = roomRepository.findById(roomId)
-                .orElseThrow(()->new AllException("Not found", 404, List.of("Not found room_id")));
+                .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found room_id")));
         List<SeatRoomEntity> seatRoomEntities = new ArrayList<>();
         seatRoomRequest.stream().map(seatRoomMapper::requestToEntity).forEach(seatRoomEntities::add);
-        seatRoomEntities.forEach(e->{
+        seatRoomEntities.forEach(e -> {
             e.setRoom(roomEntity);
             e.setStatus(true);
             e.setId(null);
@@ -55,7 +53,7 @@ public class SeatRoomService implements ISeatRoomService {
     public void createWithRoomEntity(List<SeatRoomRequest> seatRoomRequest, RoomEntity room) {
         List<SeatRoomEntity> seatRoomEntities = seatRoomRequest.stream()
                 .map(seatRoomMapper::requestToEntity)
-                .peek(seatRoomEntity-> {
+                .peek(seatRoomEntity -> {
                     seatRoomRepository.insertSeatRoom(
                             seatRoomEntity.getRow(),
                             seatRoomEntity.getRowIndex(),
@@ -67,8 +65,8 @@ public class SeatRoomService implements ISeatRoomService {
                 .toList();
     }
 
-    private String createSeatRoomID(){
+    private String createSeatRoomID() {
         long count = seatRoomRepository.count() + 1;
-        return applicationUtil.addZeros(count,3);
+        return applicationUtil.addZeros(count, 3);
     }
 }

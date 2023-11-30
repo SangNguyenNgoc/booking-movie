@@ -1,12 +1,9 @@
 package sang.se.bookingmovie.app.user;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.web.multipart.MultipartFile;
 import sang.se.bookingmovie.auth.AuthRequest;
 import sang.se.bookingmovie.auth.AuthResponse;
 import sang.se.bookingmovie.response.ListResponse;
-
-import java.sql.Date;
 
 public interface IUserService {
 
@@ -22,7 +19,7 @@ public interface IUserService {
 
     ListResponse getAll(Integer page, Integer size);
 
-    String sendToUpdateEmail(String token,String newEmail);
+    String sendToUpdateEmail(String token, String newEmail);
 
     Boolean checkPassword(String token, String password);
 

@@ -2,7 +2,6 @@ package sang.se.bookingmovie.app.room;
 
 import jakarta.persistence.*;
 import lombok.*;
-import sang.se.bookingmovie.app.cinema.Cinema;
 import sang.se.bookingmovie.app.cinema.CinemaEntity;
 import sang.se.bookingmovie.app.room_status.RoomStatusEntity;
 import sang.se.bookingmovie.app.seat_room.SeatRoomEntity;
@@ -63,7 +62,7 @@ public class RoomEntity {
     )
     private RoomStatusEntity status;
 
-    public RoomEntity(String name, Integer totalSeats, Integer availableSeats){
+    public RoomEntity(String name, Integer totalSeats, Integer availableSeats) {
         this.name = name;
         this.totalSeats = totalSeats;
         this.availableSeats = availableSeats;

@@ -65,7 +65,7 @@ public class SeatRoomController {
             }
     )
     @GetMapping("/admin/room/{roomId}/seat-room")
-    public ResponseEntity<?> getSeatRoom(@PathVariable(name = "roomId") String roomId){
+    public ResponseEntity<?> getSeatRoom(@PathVariable(name = "roomId") String roomId) {
         return ResponseEntity.status(200)
                 .body(seatRoomService.getSeatRoom(roomId));
     }

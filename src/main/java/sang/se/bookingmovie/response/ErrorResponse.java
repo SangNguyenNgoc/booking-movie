@@ -12,6 +12,6 @@ public record ErrorResponse(
         HttpStatus httpStatus,
         Integer statusCode,
         String error,
-        List<String>messages
+        List<String> messages
 ) {
 }

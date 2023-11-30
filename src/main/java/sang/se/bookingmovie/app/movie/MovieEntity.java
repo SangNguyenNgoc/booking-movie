@@ -10,7 +10,6 @@ import sang.se.bookingmovie.app.movie_status.MovieStatusEntity;
 import sang.se.bookingmovie.app.showtime.ShowtimeEntity;
 
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -117,8 +116,8 @@ public class MovieEntity {
     private Set<CommentEntity> comments;
 
     public Double getRating() {
-        if(numberOfRatings > 0) {
-            return Math.round((double) sumOfRatings /numberOfRatings * 10.0) / 10.0;
+        if (numberOfRatings > 0) {
+            return Math.round((double) sumOfRatings / numberOfRatings * 10.0) / 10.0;
         } else {
             return 0.0;
         }

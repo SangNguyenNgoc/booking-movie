@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
                         .build()
         );
     }
-          
+
     @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<?> handleException(DataNotFoundException e) {
         return ResponseEntity.status(404).body(
@@ -103,7 +103,6 @@ public class GlobalExceptionHandler {
                         .build()
         );
     }
-
 
 
 }

@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import sang.se.bookingmovie.app.cinema.CinemaResponse;
 import sang.se.bookingmovie.app.room_status.RoomStatus;
-import sang.se.bookingmovie.app.room_status.RoomStatusEntity;
 import sang.se.bookingmovie.app.seat_room.SeatRoomResponse;
 import sang.se.bookingmovie.app.showtime.ShowtimeResponse;
 

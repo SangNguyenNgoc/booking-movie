@@ -5,7 +5,6 @@ import lombok.*;
 import sang.se.bookingmovie.app.movie.MovieEntity;
 import sang.se.bookingmovie.app.user.UserEntity;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor

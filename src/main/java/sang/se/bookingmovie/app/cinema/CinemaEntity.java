@@ -25,8 +25,9 @@ public class CinemaEntity {
 
     private String city;
 
-    private  String district;
+    private String district;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     private String slug;

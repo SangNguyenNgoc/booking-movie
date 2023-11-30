@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class MovieGenreService implements IMovieGenreService{
+public class MovieGenreService implements IMovieGenreService {
 
     private final MovieGenreRepository movieGenreRepository;
 

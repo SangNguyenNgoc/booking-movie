@@ -151,10 +151,10 @@ public class UserService implements IUserService {
                         400,
                         List.of("User is not exist")
                 ));
-        if(userEntity.getVerifyAccount() == null) {
+        if (userEntity.getVerifyAccount() == null) {
             throw new AllException("Verification failure", 404, List.of("Past the confirmation period"));
         }
-        if(userEntity.getVerifyAccount().equals(verify.getVerify())) {
+        if (userEntity.getVerifyAccount().equals(verify.getVerify())) {
             userEntity.setVerify(true);
             userEntity.setVerifyAccount(null);
             var roleEntity = roleRepository.findById(2)
@@ -173,7 +173,7 @@ public class UserService implements IUserService {
 
     private void deleteVerifyAccountByEmail(String email) {
         var userEntity = userRepository.findByEmail(email).orElse(null);
-        if(userEntity != null && userEntity.getVerifyAccount() != null) {
+        if (userEntity != null && userEntity.getVerifyAccount() != null) {
             userEntity.setVerifyAccount(null);
         }
     }
@@ -181,7 +181,7 @@ public class UserService implements IUserService {
     @Override
     public UserResponse getCurrentUser(String token, String userId) {
         UserEntity userEntity;
-        if(token != null) {
+        if (token != null) {
             userEntity = userRepository.findById(jwtService.extractSubject(jwtService.validateToken(token)))
                     .orElseThrow(() -> new AllException(
                             "Data not found",
@@ -201,7 +201,7 @@ public class UserService implements IUserService {
 
     @Override
     public ListResponse getAll(Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page-1, size, Sort.by("createDate").descending());
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("createDate").descending());
         Page<UserEntity> userEntities = userRepository.findAll(pageable);
         return ListResponse.builder()
                 .total(userEntities.getSize())
@@ -238,7 +238,7 @@ public class UserService implements IUserService {
     public String changePassword(String token, ChangePassRequest verifyPass) {
         verifyPassValidator.validate(verifyPass);
         var userEntity = getUserById(jwtService.extractSubject(jwtService.validateToken(token)));
-        if(passwordEncoder.matches(verifyPass.getOldPass(), userEntity.getPassword())) {
+        if (passwordEncoder.matches(verifyPass.getOldPass(), userEntity.getPassword())) {
             userEntity.setPassword(passwordEncoder.encode(verifyPass.getNewPass()));
             return "Success";
         } else {
@@ -272,10 +272,10 @@ public class UserService implements IUserService {
         String verifyCode = verifySubject.split("_")[1];
         var userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new AllException("Conflict", 404, List.of("User is not exits")));
-        if(userEntity.getVerifyPass() == null) {
+        if (userEntity.getVerifyPass() == null) {
             throw new AllException("Verification failure", 404, List.of("Past the confirmation period"));
         }
-        if(userEntity.getVerifyPass().equals(verifyCode)) {
+        if (userEntity.getVerifyPass().equals(verifyCode)) {
             userEntity.setPassword(passwordEncoder.encode(verify.getPass()));
             userEntity.setVerifyPass(null);
             return "Success";
@@ -291,10 +291,10 @@ public class UserService implements IUserService {
         String verifyCode = verifySubject.split("_")[1];
         var userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new AllException("Conflict", 404, List.of("User is not exits")));
-        if(userEntity.getVerifyPass() == null) {
+        if (userEntity.getVerifyPass() == null) {
             throw new AllException("Verification failure", 404, List.of("Past the confirmation period"));
         }
-        if(userEntity.getVerifyPass().equals(verifyCode)) {
+        if (userEntity.getVerifyPass().equals(verifyCode)) {
             return "Ok";
         } else {
             throw new AllException("Verification failure", 401, List.of("Invalid verification code"));
@@ -306,19 +306,19 @@ public class UserService implements IUserService {
     public UserResponse updateUser(String token, UserUpdate userUpdate) {
         userMapper.validateUpdate(userUpdate);
         UserEntity userEntity = getUserById(jwtService.extractSubject(jwtService.validateToken(token)));
-        if(userUpdate.getFullName() != null && !userUpdate.getFullName().isEmpty()) {
+        if (userUpdate.getFullName() != null && !userUpdate.getFullName().isEmpty()) {
             userEntity.setFullName(userUpdate.getFullName());
         }
-        if(userUpdate.getDateOfBirth() != null) {
+        if (userUpdate.getDateOfBirth() != null) {
             userEntity.setDateOfBirth(userUpdate.getDateOfBirth());
         }
-        if(userUpdate.getGender() != null) {
+        if (userUpdate.getGender() != null) {
             userEntity.setGender(userMapper.getGenderInRequest(userUpdate.getGender()));
         }
-        if(userUpdate.getPhoneNumber() != null) {
+        if (userUpdate.getPhoneNumber() != null) {
             userEntity.setPhoneNumber(userUpdate.getPhoneNumber());
         }
-        if(userUpdate.getEmail() != null && !userUpdate.getEmail().equals(userEntity.getEmail())) {
+        if (userUpdate.getEmail() != null && !userUpdate.getEmail().equals(userEntity.getEmail())) {
             sendToUpdateEmail(token, userUpdate.getEmail());
         }
         return userMapper.entityToResponse(userEntity);
@@ -328,7 +328,7 @@ public class UserService implements IUserService {
     @Transactional
     public UserResponse updateAvatar(String token, MultipartFile avatar) {
         UserEntity userEntity = getUserById(jwtService.extractSubject(jwtService.validateToken(token)));
-        if(avatar != null) {
+        if (avatar != null) {
             userEntity.setAvatar(discordService.sendAvatar(avatar));
         } else {
             userEntity.setAvatar(baseAvatar);
@@ -341,7 +341,7 @@ public class UserService implements IUserService {
     public UserResponse setPassToGoogleAccount(String token, String pass) {
         String userId = jwtService.extractSubject(jwtService.validateToken(token));
         UserEntity userEntity = getUserById(userId);
-        if(!passwordEncoder.matches("2a075e92-89c3-11ee-b9d1-0242ac120002", userEntity.getPassword())) {
+        if (!passwordEncoder.matches("2a075e92-89c3-11ee-b9d1-0242ac120002", userEntity.getPassword())) {
             throw new AllException("Unauthorized", 401, List.of("Your account not linked to Google"));
         }
         userEntity.setPassword(pass);
@@ -352,13 +352,13 @@ public class UserService implements IUserService {
 
     private void deleteVerifyPassByEmail(String email) {
         var userEntity = userRepository.findByEmail(email).orElse(null);
-        if(userEntity != null && userEntity.getVerifyPass() != null) {
+        if (userEntity != null && userEntity.getVerifyPass() != null) {
             userEntity.setVerifyPass(null);
         }
     }
 
     private void checkEmail(String email) {
-        if(userRepository.findByEmail(email).isPresent()) {
+        if (userRepository.findByEmail(email).isPresent()) {
             throw new AllException("Conflict", 409, List.of("Email taken!"));
         }
     }
@@ -371,7 +371,7 @@ public class UserService implements IUserService {
     @EventListener
     @Async
     @Transactional
-    public void sendToVerifyAccount(VerifyAccountEvent event)  {
+    public void sendToVerifyAccount(VerifyAccountEvent event) {
         try {
             Context context = new Context();
             context.setVariables(Map.of(
@@ -391,7 +391,7 @@ public class UserService implements IUserService {
     @EventListener
     @Async
     @Transactional
-    public void sendToVerifyPass(VerifyPassEvent event)  {
+    public void sendToVerifyPass(VerifyPassEvent event) {
         try {
             String param = jwtService.generateVerify(event.getId(), event.getVerifyCode());
             Context context = new Context();

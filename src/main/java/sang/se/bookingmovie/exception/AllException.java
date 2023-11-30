@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AllException extends RuntimeException{
+public class AllException extends RuntimeException {
     private String error;
     private Integer Status;
     private List<String> messages;

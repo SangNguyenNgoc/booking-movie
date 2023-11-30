@@ -52,7 +52,7 @@ public class MovieService implements IMovieService {
     @Override
     public ListResponse getMoviesByStatus(String slug, Integer page, Integer size) {
         List<MovieStatus> movieStatusList = new ArrayList<>();
-        Pageable pageable = PageRequest.of(page-1, size);
+        Pageable pageable = PageRequest.of(page - 1, size);
         if (slug != null) {
             MovieStatusEntity movieStatusEntity = movieStatusRepository.findStatusAndMovieBySlug(slug)
                     .orElseThrow(() -> new DataNotFoundException("Data not found", List.of("status is not exist")));
@@ -112,7 +112,7 @@ public class MovieService implements IMovieService {
 
     @Override
     public ListResponse getAll(Integer page, Integer size) {
-        PageRequest pageRequest = PageRequest.of(page-1, size);
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
         List<MovieResponse> movieResponses = movieRepository.findAll(pageRequest).stream()
                 .peek(this::getFieldToList)
                 .map(movieMapper::entityToResponse)
@@ -284,7 +284,7 @@ public class MovieService implements IMovieService {
     @Override
     public ListResponse searchBySlug(String input, Integer page, Integer size) {
         input = applicationUtil.toSlug(input);
-        Pageable pageable = PageRequest.of(page-1, size, Sort.by("releaseDate"));
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("releaseDate"));
         List<MovieEntity> movieEntities = movieRepository.searchBySlug(input, pageable);
         return ListResponse.builder()
                 .total(movieEntities.size())
@@ -354,16 +354,16 @@ public class MovieService implements IMovieService {
             List<MultipartFile> images, List<Integer> imageIds,
             MultipartFile poster, MultipartFile horPoster
     ) {
-        if(movieJson != null) {
+        if (movieJson != null) {
             updateMovie(movieId, movieMapper.jsonToRequestUpdate(movieJson));
         }
-        if(images != null || imageIds != null) {
+        if (images != null || imageIds != null) {
             updateImages(movieId, images, imageIds);
         }
-        if(poster != null) {
+        if (poster != null) {
             updatePoster(movieId, poster);
         }
-        if(horPoster != null) {
+        if (horPoster != null) {
             updateHorPoster(movieId, horPoster);
         }
         return "Success";

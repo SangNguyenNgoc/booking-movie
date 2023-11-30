@@ -1,6 +1,5 @@
 package sang.se.bookingmovie.app.room_status;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import sang.se.bookingmovie.app.room.RoomEntity;
@@ -20,7 +19,7 @@ public class RoomStatusEntity {
     @Column(name = "room_status_id")
     private Integer id;
 
-    private String  name;
+    private String name;
 
     @OneToMany(
             mappedBy = "status",

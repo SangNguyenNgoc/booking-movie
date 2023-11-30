@@ -2,8 +2,6 @@ package sang.se.bookingmovie.app.ticket;
 
 import sang.se.bookingmovie.response.ListResponse;
 
-import java.util.List;
-
 public interface ITicketService {
 
     ListResponse getTicketInUser(String token, Boolean stillValid);

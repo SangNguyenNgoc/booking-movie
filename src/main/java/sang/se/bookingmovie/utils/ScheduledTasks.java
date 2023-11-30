@@ -2,27 +2,15 @@ package sang.se.bookingmovie.utils;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import sang.se.bookingmovie.app.comment.CommentService;
 import sang.se.bookingmovie.app.movie.MovieService;
-import sang.se.bookingmovie.app.room.RoomEntity;
-import sang.se.bookingmovie.app.room.RoomRepository;
-import sang.se.bookingmovie.app.seat_room.SeatRoomEntity;
-import sang.se.bookingmovie.app.seat_room.SeatRoomRepository;
-import sang.se.bookingmovie.app.seat_type.SeatTypeEntity;
-import sang.se.bookingmovie.app.seat_type.SeatTypeRepository;
 import sang.se.bookingmovie.app.showtime.ShowtimeService;
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

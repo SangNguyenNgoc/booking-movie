@@ -1,10 +1,10 @@
 package sang.se.bookingmovie.vnpay;
 
+import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.google.gson.JsonObject;
 import org.springframework.stereotype.Service;
 import sang.se.bookingmovie.app.bill.BillEntity;
 import sang.se.bookingmovie.exception.AllException;
@@ -22,6 +22,7 @@ import java.util.*;
 public class VnpayService {
 
     private final VnpayConfig vnpayConfig;
+
     public String doPost(BillEntity billEntity) throws UnsupportedEncodingException {
 
         String orderType = "other";
@@ -54,7 +55,7 @@ public class VnpayService {
 //        } else {
 //            vnp_Params.put("vnp_Locale", "vn");
 //        }
-        vnp_Params.put("vnp_ReturnUrl", vnpayConfig.vnp_ReturnUrl+"?id=" + billEntity.getTransactionId());
+        vnp_Params.put("vnp_ReturnUrl", vnpayConfig.vnp_ReturnUrl + "?id=" + billEntity.getTransactionId());
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -74,16 +75,16 @@ public class VnpayService {
         Iterator itr = fieldNames.iterator();
         while (itr.hasNext()) {
             String fieldName = (String) itr.next();
-            String fieldValue = (String) vnp_Params.get(fieldName);
+            String fieldValue = vnp_Params.get(fieldName);
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
                 //Build hash data
                 hashData.append(fieldName);
                 hashData.append('=');
-                hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
+                hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
                 //Build query
-                query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII.toString()));
+                query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII));
                 query.append('=');
-                query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
+                query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
                 if (itr.hasNext()) {
                     query.append('&');
                     hashData.append('&');
@@ -133,7 +134,7 @@ public class VnpayService {
         String hash_Data = vnp_RequestId + "|" + vnpayConfig.vnp_Version + "|" + vnp_Command + "|" + vnpayConfig.vnp_TmnCode + "|" + vnp_TxnRef
                 + "|" + vnp_TransDate + "|" + vnp_CreateDate + "|" + vnp_IpAddr + "|" + vnp_OrderInfo;
 
-        String vnp_SecureHash = vnpayConfig.hmacSHA512(vnpayConfig.secretKey, hash_Data.toString());
+        String vnp_SecureHash = vnpayConfig.hmacSHA512(vnpayConfig.secretKey, hash_Data);
 
         vnp_Params.addProperty("vnp_SecureHash", vnp_SecureHash);
 
@@ -162,10 +163,10 @@ public class VnpayService {
             response.append(output);
         }
         in.close();
-        System.out.println(response.toString());
+        System.out.println(response);
 
         JSONObject json = new JSONObject(response.toString());
-        System.out.println(json.toString());
+        System.out.println(json);
 
         String res_ResponseCode = (String) json.get("vnp_ResponseCode");
 //        String res_TxnRef = (String) json.get("vnp_TxnRef");
@@ -180,7 +181,7 @@ public class VnpayService {
         return 0;
     }
 
-    public void checkResponse(String res_ResponseCode, String res_TransactionType, String res_TransactionStatus){
+    public void checkResponse(String res_ResponseCode, String res_TransactionType, String res_TransactionStatus) {
         if (res_ResponseCode.equals("09")) // Response Code invaild
             throw new AllException("Transaction failed", 402, List.of("Thẻ/Tài khoản của khách hàng chưa đăng ký dịch vụ InternetBanking tại ngân hàng"));
 
