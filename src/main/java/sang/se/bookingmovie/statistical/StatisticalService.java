@@ -65,7 +65,7 @@ public class  StatisticalService implements IStatisticalService {
         String stringPercent = percentFormat.format(percent);
 
         return CardResponse.builder()
-                .title("TỔNG DOANH THU")
+                .title("revenue")
                 .lastTime(stringPercent)
                 .content(formattedNumber)
                 .chart(allDatesInMonth)
@@ -113,7 +113,7 @@ public class  StatisticalService implements IStatisticalService {
 
 
         return CardResponse.builder()
-                .title("VÉ ĐÃ BÁN")
+                .title("ticket")
                 .lastTime(stringPercent)
                 .content(formattedNumber)
                 .chart(allDatesInMonth)
@@ -152,7 +152,7 @@ public class  StatisticalService implements IStatisticalService {
 
 
         return CardResponse.builder()
-                .title("RẠP CAO NHẤT")
+                .title("cinema")
                 .lastTime(stringPercent)
                 .content(bestCinema)
                 .chart(allCinemaInMonth)
@@ -190,7 +190,7 @@ public class  StatisticalService implements IStatisticalService {
         String stringPercent = percentFormat.format(percent);
 
         return CardResponse.builder()
-                .title("PHIM CAO NHẤT")
+                .title("movie")
                 .lastTime(stringPercent)
                 .content(bestMovie)
                 .chart(allMovieInMonth)
