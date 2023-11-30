@@ -22,7 +22,7 @@ public class UserUpdate {
 
     private String gender;
 
-    @Pattern(regexp = "^[0-9]+$", message = "Invalid number phone")
+    @Pattern(regexp = "^[0-9]{10}$", message = "Invalid number phone")
     private String phoneNumber;
 
     @Email
