@@ -118,7 +118,7 @@ public class MovieEntity {
 
     public Double getRating() {
         if(numberOfRatings > 0) {
-            return (double) sumOfRatings/numberOfRatings;
+            return Math.round((double) sumOfRatings /numberOfRatings * 10.0) / 10.0;
         } else {
             return 0.0;
         }
