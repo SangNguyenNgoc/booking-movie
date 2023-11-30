@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import sang.se.bookingmovie.app.role.RoleEntity;
 
 import java.util.Optional;
 
@@ -13,8 +14,8 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserEntity, String> {
     @Transactional
     @Modifying
-    @Query("UPDATE UserEntity u SET u.verify = ?1 WHERE u.id = ?2")
-    void updateVerifyById(@NonNull Boolean verify, String id);
+    @Query("UPDATE UserEntity u SET u.verify = ?1, u.role = ?2 WHERE u.email = ?3")
+    int updateVerifyAndRoleByEmail(Boolean verify, RoleEntity role, String email);
 
     Optional<UserEntity> findByEmail(String email);
 
