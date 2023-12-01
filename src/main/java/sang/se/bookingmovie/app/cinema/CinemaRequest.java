@@ -42,7 +42,7 @@ public class CinemaRequest {
 
     @NotBlank(message = "Cinema phone number must not be blank")
     @NotNull(message = "Cinema phone number must not be null")
-    @Pattern(regexp = "^[0-9]+$", message = "Invalid number phone")
+    @Pattern(regexp = "^[0-9]{10}$", message = "Invalid number phone")
     private String phoneNumber;
 
     @NotBlank(message = "Cinema status must not be blank")

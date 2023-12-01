@@ -130,14 +130,14 @@ public class CinemaService implements ICinemaService {
     }
 
     private CinemaStatus getStatusInRequest(String input) {
-        switch (applicationUtil.toSlug(input)) {
-            case "hoat-dong" -> {
+        switch (input) {
+            case "Hoạt động" -> {
                 return CinemaStatus.OPENING;
             }
-            case "dong-cua" -> {
+            case "Đóng cửa" -> {
                 return CinemaStatus.CLOSED;
             }
-            case "dang-bao-tri" -> {
+            case "Đang bảo trì" -> {
                 return CinemaStatus.MAINTAINED;
             }
             default -> throw new AllException("Data invalid", 404, List.of("Cinema status invalid"));
