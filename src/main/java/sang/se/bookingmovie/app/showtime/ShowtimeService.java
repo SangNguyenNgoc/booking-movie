@@ -23,6 +23,7 @@ import sang.se.bookingmovie.utils.ApplicationUtil;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -60,6 +61,7 @@ public class ShowtimeService implements IShowtimeService {
         if (movie.getStatus().getId().equals(4)) {
             throw new AllException("Not found", 404, List.of("Not found movie id"));
         }
+        checkShowtimeDate(showtimeRequest, movie);
         Set<FormatEntity> formatEntities = movie.getFormats();
         FormatEntity format = formatEntities.stream()
                 .filter(formatEntity -> formatEntity.getId().equals(showtimeRequest.getFormat()))
@@ -263,36 +265,13 @@ public class ShowtimeService implements IShowtimeService {
         return true;
     }
 
-    private Boolean checkShowtimeInList(List<ShowtimeRequest> showtimeRequests) {
-
-        for (int i = 0; i < showtimeRequests.size() - 1; i++) {
-
-            MovieEntity movieEntityTesting = movieRepository.findByAddShowtime(showtimeRequests.get(i).getMovie())
-                    .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found movie id")));
-            LocalTime startTimeTesting = showtimeRequests.get(i).getStartTime().toLocalTime();
-            LocalTime endTimeTesting = startTimeTesting.plusMinutes(movieEntityTesting.getRunningTime() + waitShowtime);
-
-            for (int j = i + 1; j < showtimeRequests.size(); j++) {
-
-                MovieEntity movieEntityInList = movieRepository.findByAddShowtime(showtimeRequests.get(i).getMovie())
-                        .orElseThrow(() -> new AllException("Not found", 404, List.of("Not found movie id")));
-                LocalTime startTimeInList = showtimeRequests.get(j).getStartTime().toLocalTime();
-                LocalTime endTimeInList = startTimeInList.plusMinutes(movieEntityInList.getRunningTime() + waitShowtime);
-
-                if (showtimeRequests.get(i).getStartDate().equals(showtimeRequests.get(j).getStartDate())) {
-                    if ((
-                            (startTimeTesting.isAfter(startTimeInList) && startTimeTesting.isBefore(endTimeInList)) ||
-                                    (startTimeInList.isAfter(startTimeTesting) && startTimeInList.isBefore(endTimeTesting)) ||
-                                    startTimeTesting.equals(startTimeInList)
-                    )
-                            && showtimeRequests.get(i).getRoom().equals(showtimeRequests.get(j).getRoom())
-                    ) {
-                        return false;
-                    }
-                }
-            }
+    private void checkShowtimeDate(ShowtimeRequest showtimeRequest, MovieEntity movieEntity) {
+        if(movieEntity.getReleaseDate().after(showtimeRequest.getStartDate())) {
+            throw new AllException("Bad request", 400, List.of("The movie will not be shown until " + movieEntity.getReleaseDate()));
         }
-        return true;
+        if(movieEntity.getEndDate().before(showtimeRequest.getStartDate())) {
+            throw new AllException("Bad request", 400, List.of("The movie was discontinued on " + movieEntity.getEndDate()));
+        }
     }
 
 

@@ -105,7 +105,8 @@ public class MovieService implements IMovieService {
         movieEntity.setGenre(movieGenreEntities);
         Set<FormatEntity> formatEntities = createFormats(movie.getFormats());
         movieEntity.setFormats(formatEntities);
-        movieEntity.setImages(createMovieImage(movieEntity, images));
+        Set<MovieImageEntity> movieImageEntities = createMovieImage(movieEntity, images);
+        movieEntity.setImages(movieImageEntities);
         movieRepository.save(movieEntity);
         return "Success";
     }
