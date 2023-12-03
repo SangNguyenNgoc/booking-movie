@@ -145,7 +145,7 @@ public class CinemaController {
                     )
             }
     )
-    @PatchMapping("admin/cinema/{cinemaId}")
+    @PutMapping("admin/cinema/{cinemaId}")
     public ResponseEntity<?> update(
             @PathVariable("cinemaId") String cinemaId,
             @RequestBody Cinema cinemaRequest
