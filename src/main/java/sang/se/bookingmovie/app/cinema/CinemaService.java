@@ -119,6 +119,7 @@ public class CinemaService implements ICinemaService {
     }
 
     private void update(CinemaEntity cinemaEntity, Cinema cinema) {
+        mapper.requestToEntity(cinema);
         cinemaEntity.setName(cinema.getName());
         cinemaEntity.setSlug(applicationUtil.toSlug(cinema.getName()));
         cinemaEntity.setAddress(cinema.getAddress());
