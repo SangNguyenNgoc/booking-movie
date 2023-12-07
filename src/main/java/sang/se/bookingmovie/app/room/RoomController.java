@@ -135,10 +135,10 @@ public class RoomController {
                     )
             }
     )
-    @PutMapping(value = "/admin/room/{roomId}/status/{statusId}")
+    @PutMapping(value = "/admin/room/{roomId}/status")
     public ResponseEntity<?> updateStatus(
-            @PathVariable(value = "rooomId") String roomId,
-            @PathVariable(value = "statusId") Integer statusId
+            @PathVariable(value = "roomId") String roomId,
+            @RequestParam(value = "statusId") Integer statusId
     ) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(roomService.updateStatusOfRoom(roomId, statusId));
