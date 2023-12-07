@@ -14,9 +14,7 @@ import sang.se.bookingmovie.exception.AllException;
 import sang.se.bookingmovie.response.ListResponse;
 import sang.se.bookingmovie.utils.ApplicationUtil;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -122,6 +120,7 @@ public class CinemaService implements ICinemaService {
 
     private void update(CinemaEntity cinemaEntity, Cinema cinema) {
         cinemaEntity.setName(cinema.getName());
+        cinemaEntity.setSlug(applicationUtil.toSlug(cinema.getName()));
         cinemaEntity.setAddress(cinema.getAddress());
         cinemaEntity.setCity(cinema.getCity());
         cinemaEntity.setDistrict(cinema.getDistrict());
@@ -130,17 +129,14 @@ public class CinemaService implements ICinemaService {
     }
 
     private CinemaStatus getStatusInRequest(String input) {
-        switch (input) {
-            case "Hoạt động" -> {
-                return CinemaStatus.OPENING;
-            }
-            case "Đóng cửa" -> {
-                return CinemaStatus.CLOSED;
-            }
-            case "Đang bảo trì" -> {
-                return CinemaStatus.MAINTAINED;
-            }
-            default -> throw new AllException("Data invalid", 404, List.of("Cinema status invalid"));
+        Map<String, CinemaStatus> statusMap = new HashMap<>();
+        for (CinemaStatus status : CinemaStatus.values()) {
+            statusMap.put(status.getValue(), status);
+        }
+        if (statusMap.containsKey(input)) {
+            return statusMap.get(input);
+        } else {
+            throw new AllException("Data invalid", 404, List.of("Cinema status invalid"));
         }
     }
 }
