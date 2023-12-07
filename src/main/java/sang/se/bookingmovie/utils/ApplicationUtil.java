@@ -24,12 +24,12 @@ public class ApplicationUtil {
         if (input == null) {
             return "";
         }
+        input = input.replaceAll("[đĐ]", "d");
         String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
         String slug = pattern.matcher(normalized).replaceAll("");
         slug = slug.toLowerCase().replaceAll(" ", "-");
         slug = slug.replaceAll("[^a-z0-9\\-]", "");
-
         return slug;
     }
 
