@@ -241,7 +241,7 @@ public class BillService implements IBillService {
     }
 
     @Transactional
-    private void setPointToUser(String userId) {
+    public void setPointToUser(String userId) {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Conflict", List.of("User is not exits")));
         userEntity.setPoint(userEntity.getPoint() + promoPoint);
