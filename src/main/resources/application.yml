@@ -1,9 +1,9 @@
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/booking_movie
-    username: root
-    password:
+    url: jdbc:mysql://database:3306/booking_movie
+    username: admin
+    password: 1234
   servlet:
     multipart:
       max-file-size: 5MB
@@ -47,17 +47,17 @@ server:
 
 discord:
   token: MTE1Njg1Njg2NTYyNDQzMjcwMA.G1jMKr.cdJmTgMASZgcwiLcvGzY3I4fRxtD-45q55ieWs
-  poster_channel: test
-  image_channel: test
-  avatar_channel: test
+  poster_channel: poster
+  image_channel: image
+  avatar_channel: avatar
   base_avatar: https://cdn.discordapp.com/attachments/1168144426141499412/1169264779769155594/c6e56503cfdd87da299f72dc416023d4.jpg?ex=6554c5af&is=654250af&hm=440ebc745e441103a1824a80edb22f2d1c371743e8d7a4d413dbbc62eae31554&
 
 verify:
-  url: https://www.pwer-dev.id.vn/forgot-password
+  url: http://localhost:3000/auth/forgot-password
   verify_expiration: 300000
 
 oauth2:
-  targetUrl: https://www.pwer-dev.id.vn/
+  target_url: http://localhost:3000/
 
 promotion:
   point: 10

@@ -48,7 +48,7 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final EmailService emailService;
 
-    @Value("${oauth2.targetUrl}")
+    @Value("${oauth2.target_url}")
     private String targetUrl;
 
     @Override
