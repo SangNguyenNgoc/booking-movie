@@ -46,7 +46,7 @@ server:
     include-message: always
 
 discord:
-  token: MTE1Njg1Njg2NTYyNDQzMjcwMA.G1jMKr.cdJmTgMASZgcwiLcvGzY3I4fRxtD-45q55ieWs
+  token: MTE1Njg1Njg2NTYyNDQzMjcwMA.GAWoiV.3nLfy9kv4gmNLSp6nHfbl4X9vqR4xhp2CON45A
   poster_channel: poster
   image_channel: image
   avatar_channel: avatar

@@ -1,8 +1,8 @@
 -- MariaDB dump 10.19  Distrib 10.4.27-MariaDB, for Win64 (AMD64)
 --
--- Host: booking-movie.cjvzxv4pqzmf.eu-west-1.rds.amazonaws.com    Database: booking_movie
+-- Host: 127.0.0.1    Database: booking_movie
 -- ------------------------------------------------------
--- Server version	8.0.33
+-- Server version	10.4.27-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -19,14 +19,12 @@
 -- Table structure for table `bill_status`
 --
 
-use booking_movie;
-
 DROP TABLE IF EXISTS `bill_status`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `bill_status` (
-  `bill_status_id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `bill_status_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`bill_status_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -49,14 +47,14 @@ DROP TABLE IF EXISTS `bills`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `bills` (
-  `bill_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `bill_id` varchar(255) NOT NULL,
   `payment_at` datetime(6) DEFAULT NULL,
   `total` double DEFAULT NULL,
-  `user_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `transaction_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `change_point` int DEFAULT NULL,
-  `cancel_reason` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status_id` int NOT NULL,
+  `user_id` varchar(255) NOT NULL,
+  `transaction_id` varchar(255) DEFAULT NULL,
+  `change_point` int(11) DEFAULT NULL,
+  `cancel_reason` varchar(255) DEFAULT NULL,
+  `status_id` int(11) NOT NULL,
   `create_time` datetime(6) DEFAULT NULL,
   `cancel_date` datetime(6) DEFAULT NULL,
   PRIMARY KEY (`bill_id`),
@@ -85,15 +83,15 @@ DROP TABLE IF EXISTS `cinemas`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cinemas` (
-  `cinema_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `address` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `city` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `district` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `cinema_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `description` text COLLATE utf8mb4_general_ci,
-  `slug` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `phone_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status` enum('CLOSED','MAINTAINED','OPENING') COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `cinema_id` varchar(255) NOT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `city` varchar(255) DEFAULT NULL,
+  `district` varchar(255) DEFAULT NULL,
+  `cinema_name` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `slug` varchar(255) DEFAULT NULL,
+  `phone_number` varchar(255) DEFAULT NULL,
+  `status` enum('CLOSED','MAINTAINED','OPENING') DEFAULT NULL,
   PRIMARY KEY (`cinema_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -116,13 +114,13 @@ DROP TABLE IF EXISTS `comments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `comments` (
-  `comment_id` int NOT NULL AUTO_INCREMENT,
-  `content` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `comment_id` int(11) NOT NULL AUTO_INCREMENT,
+  `content` varchar(255) DEFAULT NULL,
   `create_date` datetime(6) DEFAULT NULL,
-  `movie_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `user_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `status` enum('APPROVED','DELETED','PENDING') COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `rating` int DEFAULT NULL,
+  `movie_id` varchar(255) NOT NULL,
+  `user_id` varchar(255) NOT NULL,
+  `status` enum('APPROVED','DELETED','PENDING') DEFAULT NULL,
+  `rating` int(11) DEFAULT NULL,
   PRIMARY KEY (`comment_id`),
   KEY `FKr1xv5xvew7k2aed5qu5lci3kt` (`movie_id`),
   KEY `FK8omq0tc18jd43bu5tjh6jvraq` (`user_id`),
@@ -149,9 +147,9 @@ DROP TABLE IF EXISTS `formats`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `formats` (
-  `format_id` int NOT NULL AUTO_INCREMENT,
-  `caption` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `version` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `format_id` int(11) NOT NULL AUTO_INCREMENT,
+  `caption` varchar(255) DEFAULT NULL,
+  `version` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`format_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -174,8 +172,8 @@ DROP TABLE IF EXISTS `movie_format`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `movie_format` (
-  `movie_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `format_id` int NOT NULL,
+  `movie_id` varchar(255) NOT NULL,
+  `format_id` int(11) NOT NULL,
   PRIMARY KEY (`movie_id`,`format_id`),
   KEY `FKfinrg5ol8dp6c6ypemnsmqupn` (`format_id`),
   CONSTRAINT `FKfinrg5ol8dp6c6ypemnsmqupn` FOREIGN KEY (`format_id`) REFERENCES `formats` (`format_id`),
@@ -189,7 +187,7 @@ CREATE TABLE `movie_format` (
 
 LOCK TABLES `movie_format` WRITE;
 /*!40000 ALTER TABLE `movie_format` DISABLE KEYS */;
-INSERT INTO `movie_format` VALUES ('mv-0002',1),('mv-0003',1),('mv-0004',1),('mv-0005',1),('mv-0006',1),('mv-0008',1),('mv-0001',2),('mv-0003',2),('mv-0005',2),('mv-0007',2),('mv-0005',3),('mv-0005',4);
+INSERT INTO `movie_format` VALUES ('mv-0001',2),('mv-0002',1),('mv-0003',1),('mv-0003',2),('mv-0004',1),('mv-0005',1),('mv-0005',2),('mv-0005',3),('mv-0005',4),('mv-0006',1),('mv-0007',2),('mv-0008',1);
 /*!40000 ALTER TABLE `movie_format` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -201,8 +199,8 @@ DROP TABLE IF EXISTS `movie_genre`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `movie_genre` (
-  `movie_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `genre_id` int NOT NULL,
+  `movie_id` varchar(255) NOT NULL,
+  `genre_id` int(11) NOT NULL,
   PRIMARY KEY (`movie_id`,`genre_id`),
   KEY `FK87qryjrya5r6wn0su5fl0ynu6` (`genre_id`),
   CONSTRAINT `FK87qryjrya5r6wn0su5fl0ynu6` FOREIGN KEY (`genre_id`) REFERENCES `movie_genres` (`movie_genre_id`),
@@ -216,7 +214,7 @@ CREATE TABLE `movie_genre` (
 
 LOCK TABLES `movie_genre` WRITE;
 /*!40000 ALTER TABLE `movie_genre` DISABLE KEYS */;
-INSERT INTO `movie_genre` VALUES ('mv-0004',1),('mv-0008',1),('mv-0005',2),('mv-0002',4),('mv-0001',5),('mv-0003',5),('mv-0006',5),('mv-0001',6),('mv-0008',6);
+INSERT INTO `movie_genre` VALUES ('mv-0001',5),('mv-0001',6),('mv-0002',4),('mv-0003',5),('mv-0004',1),('mv-0005',2),('mv-0006',5),('mv-0008',1),('mv-0008',6);
 /*!40000 ALTER TABLE `movie_genre` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -228,8 +226,8 @@ DROP TABLE IF EXISTS `movie_genres`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `movie_genres` (
-  `movie_genre_id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `movie_genre_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`movie_genre_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -252,25 +250,25 @@ DROP TABLE IF EXISTS `movies`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `movies` (
-  `movie_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `cast` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `description` text COLLATE utf8mb4_general_ci,
-  `director` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `language` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sub_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
-  `number_of_ratings` int DEFAULT NULL,
-  `poster` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `producer` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `rated` int DEFAULT NULL,
+  `movie_id` varchar(255) NOT NULL,
+  `cast` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `director` varchar(255) DEFAULT NULL,
+  `language` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `sub_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `number_of_ratings` int(11) DEFAULT NULL,
+  `poster` varchar(255) DEFAULT NULL,
+  `producer` varchar(255) DEFAULT NULL,
+  `rated` int(11) DEFAULT NULL,
   `release_date` date DEFAULT NULL,
-  `running_time` int DEFAULT NULL,
-  `slug` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `trailer` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status_id` int NOT NULL,
+  `running_time` int(11) DEFAULT NULL,
+  `slug` varchar(255) DEFAULT NULL,
+  `trailer` varchar(255) DEFAULT NULL,
+  `status_id` int(11) NOT NULL,
   `end_date` date DEFAULT NULL,
-  `horizontal_poster` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sum_of_ratings` int DEFAULT NULL,
+  `horizontal_poster` varchar(255) DEFAULT NULL,
+  `sum_of_ratings` int(11) DEFAULT NULL,
   PRIMARY KEY (`movie_id`),
   KEY `FKp1vkgxjs3ifhxelqlmt4hkhod` (`status_id`),
   CONSTRAINT `FKp1vkgxjs3ifhxelqlmt4hkhod` FOREIGN KEY (`status_id`) REFERENCES `movies_status` (`movie_status_id`)
@@ -283,7 +281,7 @@ CREATE TABLE `movies` (
 
 LOCK TABLES `movies` WRITE;
 /*!40000 ALTER TABLE `movies` DISABLE KEYS */;
-INSERT INTO `movies` VALUES ('mv-0001','Greta Lee, Teo Yoo','Muôn Kiếp Nhân Duyên xoay quanh hai nhân vật chính - Nora (Greta Lee) và Hae Sung (Teo Yoo). Tình bạn thân thiết của họ bị chia cắt khi Nora theo gia đình di cư khỏi Hàn Quốc vào năm 12 tuổi. 20 năm sau, như một mối duyên tiền định, họ gặp lại nhau tại Mỹ','Celine','Tiếng Anh','Past Lives','Muôn Kiếp Nhân Duyên',3,'https://cdn.discordapp.com/attachments/1159668660340789259/1169947106191093840/both-water.png?ex=65574126&is=6544cc26&hm=033c5de326692af06130dcc0e32cc684a441d99a98eecdc1c8e90cc028c27727&','  A24',13,'2023-10-10',106,'past-lives','https://www.youtube.com/watch?v=lBdLBY249Do',4,'2023-11-25','https://cdn.discordapp.com/attachments/1159668660340789259/1170792832735387688/2-ga-ran.png?ex=655a54cb&is=6547dfcb&hm=9a0fcbd579af5a185b42278b807c3c3658a38c89ec598febf2d880daae1eb599&',25),('mv-0002','Patience Munchenbach, Guillaume Canet, Laetitia Dosch','Giữa một đợt nắng nóng bất thường, thì mây mưa giống như làn gió xua tan oi bức. Nhưng những đám mây kỳ lạ trên bầu trời nước Pháp lại đem tới cho con người sự huỷ diệt và chết chóc. Hàng loạt trận mưa axit đổ xuống, đốt cháy mạng sống của vạn vật dưới mặ','Just Philippot','Tiếng Anh','Acide','THẢM HỌA MƯA AXIT',1,'https://cdn.galaxycine.vn/media/2023/9/21/500x750_1695284002644.jpg','Pathé',13,'2024-03-16',101,'acide','https://www.youtube.com/watch?v=SdXxuuJmXm8',1,'2024-04-27','https://cdn.discordapp.com/attachments/1159668660340789259/1176092840787460186/dev.jpg?ex=656d9ccf&is=655b27cf&hm=d05be04a9afe9cea11e7a2104dd4ca46f184f1cbc5640454ce93aab4dd6ff022&',10),('mv-0003','Jin Seon-Kyu, Yoo Hae Jin, Kim Hee Seon','Chuyện phim xoay quanh nhân vật Chi-ho (Yoo Hae-jin) - nhà nghiên cứu bim bim với khả năng nếm vị xuất chúng, nhưng lại ngờ nghệch với mọi thứ xung quanh. Chi-ho là một người cực kỳ hướng nội, thích ở một mình và sống như một cái máy được lập trình sẵn mà','Lee Han','Tiếng Anh','Honey Sweet','NHÂN DUYÊN TIỀN ĐÌNH',3,'https://cdn.galaxycine.vn/media/2023/9/19/500x750_1695095394242.jpg','Sang',13,'2023-11-10',119,'honey-sweet','https://www.youtube.com/watch?v=k6S4DE8P7mY',2,'2023-12-30',NULL,11),('mv-0004','Kristen Bell, Mckenna Grace, James Marsden','Một mảnh thiên thạch kỳ diệu đã rơi xuống Thành Phố Phiêu Lưu, mang đến siêu năng lực cho những chú cún PAW Patrol và biến chúng thành Những Chú Cún Quyền Năng. Phim mới PAW Patrol: Phim Siêu Đẳng ra m','Cal Brunker','Tiếng An','PAW Patrol: The Mighty Movie','PAW PATROL: PHIM SIÊU ĐẲNG',5,'https://cdn.discordapp.com/attachments/1157346998136090685/1179937231541121135/VerticalPoster06.png?ex=657b992e&is=6569242e&hm=f20b348160c498dc6d02440a5df0e8919a95c63a91dae482c631c48a5ce3ef1f&','Sang',13,'2023-11-27',93,'paw-patrol-the-mighty-movie','https://www.youtube.com/watch?v=O_zaLcbqGtI',2,'2024-02-14','https://cdn.discordapp.com/attachments/1159668660340789259/1178269407802298408/4069621.jpg?ex=657587e6&is=656312e6&hm=db883b620f6f1700b739008ee1741cdd839f5d7e9ada1ff4986375bdc2dc225e&',12),('mv-0005','Minh Hoàng','Minh Hoàng: Điểm Sáng Trên Dòng Sóng Kỷ Nguyên Công Nghệ là một bộ phim tài liệu chân thực và đầy cảm hứng, khám phá cuộc đời đầy sóng gió của một lập trình viên tài năng mang tên Minh Hoàng. Phim dự kiến sẽ đưa người xem vào cuộc hành trình đầy thách thức của Minh Hoàng từ khi còn trẻ đến hình ảnh một nhà lập trình xuất sắc và sáng tạo.\n\nTrải qua những cuộc phỏng vấn chân thành và những cảnh quay tuyệt đẹp, bộ phim này sẽ khám phá sự khởi đầu của Minh Hoàng, từ việc bắt đầu học lập trình ở tuổi 12 tới những áp lực và khó khăn trong việc xây dựng sự nghiệp. Người xem sẽ thấy rằng Minh Hoàng đã phải đối mặt với những thử thách ngoạn mục, như thất bại trong các dự án quan trọng, căng thẳng tinh thần và áp lực của ngành công nghiệp công nghệ thông tin đầy cạnh tranh.\n\nTuy nhiên, bằng sự kiên trì và đam mê không ngừng, Minh Hoàng đã trở thành một lập trình viên nổi tiếng và tạo ra những ứng dụng và dự án ấn tượng. Cuộc hành trình này không chỉ đặt ra câu hỏi về sự hy sinh và tận tâm trong công việc, mà còn là câu chuyện về khát vọng, sự đổi mới và sức mạnh của kiến thức trong thời đại số hóa.\n\nMinh Hoàng: Điểm Sáng Trên Dòng Sóng Kỷ Nguyên Công Nghệ sẽ đưa người xem vào thế giới phức tạp và đầy cảm hứng của một lập trình viên tài năng, tạo nên cơ hội để họ hiểu thêm về cuộc đời và tinh thần lập trình viên xuất sắc. Phim không chỉ là một bức tranh về cá nhân, mà còn là cả một tượng đài cho sự khao khát và khả năng đổi đời của bất kỳ ai dám mơ ước và làm việc hết mình trong lĩnh vực công nghệ thông tin.','Thành Đạt','TIếng Em','Minh Hoàng đây rồi','Minh Hoang is here',1,'https://cdn.discordapp.com/attachments/1159668660340789259/1170768260313133167/255271622_957908704808243_8030076711602587439_n.jpg?ex=6575ed69&is=65637869&hm=4e259c85a4c685035526a302ae89d3e9b12a3ed5af3fbb8273b93e35cf02f596&','Khánh Hoàng',18,'2023-12-06',118,'minh-hoang-ay-roi','https://www.youtube.com/watch?v=XC3ftnZ1WYk',2,'2024-01-06','https://cdn.discordapp.com/attachments/1159668660340789259/1179820926154575932/4081103.jpg?ex=657b2cdc&is=6568b7dc&hm=3cd1450f928ea23baaa2d962d2da052f3a0e1fba9a1c56aea9a852a536587894&',1),('mv-0006','  Jason Statham, Sylvester Stallone, Megan Fox','Biệt Đội Đánh Thuê 4 (tựa gốc: Expend4ables) tiếp tục theo chân biệt đội đặc biệt này thực hiện các nhiệm vụ mới, lần này là ngăn chặn ông trùm khủng bố Suarto, với âm mưu buôn lậu vũ khí hạt nhân và kích động chiến tranh giữa 2 phe Nga và Mỹ.','Scott Waughs','Tiếng Anh','Expend4ables','Biệt Đội Đánh Thuê 4',2,'https://cdn.galaxycine.vn/media/2023/9/18/500x750_1695010127758.jpg','Campbell Grobman Films, Lionsgate',13,'2023-11-20',103,'expend4ables','https://www.youtube.com/watch?v=DhlaBO-SwVE',2,'2024-01-02','https://cdn.discordapp.com/attachments/1159668660340789259/1179774559856099368/HorizontalPoster.png?ex=657b01ae&is=65688cae&hm=137be25ce67a9dec90e89b84b6921adea39da6f22caf269cf8c360a0d29c19f0&',6),('mv-0007','Josh O\'Connor, Mike Faist, Zendaya','Theo chân ba tay vợt quen biết nhau khi còn là thanh thiếu niên đến khi họ thi đấu trong một giải đấu quần vợt để trở thành người chiến thắng giải Grand Slam nổi tiếng thế giới, đồng thời khơi lại những kỳ phùng địch thủ cũ trong và ngoài sân đấu.','Luca Guadagnino','Tiếng Anh','Challengers','NHỮNG KẺ THÁCH ĐẤU',2,'https://cdn.galaxycine.vn/media/2023/9/18/500x750_1695010127758.jpg','Warner Bros',13,'2024-01-24',120,'challengers','https://www.youtube.com/watch?v=eZtOHAkFxgI',1,'2024-02-05',NULL,8),('mv-0008','Georgia Eyers, Dan Ewing, Tim Pocock','Sau một biến cố đau thương, Lara liên tục gặp phải những ảo giác đầy kinh hãi và dần mất kiểm soát tinh thần. Những vũ điệu cuồng loạn, sự xuất hiện của quỷ dữ khiến chồng cô đặt niềm tin cứu rỗi linh hồn của vợ vào một nhóm trừ tà. Niềm tin tôn giáo sẽ c','Georgia Eyers, Dan Ewing, Tim Pocock','Tiếng Anh','Godless','VŨ ĐIỆU QUỶ DỮ',0,'https://cdn.galaxycine.vn/media/2023/9/19/500x750_1695094850730.jpg','Iris Arc Pictures',13,'2023-09-28',91,'godless','',4,'2023-10-20',NULL,0);
+INSERT INTO `movies` VALUES ('mv-0001','Greta Lee, Teo Yoo','Muôn Kiếp Nhân Duyên xoay quanh hai nhân vật chính - Nora (Greta Lee) và Hae Sung (Teo Yoo). Tình bạn thân thiết của họ bị chia cắt khi Nora theo gia đình di cư khỏi Hàn Quốc vào năm 12 tuổi. 20 năm sau, như một mối duyên tiền định, họ gặp lại nhau tại Mỹ','Celine','Tiếng Anh','Past Lives','Muôn Kiếp Nhân Duyên',3,'https://cdn.discordapp.com/attachments/1159668660340789259/1169947106191093840/both-water.png?ex=65574126&is=6544cc26&hm=033c5de326692af06130dcc0e32cc684a441d99a98eecdc1c8e90cc028c27727&','  A24',13,'2024-10-10',106,'past-lives','https://www.youtube.com/watch?v=lBdLBY249Do',1,'2025-11-25','https://cdn.discordapp.com/attachments/1159668660340789259/1170792832735387688/2-ga-ran.png?ex=655a54cb&is=6547dfcb&hm=9a0fcbd579af5a185b42278b807c3c3658a38c89ec598febf2d880daae1eb599&',25),('mv-0002','Patience Munchenbach, Guillaume Canet, Laetitia Dosch','Giữa một đợt nắng nóng bất thường, thì mây mưa giống như làn gió xua tan oi bức. Nhưng những đám mây kỳ lạ trên bầu trời nước Pháp lại đem tới cho con người sự huỷ diệt và chết chóc. Hàng loạt trận mưa axit đổ xuống, đốt cháy mạng sống của vạn vật dưới mặ','Just Philippot','Tiếng Anh','Acide','THẢM HỌA MƯA AXIT',1,'https://cdn.galaxycine.vn/media/2023/9/21/500x750_1695284002644.jpg','Pathé',13,'2024-09-16',101,'acide','https://www.youtube.com/watch?v=SdXxuuJmXm8',1,'2025-04-27','https://cdn.discordapp.com/attachments/1159668660340789259/1176092840787460186/dev.jpg?ex=656d9ccf&is=655b27cf&hm=d05be04a9afe9cea11e7a2104dd4ca46f184f1cbc5640454ce93aab4dd6ff022&',10),('mv-0003','Jin Seon-Kyu, Yoo Hae Jin, Kim Hee Seon','Chuyện phim xoay quanh nhân vật Chi-ho (Yoo Hae-jin) - nhà nghiên cứu bim bim với khả năng nếm vị xuất chúng, nhưng lại ngờ nghệch với mọi thứ xung quanh. Chi-ho là một người cực kỳ hướng nội, thích ở một mình và sống như một cái máy được lập trình sẵn mà','Lee Han','Tiếng Anh','Honey Sweet','NHÂN DUYÊN TIỀN ĐÌNH',3,'https://cdn.galaxycine.vn/media/2023/9/19/500x750_1695095394242.jpg','Sang',13,'2024-11-10',119,'honey-sweet','https://www.youtube.com/watch?v=k6S4DE8P7mY',1,'2025-12-30',NULL,11),('mv-0004','Kristen Bell, Mckenna Grace, James Marsden','Một mảnh thiên thạch kỳ diệu đã rơi xuống Thành Phố Phiêu Lưu, mang đến siêu năng lực cho những chú cún PAW Patrol và biến chúng thành Những Chú Cún Quyền Năng. Phim mới PAW Patrol: Phim Siêu Đẳng ra m','Cal Brunker','Tiếng An','PAW Patrol: The Mighty Movie','PAW PATROL: PHIM SIÊU ĐẲNG',5,'https://cdn.discordapp.com/attachments/1157346998136090685/1179937231541121135/VerticalPoster06.png?ex=657b992e&is=6569242e&hm=f20b348160c498dc6d02440a5df0e8919a95c63a91dae482c631c48a5ce3ef1f&','Sang',13,'2024-11-27',93,'paw-patrol-the-mighty-movie','https://www.youtube.com/watch?v=O_zaLcbqGtI',1,'2025-02-14','https://cdn.discordapp.com/attachments/1159668660340789259/1178269407802298408/4069621.jpg?ex=657587e6&is=656312e6&hm=db883b620f6f1700b739008ee1741cdd839f5d7e9ada1ff4986375bdc2dc225e&',12),('mv-0005','Minh Hoàng','Minh Hoàng: Điểm Sáng Trên Dòng Sóng Kỷ Nguyên Công Nghệ là một bộ phim tài liệu chân thực và đầy cảm hứng, khám phá cuộc đời đầy sóng gió của một lập trình viên tài năng mang tên Minh Hoàng. Phim dự kiến sẽ đưa người xem vào cuộc hành trình đầy thách thức của Minh Hoàng từ khi còn trẻ đến hình ảnh một nhà lập trình xuất sắc và sáng tạo.\n\nTrải qua những cuộc phỏng vấn chân thành và những cảnh quay tuyệt đẹp, bộ phim này sẽ khám phá sự khởi đầu của Minh Hoàng, từ việc bắt đầu học lập trình ở tuổi 12 tới những áp lực và khó khăn trong việc xây dựng sự nghiệp. Người xem sẽ thấy rằng Minh Hoàng đã phải đối mặt với những thử thách ngoạn mục, như thất bại trong các dự án quan trọng, căng thẳng tinh thần và áp lực của ngành công nghiệp công nghệ thông tin đầy cạnh tranh.\n\nTuy nhiên, bằng sự kiên trì và đam mê không ngừng, Minh Hoàng đã trở thành một lập trình viên nổi tiếng và tạo ra những ứng dụng và dự án ấn tượng. Cuộc hành trình này không chỉ đặt ra câu hỏi về sự hy sinh và tận tâm trong công việc, mà còn là câu chuyện về khát vọng, sự đổi mới và sức mạnh của kiến thức trong thời đại số hóa.\n\nMinh Hoàng: Điểm Sáng Trên Dòng Sóng Kỷ Nguyên Công Nghệ sẽ đưa người xem vào thế giới phức tạp và đầy cảm hứng của một lập trình viên tài năng, tạo nên cơ hội để họ hiểu thêm về cuộc đời và tinh thần lập trình viên xuất sắc. Phim không chỉ là một bức tranh về cá nhân, mà còn là cả một tượng đài cho sự khao khát và khả năng đổi đời của bất kỳ ai dám mơ ước và làm việc hết mình trong lĩnh vực công nghệ thông tin.','Thành Đạt','TIếng Em','Minh Hoàng đây rồi','Minh Hoang is here',1,'https://cdn.discordapp.com/attachments/1159668660340789259/1170768260313133167/255271622_957908704808243_8030076711602587439_n.jpg?ex=6575ed69&is=65637869&hm=4e259c85a4c685035526a302ae89d3e9b12a3ed5af3fbb8273b93e35cf02f596&','Khánh Hoàng',18,'2024-09-06',118,'minh-hoang-ay-roi','https://www.youtube.com/watch?v=XC3ftnZ1WYk',2,'2025-01-06','https://cdn.discordapp.com/attachments/1159668660340789259/1179820926154575932/4081103.jpg?ex=657b2cdc&is=6568b7dc&hm=3cd1450f928ea23baaa2d962d2da052f3a0e1fba9a1c56aea9a852a536587894&',1),('mv-0006','  Jason Statham, Sylvester Stallone, Megan Fox','Biệt Đội Đánh Thuê 4 (tựa gốc: Expend4ables) tiếp tục theo chân biệt đội đặc biệt này thực hiện các nhiệm vụ mới, lần này là ngăn chặn ông trùm khủng bố Suarto, với âm mưu buôn lậu vũ khí hạt nhân và kích động chiến tranh giữa 2 phe Nga và Mỹ.','Scott Waughs','Tiếng Anh','Expend4ables','Biệt Đội Đánh Thuê 4',2,'https://cdn.galaxycine.vn/media/2023/9/18/500x750_1695010127758.jpg','Campbell Grobman Films, Lionsgate',13,'2024-09-20',103,'expend4ables','https://www.youtube.com/watch?v=DhlaBO-SwVE',1,'2025-01-02','https://cdn.discordapp.com/attachments/1159668660340789259/1179774559856099368/HorizontalPoster.png?ex=657b01ae&is=65688cae&hm=137be25ce67a9dec90e89b84b6921adea39da6f22caf269cf8c360a0d29c19f0&',6),('mv-0007','Josh O\'Connor, Mike Faist, Zendaya','Theo chân ba tay vợt quen biết nhau khi còn là thanh thiếu niên đến khi họ thi đấu trong một giải đấu quần vợt để trở thành người chiến thắng giải Grand Slam nổi tiếng thế giới, đồng thời khơi lại những kỳ phùng địch thủ cũ trong và ngoài sân đấu.','Luca Guadagnino','Tiếng Anh','Challengers','NHỮNG KẺ THÁCH ĐẤU',2,'https://cdn.galaxycine.vn/media/2023/9/18/500x750_1695010127758.jpg','Warner Bros',13,'2024-09-24',120,'challengers','https://www.youtube.com/watch?v=eZtOHAkFxgI',1,'2025-02-05',NULL,8),('mv-0008','Georgia Eyers, Dan Ewing, Tim Pocock','Sau một biến cố đau thương, Lara liên tục gặp phải những ảo giác đầy kinh hãi và dần mất kiểm soát tinh thần. Những vũ điệu cuồng loạn, sự xuất hiện của quỷ dữ khiến chồng cô đặt niềm tin cứu rỗi linh hồn của vợ vào một nhóm trừ tà. Niềm tin tôn giáo sẽ c','Georgia Eyers, Dan Ewing, Tim Pocock','Tiếng Anh','Godless','VŨ ĐIỆU QUỶ DỮ',0,'https://cdn.galaxycine.vn/media/2023/9/19/500x750_1695094850730.jpg','Iris Arc Pictures',13,'2024-09-28',91,'godless','',1,'2025-10-20',NULL,0);
 /*!40000 ALTER TABLE `movies` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -295,10 +293,10 @@ DROP TABLE IF EXISTS `movies_images`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `movies_images` (
-  `image_id` int NOT NULL AUTO_INCREMENT,
-  `extension` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `path` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `movie_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `image_id` int(11) NOT NULL AUTO_INCREMENT,
+  `extension` varchar(255) DEFAULT NULL,
+  `path` varchar(255) DEFAULT NULL,
+  `movie_id` varchar(255) NOT NULL,
   PRIMARY KEY (`image_id`),
   KEY `FKbxrlom4skf0pso8w8i2ilx7n6` (`movie_id`),
   CONSTRAINT `FKbxrlom4skf0pso8w8i2ilx7n6` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`movie_id`)
@@ -323,9 +321,9 @@ DROP TABLE IF EXISTS `movies_status`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `movies_status` (
-  `movie_status_id` int NOT NULL AUTO_INCREMENT,
-  `description` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `slug` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `movie_status_id` int(11) NOT NULL AUTO_INCREMENT,
+  `description` varchar(255) DEFAULT NULL,
+  `slug` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`movie_status_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -348,8 +346,8 @@ DROP TABLE IF EXISTS `roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `roles` (
-  `role_id` int NOT NULL,
-  `role_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `role_id` int(11) NOT NULL,
+  `role_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -372,8 +370,8 @@ DROP TABLE IF EXISTS `room_status`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `room_status` (
-  `room_status_id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `room_status_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`room_status_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -396,13 +394,13 @@ DROP TABLE IF EXISTS `rooms`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `rooms` (
-  `room_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `available_seats` int DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `total_seats` int DEFAULT NULL,
-  `cinema_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `slug` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status_id` int NOT NULL,
+  `room_id` varchar(255) NOT NULL,
+  `available_seats` int(11) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `total_seats` int(11) DEFAULT NULL,
+  `cinema_id` varchar(255) NOT NULL,
+  `slug` varchar(255) DEFAULT NULL,
+  `status_id` int(11) NOT NULL,
   PRIMARY KEY (`room_id`),
   KEY `FKjp9bjtvlojbw581bpq23cpw4j` (`cinema_id`),
   KEY `FK5vj17x4vimvmqdpd4ndgp4ebx` (`status_id`),
@@ -429,12 +427,12 @@ DROP TABLE IF EXISTS `seats_rooms`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `seats_rooms` (
-  `seat_room_id` int NOT NULL AUTO_INCREMENT,
-  `row` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `row_index` int DEFAULT NULL,
-  `status` tinyint(1) DEFAULT '1',
-  `room_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `seat_type_id` int NOT NULL,
+  `seat_room_id` int(11) NOT NULL AUTO_INCREMENT,
+  `row` varchar(255) DEFAULT NULL,
+  `row_index` int(11) DEFAULT NULL,
+  `status` tinyint(1) DEFAULT 1,
+  `room_id` varchar(255) NOT NULL,
+  `seat_type_id` int(11) NOT NULL,
   PRIMARY KEY (`seat_room_id`),
   KEY `FKfu2c510l2cl8lblj3x3x4o0vl` (`room_id`),
   KEY `FK3cwtx4s7f8dbcrghl8uv2s08d` (`seat_type_id`),
@@ -461,8 +459,8 @@ DROP TABLE IF EXISTS `seats_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `seats_type` (
-  `seat_type_id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `seat_type_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
   `price` double DEFAULT NULL,
   PRIMARY KEY (`seat_type_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -486,14 +484,14 @@ DROP TABLE IF EXISTS `showtimes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `showtimes` (
-  `showtime_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `running_time` int DEFAULT NULL,
+  `showtime_id` varchar(255) NOT NULL,
+  `running_time` int(11) DEFAULT NULL,
   `start_date` date DEFAULT NULL,
   `start_time` time(6) DEFAULT NULL,
   `status` bit(1) DEFAULT NULL,
-  `format_id` int NOT NULL,
-  `movie_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `room_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `format_id` int(11) NOT NULL,
+  `movie_id` varchar(255) NOT NULL,
+  `room_id` varchar(255) NOT NULL,
   PRIMARY KEY (`showtime_id`),
   KEY `FKfsc0r2patshbupdfeipyyel67` (`format_id`),
   KEY `FKeltpyuei1d5g3n6ikpsjwwil6` (`movie_id`),
@@ -510,7 +508,7 @@ CREATE TABLE `showtimes` (
 
 LOCK TABLES `showtimes` WRITE;
 /*!40000 ALTER TABLE `showtimes` DISABLE KEYS */;
-INSERT INTO `showtimes` VALUES ('00149756-dcee-4202-9553-6da76a19fce0',149,'2023-12-05','13:30:00.000000','',1,'mv-0003','Room002'),('03f8cc4e-b4fa-475f-a9c6-67e4240fd450',123,'2023-12-05','17:30:00.000000','',1,'mv-0004','Room005'),('054a0105-e1a3-46c3-9e03-bc3983fce9a9',131,'2023-11-28','16:30:00.000000','\0',1,'mv-0002','Room001'),('0622bfbc-e5ab-4493-b967-4254621ff2df',123,'2023-12-05','15:15:00.000000','',1,'mv-0004','Room005'),('07706194-c525-451d-9efb-ec200a88df2d',131,'2023-11-28','14:45:00.000000','\0',1,'mv-0002','Room006'),('0846bb01-ee85-4c90-86c3-482945280a6e',133,'2023-12-12','10:00:00.000000','',1,'mv-0006','Room001'),('0ad362d5-86d5-4a10-b469-9d9fbd21b7ad',150,'2023-12-05','12:45:00.000000','',2,'mv-0007','Room003'),('0e385cdb-aa71-4463-be2b-29edc1263b9b',131,'2023-12-04','17:45:00.000000','\0',1,'mv-0002','Room005'),('1',120,'2023-10-28','13:30:00.000000','\0',2,'mv-0001','Room002'),('123',120,'2023-10-29','13:00:00.000000','\0',2,'mv-0001','Room001'),('1445a9b1-7477-4ae9-ab79-a768e0b7894f',133,'2023-12-05','09:00:00.000000','\0',1,'mv-0006','Room002'),('14e902b0-a9ee-4537-b379-66bf6c56d5c9',131,'2023-12-04','13:00:00.000000','\0',1,'mv-0002','Room002'),('19d1b88d-3f7f-4b37-bf22-5ce346424aaf',131,'2023-12-04','08:30:00.000000','\0',1,'mv-0002','Room002'),('2',120,'2023-10-28','13:00:00.000000','\0',2,'mv-0001','Room004'),('269c2d83-18d1-418c-8662-df0d997cbba4',149,'2023-12-08','22:00:00.000000','',1,'mv-0003','Room006'),('28caabee-abb5-42d7-9772-b6d52be89543',133,'2023-12-01','08:00:00.000000','\0',1,'mv-0006','Room001'),('2b2c2684-0726-425a-b675-8c7638dfa679',133,'2023-11-29','09:00:00.000000','\0',1,'mv-0006','Room003'),('3',120,'2023-10-28','16:00:00.000000','\0',2,'mv-0001','Room004'),('342f0a2d-8f8e-46f6-846a-440cfe9c4825',131,'2023-12-04','17:30:00.000000','\0',1,'mv-0002','Room002'),('367cb014-ccc3-4329-94e0-641b683b1ffa',149,'2023-12-07','09:00:00.000000','',2,'mv-0003','Room003'),('3a11aa4b-b324-47a2-9dea-5a1a9defcae7',148,'2023-11-30','09:00:00.000000','\0',4,'mv-0005','Room002'),('4',120,'2023-10-28','16:00:00.000000','\0',1,'mv-0002','Room001'),('423c70bb-72f8-4549-8cb1-0a3dfe3c0caa',131,'2023-12-05','00:30:00.000000','\0',1,'mv-0002','Room005'),('47b7ce72-13da-4050-b560-5fbd21ae9073',149,'2023-12-09','10:15:00.000000','',1,'mv-0003','Room003'),('4a25f30e-394b-42ce-b5f1-9b48a765e34c',131,'2023-12-04','10:45:00.000000','\0',1,'mv-0002','Room002'),('5e89e4f9-5148-4de8-bb22-416b3dcff264',148,'2023-12-01','17:45:00.000000','\0',1,'mv-0005','Room001'),('6160107f-386c-4c7e-8b05-96ace678481c',133,'2023-12-05','22:15:00.000000','',1,'mv-0006','Room005'),('62340799-4965-446f-be95-51bc11422348',131,'2023-12-05','10:30:00.000000','\0',1,'mv-0002','Room005'),('62ea7db9-f048-4148-8ee9-e44ab01c8300',148,'2023-12-06','09:00:00.000000','',1,'mv-0005','Room001'),('63a34907-fda5-44ef-83ad-cc80c7f40356',131,'2023-12-05','16:30:00.000000','',1,'mv-0002','Room006'),('640be26d-e2ee-412f-a7f9-5d360e55b303',131,'2023-12-05','08:15:00.000000','\0',1,'mv-0002','Room005'),('68c438c1-13c8-4fd7-94ee-58634b4747ba',133,'2023-11-29','16:30:00.000000','\0',1,'mv-0006','Room001'),('6fcf601d-ff79-4a92-98f0-3b90c242010f',149,'2023-12-07','09:00:00.000000','',1,'mv-0003','Room001'),('74faae1a-175a-4663-855e-0ec1738f57c2',150,'2023-12-05','12:45:00.000000','',2,'mv-0007','Room005'),('75bc4720-e22f-4fa7-bbf2-e8f04665a851',123,'2023-12-09','18:15:00.000000','',1,'mv-0004','Room006'),('77c52cd4-194d-4aed-940d-a96dab7a34ff',123,'2023-12-05','02:00:00.000000','\0',1,'mv-0004','Room006'),('7890ab10-aee5-4775-aef4-66b1e6ccaf46',131,'2023-11-28','14:00:00.000000','\0',1,'mv-0002','Room005'),('7f54ac19-b166-4b30-b894-4a8d08a2f192',133,'2023-12-06','11:30:00.000000','',1,'mv-0006','Room003'),('85ab5ae5-9de8-497a-9cbf-17de58b84fe2',149,'2023-11-30','14:00:00.000000','\0',1,'mv-0003','Room003'),('86851ee1-dca6-4d3a-ba52-061626460872',148,'2023-12-01','12:45:00.000000','\0',1,'mv-0005','Room001'),('86e7d5ba-89e1-4e0b-9ef7-600cf506f805',131,'2023-12-11','07:45:00.000000','',1,'mv-0002','Room001'),('88fad81a-28ff-4ae9-8565-80415bb6ee9a',131,'2023-12-05','15:45:00.000000','',1,'mv-0002','Room001'),('8beb89fa-3f45-4458-a21e-cea642e931e9',131,'2023-12-06','07:00:00.000000','',1,'mv-0002','Room004'),('8c88179c-8495-4641-bbd9-7425db125da9',148,'2023-11-30','16:30:00.000000','\0',1,'mv-0005','Room003'),('8e9874a2-e071-4fcc-9f6f-851a8ae4adc0',148,'2023-11-29','14:00:00.000000','\0',2,'mv-0005','Room002'),('8f6285b5-20d6-40ae-83ff-985931aea2e2',131,'2023-12-08','16:30:00.000000','',1,'mv-0002','Room006'),('920c4c8c-2411-4eee-a294-72656c28eda7',131,'2023-12-05','19:45:00.000000','',1,'mv-0002','Room002'),('92a27614-50fd-4657-a2cc-708c8f1591a5',131,'2023-12-11','10:00:00.000000','',1,'mv-0002','Room001'),('96065179-2b58-4520-be83-2111134f1fac',131,'2023-12-11','12:15:00.000000','',1,'mv-0002','Room001'),('96b5093a-3ce7-4dac-9a9d-6bce443b64fd',131,'2023-12-04','08:15:00.000000','\0',1,'mv-0002','Room005'),('972b3180-d66b-4185-b41f-52cd81bb5517',148,'2023-12-01','15:15:00.000000','\0',1,'mv-0005','Room001'),('9a2d9107-8710-49f9-ba22-38276fe54497',150,'2023-12-04','13:00:00.000000','\0',2,'mv-0007','Room001'),('9a6b57e4-4cc9-459b-840c-436f4576d920',133,'2023-12-05','09:00:00.000000','\0',1,'mv-0006','Room001'),('9a9d10bf-fb02-4ca5-a453-058e88954311',149,'2023-12-08','09:15:00.000000','',1,'mv-0003','Room003'),('9d1dea97-d9b9-4dda-bcd8-29e526806493',149,'2023-12-04','12:45:00.000000','\0',2,'mv-0003','Room005'),('9e8e0faa-0226-49ac-9422-d28a9a39eb61',131,'2023-12-04','19:45:00.000000','\0',1,'mv-0002','Room002'),('9ecac6a8-4b72-4951-8e5a-a748c883e34f',133,'2023-12-02','15:15:00.000000','\0',1,'mv-0006','Room001'),('a2c6bf8d-2167-49c3-9bf7-dbc1918a5754',133,'2023-11-28','18:45:00.000000','\0',1,'mv-0006','Room001'),('b1468b44-e512-4275-81c8-f2b2398c64db',131,'2023-11-28','11:45:00.000000','\0',1,'mv-0002','Room004'),('b2cd0602-6d68-4cb1-856d-5eb548f02a9b',133,'2023-12-05','15:15:00.000000','',1,'mv-0006','Room003'),('b4dd0a43-ccdd-4e70-9262-8e673b4ff0e9',149,'2023-12-04','15:15:00.000000','\0',2,'mv-0003','Room005'),('b7872071-2d9b-4a69-8d35-adcdbe0c45de',133,'2023-12-06','23:15:00.000000','',1,'mv-0006','Room004'),('c0aa21ff-78ee-479b-8f15-a75e2729d76f',131,'2023-12-04','15:15:00.000000','\0',1,'mv-0002','Room002'),('c406a864-b8d8-4c48-b8ba-c7a8919c34fe',133,'2023-12-05','13:30:00.000000','',1,'mv-0006','Room001'),('c447fc6e-b5e8-4e3d-a826-9ab400a0b801',149,'2023-12-04','15:30:00.000000','\0',2,'mv-0003','Room001'),('c6a6b102-f18d-4d1b-b17e-341170b13264',148,'2023-12-01','10:15:00.000000','\0',1,'mv-0005','Room001'),('daf5a711-53ff-47d9-ad27-6ff229006c6b',150,'2023-12-13','12:30:00.000000','',2,'mv-0007','Room001'),('db621837-700e-4a1f-98b6-b855b4b2df72',131,'2023-11-29','12:00:00.000000','\0',1,'mv-0002','Room004'),('dcc79ae2-5260-457a-b577-3204a4cf3e3b',148,'2023-12-05','19:45:00.000000','',4,'mv-0005','Room005'),('de584427-847a-46f7-8263-bc4fef9c994a',133,'2023-12-04','10:30:00.000000','\0',1,'mv-0006','Room005'),('e02b4957-8860-4048-a0ba-a03627313062',148,'2023-12-06','18:30:00.000000','',4,'mv-0005','Room006'),('e0d3cbfb-481e-4dd1-9b2b-b3bb3653add6',133,'2023-12-05','11:30:00.000000','\0',1,'mv-0006','Room006'),('ea674ec8-6094-4e35-8255-e557872bae3e',133,'2023-12-05','17:30:00.000000','',1,'mv-0006','Room002'),('ec786d13-dd84-4485-a773-942da7ac0764',131,'2023-12-04','22:15:00.000000','\0',1,'mv-0002','Room005'),('f0bf82c0-326e-4488-a504-cefab3be0512',123,'2023-12-04','20:00:00.000000','\0',1,'mv-0004','Room005'),('f2cab68e-d247-4807-8675-c50309ba9062',131,'2023-12-05','11:15:00.000000','\0',1,'mv-0002','Room002'),('f32c67d6-abf4-43d9-8cfd-0ae40495c5ba',131,'2023-12-05','07:00:00.000000','\0',1,'mv-0002','Room004'),('f59c2920-9f82-49ec-8673-f8e5d7c2ee0f',131,'2023-12-05','09:00:00.000000','\0',1,'mv-0002','Room003'),('f74ddbb4-c34d-4684-97ea-99f7af0f4ef2',131,'2023-12-04','10:45:00.000000','\0',1,'mv-0002','Room001'),('fcb9eeb5-01d7-4521-aa2e-00f4de2534c7',133,'2023-12-06','09:00:00.000000','',1,'mv-0006','Room003'),('fd77ae0a-5365-47bd-9d19-9e457c675816',149,'2023-12-06','08:00:00.000000','',1,'mv-0003','Room006'),('fe9e5256-eeb1-4af3-9625-6226dce91bef',123,'2023-12-05','11:15:00.000000','\0',1,'mv-0004','Room001'),('Showtime006',120,'2023-11-02','09:00:00.000000','\0',1,'mv-0001','Room001'),('Showtime007',120,'2023-11-02','12:00:00.000000','\0',2,'mv-0001','Room001'),('Showtime008',120,'2023-11-02','15:00:00.000000','\0',1,'mv-0001','Room001'),('Showtime009',120,'2023-11-02','18:00:00.000000','\0',1,'mv-0001','Room001'),('Showtime010',120,'2023-11-02','09:30:00.000000','\0',1,'mv-0001','Room002'),('Showtime011',120,'2023-11-03','21:30:00.000000','\0',2,'mv-0001','Room004'),('Showtime012',120,'2023-11-02','23:30:00.000000','\0',1,'mv-0001','Room002'),('Showtime013',120,'2023-11-02','22:00:00.000000','\0',1,'mv-0001','Room002'),('Showtime014',120,'2023-11-01','09:00:00.000000','\0',1,'mv-0004','Room001'),('Showtime015',120,'2023-11-01','12:00:00.000000','\0',2,'mv-0004','Room001'),('Showtime016',120,'2023-11-01','15:00:00.000000','\0',1,'mv-0004','Room001'),('Showtime017',120,'2023-11-01','18:00:00.000000','\0',1,'mv-0004','Room001'),('Showtime018',120,'2023-11-01','09:30:00.000000','\0',1,'mv-0004','Room002'),('Showtime019',120,'2023-11-01','12:30:00.000000','\0',2,'mv-0004','Room002'),('Showtime020',120,'2023-11-04','09:30:00.000000','\0',1,'mv-0004','Room004'),('Showtime021',120,'2023-11-01','10:30:00.000000','\0',2,'mv-0004','Room005'),('Showtime022',120,'2023-11-07','16:30:00.000000','\0',1,'mv-0001','Room004'),('Showtime023',120,'2023-11-02','23:00:00.000000','\0',2,'mv-0001','Room005'),('Showtime024',120,'2023-11-02','09:30:00.000000','\0',1,'mv-0004','Room004'),('Showtime025',120,'2023-11-02','10:30:00.000000','\0',2,'mv-0004','Room005'),('Showtime026',120,'2023-11-01','13:30:00.000000','\0',1,'mv-0001','Room004'),('Showtime027',120,'2023-11-01','17:00:00.000000','\0',2,'mv-0001','Room005'),('Showtime028',136,'2023-11-15','09:00:00.000000','\0',1,'mv-0001','Room001'),('Showtime029',136,'2023-11-15','11:00:00.000000','\0',1,'mv-0001','Room002'),('Showtime030',136,'2023-11-16','11:30:00.000000','\0',1,'mv-0001','Room001'),('Showtime031',136,'2023-11-15','13:30:00.000000','\0',1,'mv-0001','Room002'),('Showtime032',136,'2023-11-25','14:00:00.000000','\0',1,'mv-0001','Room001'),('Showtime033',136,'2023-11-25','16:30:00.000000','\0',1,'mv-0001','Room001'),('Showtime034',123,'2023-11-25','19:00:00.000000','\0',1,'mv-0004','Room001'),('Showtime035',136,'2023-11-25','21:15:00.000000','\0',1,'mv-0001','Room001');
+INSERT INTO `showtimes` VALUES ('00149756-dcee-4202-9553-6da76a19fce0',149,'2024-12-05','13:30:00.000000','',1,'mv-0003','Room002'),('03f8cc4e-b4fa-475f-a9c6-67e4240fd450',123,'2024-12-05','17:30:00.000000','',1,'mv-0004','Room005'),('054a0105-e1a3-46c3-9e03-bc3983fce9a9',131,'2024-11-28','16:30:00.000000','',1,'mv-0002','Room001'),('0622bfbc-e5ab-4493-b967-4254621ff2df',123,'2024-12-05','15:15:00.000000','',1,'mv-0004','Room005'),('07706194-c525-451d-9efb-ec200a88df2d',131,'2024-11-28','14:45:00.000000','',1,'mv-0002','Room006'),('0846bb01-ee85-4c90-86c3-482945280a6e',133,'2024-12-12','10:00:00.000000','',1,'mv-0006','Room001'),('0ad362d5-86d5-4a10-b469-9d9fbd21b7ad',150,'2024-12-05','12:45:00.000000','',2,'mv-0007','Room003'),('0e385cdb-aa71-4463-be2b-29edc1263b9b',131,'2024-12-04','17:45:00.000000','',1,'mv-0002','Room005'),('1',120,'2024-10-28','13:30:00.000000','',2,'mv-0001','Room002'),('123',120,'2024-10-29','13:00:00.000000','',2,'mv-0001','Room001'),('1445a9b1-7477-4ae9-ab79-a768e0b7894f',133,'2024-12-05','09:00:00.000000','',1,'mv-0006','Room002'),('14e902b0-a9ee-4537-b379-66bf6c56d5c9',131,'2024-12-04','13:00:00.000000','',1,'mv-0002','Room002'),('19d1b88d-3f7f-4b37-bf22-5ce346424aaf',131,'2024-12-04','08:30:00.000000','',1,'mv-0002','Room002'),('2',120,'2024-10-28','13:00:00.000000','',2,'mv-0001','Room004'),('269c2d83-18d1-418c-8662-df0d997cbba4',149,'2024-12-08','22:00:00.000000','',1,'mv-0003','Room006'),('28caabee-abb5-42d7-9772-b6d52be89543',133,'2024-12-01','08:00:00.000000','',1,'mv-0006','Room001'),('2b2c2684-0726-425a-b675-8c7638dfa679',133,'2024-11-29','09:00:00.000000','',1,'mv-0006','Room003'),('3',120,'2024-10-28','16:00:00.000000','',2,'mv-0001','Room004'),('342f0a2d-8f8e-46f6-846a-440cfe9c4825',131,'2024-12-04','17:30:00.000000','',1,'mv-0002','Room002'),('367cb014-ccc3-4329-94e0-641b683b1ffa',149,'2024-12-07','09:00:00.000000','',2,'mv-0003','Room003'),('3a11aa4b-b324-47a2-9dea-5a1a9defcae7',148,'2024-11-30','09:00:00.000000','',4,'mv-0005','Room002'),('4',120,'2024-10-28','16:00:00.000000','',1,'mv-0002','Room001'),('423c70bb-72f8-4549-8cb1-0a3dfe3c0caa',131,'2024-12-05','00:30:00.000000','',1,'mv-0002','Room005'),('47b7ce72-13da-4050-b560-5fbd21ae9073',149,'2024-12-09','10:15:00.000000','',1,'mv-0003','Room003'),('4a25f30e-394b-42ce-b5f1-9b48a765e34c',131,'2024-12-04','10:45:00.000000','',1,'mv-0002','Room002'),('5e89e4f9-5148-4de8-bb22-416b3dcff264',148,'2024-12-01','17:45:00.000000','',1,'mv-0005','Room001'),('6160107f-386c-4c7e-8b05-96ace678481c',133,'2024-12-05','22:15:00.000000','',1,'mv-0006','Room005'),('62340799-4965-446f-be95-51bc11422348',131,'2024-12-05','10:30:00.000000','',1,'mv-0002','Room005'),('62ea7db9-f048-4148-8ee9-e44ab01c8300',148,'2024-12-06','09:00:00.000000','',1,'mv-0005','Room001'),('63a34907-fda5-44ef-83ad-cc80c7f40356',131,'2024-12-05','16:30:00.000000','',1,'mv-0002','Room006'),('640be26d-e2ee-412f-a7f9-5d360e55b303',131,'2024-12-05','08:15:00.000000','',1,'mv-0002','Room005'),('68c438c1-13c8-4fd7-94ee-58634b4747ba',133,'2024-11-29','16:30:00.000000','',1,'mv-0006','Room001'),('6fcf601d-ff79-4a92-98f0-3b90c242010f',149,'2024-12-07','09:00:00.000000','',1,'mv-0003','Room001'),('74faae1a-175a-4663-855e-0ec1738f57c2',150,'2024-12-05','12:45:00.000000','',2,'mv-0007','Room005'),('75bc4720-e22f-4fa7-bbf2-e8f04665a851',123,'2024-12-09','18:15:00.000000','',1,'mv-0004','Room006'),('77c52cd4-194d-4aed-940d-a96dab7a34ff',123,'2024-12-05','02:00:00.000000','',1,'mv-0004','Room006'),('7890ab10-aee5-4775-aef4-66b1e6ccaf46',131,'2024-11-28','14:00:00.000000','',1,'mv-0002','Room005'),('7f54ac19-b166-4b30-b894-4a8d08a2f192',133,'2024-12-06','11:30:00.000000','',1,'mv-0006','Room003'),('85ab5ae5-9de8-497a-9cbf-17de58b84fe2',149,'2024-11-30','14:00:00.000000','',1,'mv-0003','Room003'),('86851ee1-dca6-4d3a-ba52-061626460872',148,'2024-12-01','12:45:00.000000','',1,'mv-0005','Room001'),('86e7d5ba-89e1-4e0b-9ef7-600cf506f805',131,'2024-12-11','07:45:00.000000','',1,'mv-0002','Room001'),('88fad81a-28ff-4ae9-8565-80415bb6ee9a',131,'2024-12-05','15:45:00.000000','',1,'mv-0002','Room001'),('8beb89fa-3f45-4458-a21e-cea642e931e9',131,'2024-12-06','07:00:00.000000','',1,'mv-0002','Room004'),('8c88179c-8495-4641-bbd9-7425db125da9',148,'2024-11-30','16:30:00.000000','',1,'mv-0005','Room003'),('8e9874a2-e071-4fcc-9f6f-851a8ae4adc0',148,'2024-11-29','14:00:00.000000','',2,'mv-0005','Room002'),('8f6285b5-20d6-40ae-83ff-985931aea2e2',131,'2024-12-08','16:30:00.000000','',1,'mv-0002','Room006'),('920c4c8c-2411-4eee-a294-72656c28eda7',131,'2024-12-05','19:45:00.000000','',1,'mv-0002','Room002'),('92a27614-50fd-4657-a2cc-708c8f1591a5',131,'2024-12-11','10:00:00.000000','',1,'mv-0002','Room001'),('96065179-2b58-4520-be83-2111134f1fac',131,'2024-12-11','12:15:00.000000','',1,'mv-0002','Room001'),('96b5093a-3ce7-4dac-9a9d-6bce443b64fd',131,'2024-12-04','08:15:00.000000','',1,'mv-0002','Room005'),('972b3180-d66b-4185-b41f-52cd81bb5517',148,'2024-12-01','15:15:00.000000','',1,'mv-0005','Room001'),('9a2d9107-8710-49f9-ba22-38276fe54497',150,'2024-12-04','13:00:00.000000','',2,'mv-0007','Room001'),('9a6b57e4-4cc9-459b-840c-436f4576d920',133,'2024-12-05','09:00:00.000000','',1,'mv-0006','Room001'),('9a9d10bf-fb02-4ca5-a453-058e88954311',149,'2024-12-08','09:15:00.000000','',1,'mv-0003','Room003'),('9d1dea97-d9b9-4dda-bcd8-29e526806493',149,'2024-12-04','12:45:00.000000','',2,'mv-0003','Room005'),('9e8e0faa-0226-49ac-9422-d28a9a39eb61',131,'2024-12-04','19:45:00.000000','',1,'mv-0002','Room002'),('9ecac6a8-4b72-4951-8e5a-a748c883e34f',133,'2024-12-02','15:15:00.000000','',1,'mv-0006','Room001'),('a2c6bf8d-2167-49c3-9bf7-dbc1918a5754',133,'2024-11-28','18:45:00.000000','',1,'mv-0006','Room001'),('b1468b44-e512-4275-81c8-f2b2398c64db',131,'2024-11-28','11:45:00.000000','',1,'mv-0002','Room004'),('b2cd0602-6d68-4cb1-856d-5eb548f02a9b',133,'2024-12-05','15:15:00.000000','',1,'mv-0006','Room003'),('b4dd0a43-ccdd-4e70-9262-8e673b4ff0e9',149,'2024-12-04','15:15:00.000000','',2,'mv-0003','Room005'),('b7872071-2d9b-4a69-8d35-adcdbe0c45de',133,'2024-12-06','23:15:00.000000','',1,'mv-0006','Room004'),('c0aa21ff-78ee-479b-8f15-a75e2729d76f',131,'2024-12-04','15:15:00.000000','',1,'mv-0002','Room002'),('c406a864-b8d8-4c48-b8ba-c7a8919c34fe',133,'2024-12-05','13:30:00.000000','',1,'mv-0006','Room001'),('c447fc6e-b5e8-4e3d-a826-9ab400a0b801',149,'2024-12-04','15:30:00.000000','',2,'mv-0003','Room001'),('c6a6b102-f18d-4d1b-b17e-341170b13264',148,'2024-12-01','10:15:00.000000','',1,'mv-0005','Room001'),('daf5a711-53ff-47d9-ad27-6ff229006c6b',150,'2024-12-13','12:30:00.000000','',2,'mv-0007','Room001'),('db621837-700e-4a1f-98b6-b855b4b2df72',131,'2024-11-29','12:00:00.000000','',1,'mv-0002','Room004'),('dcc79ae2-5260-457a-b577-3204a4cf3e3b',148,'2024-12-05','19:45:00.000000','',4,'mv-0005','Room005'),('de584427-847a-46f7-8263-bc4fef9c994a',133,'2024-12-04','10:30:00.000000','',1,'mv-0006','Room005'),('e02b4957-8860-4048-a0ba-a03627313062',148,'2024-12-06','18:30:00.000000','',4,'mv-0005','Room006'),('e0d3cbfb-481e-4dd1-9b2b-b3bb3653add6',133,'2024-12-05','11:30:00.000000','',1,'mv-0006','Room006'),('ea674ec8-6094-4e35-8255-e557872bae3e',133,'2024-12-05','17:30:00.000000','',1,'mv-0006','Room002'),('ec786d13-dd84-4485-a773-942da7ac0764',131,'2024-12-04','22:15:00.000000','',1,'mv-0002','Room005'),('f0bf82c0-326e-4488-a504-cefab3be0512',123,'2024-12-04','20:00:00.000000','',1,'mv-0004','Room005'),('f2cab68e-d247-4807-8675-c50309ba9062',131,'2024-12-05','11:15:00.000000','',1,'mv-0002','Room002'),('f32c67d6-abf4-43d9-8cfd-0ae40495c5ba',131,'2024-12-05','07:00:00.000000','',1,'mv-0002','Room004'),('f59c2920-9f82-49ec-8673-f8e5d7c2ee0f',131,'2024-12-05','09:00:00.000000','',1,'mv-0002','Room003'),('f74ddbb4-c34d-4684-97ea-99f7af0f4ef2',131,'2024-12-04','10:45:00.000000','',1,'mv-0002','Room001'),('fcb9eeb5-01d7-4521-aa2e-00f4de2534c7',133,'2024-12-06','09:00:00.000000','',1,'mv-0006','Room003'),('fd77ae0a-5365-47bd-9d19-9e457c675816',149,'2024-12-06','08:00:00.000000','',1,'mv-0003','Room006'),('fe9e5256-eeb1-4af3-9625-6226dce91bef',123,'2024-12-05','11:15:00.000000','',1,'mv-0004','Room001'),('Showtime006',120,'2023-11-02','09:00:00.000000','\0',1,'mv-0001','Room001'),('Showtime007',120,'2023-11-02','12:00:00.000000','\0',2,'mv-0001','Room001'),('Showtime008',120,'2023-11-02','15:00:00.000000','\0',1,'mv-0001','Room001'),('Showtime009',120,'2023-11-02','18:00:00.000000','\0',1,'mv-0001','Room001'),('Showtime010',120,'2023-11-02','09:30:00.000000','\0',1,'mv-0001','Room002'),('Showtime011',120,'2023-11-03','21:30:00.000000','\0',2,'mv-0001','Room004'),('Showtime012',120,'2023-11-02','23:30:00.000000','\0',1,'mv-0001','Room002'),('Showtime013',120,'2023-11-02','22:00:00.000000','\0',1,'mv-0001','Room002'),('Showtime014',120,'2023-11-01','09:00:00.000000','\0',1,'mv-0004','Room001'),('Showtime015',120,'2023-11-01','12:00:00.000000','\0',2,'mv-0004','Room001'),('Showtime016',120,'2023-11-01','15:00:00.000000','\0',1,'mv-0004','Room001'),('Showtime017',120,'2023-11-01','18:00:00.000000','\0',1,'mv-0004','Room001'),('Showtime018',120,'2023-11-01','09:30:00.000000','\0',1,'mv-0004','Room002'),('Showtime019',120,'2023-11-01','12:30:00.000000','\0',2,'mv-0004','Room002'),('Showtime020',120,'2023-11-04','09:30:00.000000','\0',1,'mv-0004','Room004'),('Showtime021',120,'2023-11-01','10:30:00.000000','\0',2,'mv-0004','Room005'),('Showtime022',120,'2023-11-07','16:30:00.000000','\0',1,'mv-0001','Room004'),('Showtime023',120,'2023-11-02','23:00:00.000000','\0',2,'mv-0001','Room005'),('Showtime024',120,'2023-11-02','09:30:00.000000','\0',1,'mv-0004','Room004'),('Showtime025',120,'2023-11-02','10:30:00.000000','\0',2,'mv-0004','Room005'),('Showtime026',120,'2023-11-01','13:30:00.000000','\0',1,'mv-0001','Room004'),('Showtime027',120,'2023-11-01','17:00:00.000000','\0',2,'mv-0001','Room005'),('Showtime028',136,'2023-11-15','09:00:00.000000','\0',1,'mv-0001','Room001'),('Showtime029',136,'2023-11-15','11:00:00.000000','\0',1,'mv-0001','Room002'),('Showtime030',136,'2023-11-16','11:30:00.000000','\0',1,'mv-0001','Room001'),('Showtime031',136,'2023-11-15','13:30:00.000000','\0',1,'mv-0001','Room002'),('Showtime032',136,'2023-11-25','14:00:00.000000','\0',1,'mv-0001','Room001'),('Showtime033',136,'2023-11-25','16:30:00.000000','\0',1,'mv-0001','Room001'),('Showtime034',123,'2023-11-25','19:00:00.000000','\0',1,'mv-0004','Room001'),('Showtime035',136,'2023-11-25','21:15:00.000000','\0',1,'mv-0001','Room001');
 /*!40000 ALTER TABLE `showtimes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -522,10 +520,10 @@ DROP TABLE IF EXISTS `tickets`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tickets` (
-  `ticket_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `bill_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `showtime_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `seat_room` int NOT NULL,
+  `ticket_id` varchar(255) NOT NULL,
+  `bill_id` varchar(255) NOT NULL,
+  `showtime_id` varchar(255) NOT NULL,
+  `seat_room` int(11) NOT NULL,
   PRIMARY KEY (`ticket_id`),
   KEY `FKaqpjta99er6ahhyyq5689cyw4` (`bill_id`),
   KEY `FKo0u22315eoxdv59tn6wsdn8b1` (`showtime_id`),
@@ -554,21 +552,21 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
-  `user_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `password` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `user_id` varchar(255) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
   `date_of_birth` date DEFAULT NULL,
-  `point` int DEFAULT NULL,
-  `role_id` int NOT NULL,
+  `point` int(11) DEFAULT NULL,
+  `role_id` int(11) NOT NULL,
   `verify` bit(1) DEFAULT NULL,
   `create_date` datetime(6) DEFAULT NULL,
-  `full_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `verify_account` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `verify_mail` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `verify_pass` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `gender` enum('FEMALE','MALE','UNKNOWN') COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `phone_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `avatar` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `full_name` varchar(255) DEFAULT NULL,
+  `verify_account` varchar(255) DEFAULT NULL,
+  `verify_mail` varchar(255) DEFAULT NULL,
+  `verify_pass` varchar(255) DEFAULT NULL,
+  `gender` enum('FEMALE','MALE','UNKNOWN') DEFAULT NULL,
+  `phone_number` varchar(255) DEFAULT NULL,
+  `avatar` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   KEY `FKp56c1712k691lhsyewcssf40f` (`role_id`),
   CONSTRAINT `FKp56c1712k691lhsyewcssf40f` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`)
@@ -594,4 +592,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-05 12:18:29
+-- Dump completed on 2024-09-15 17:03:28

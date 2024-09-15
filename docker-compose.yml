@@ -11,7 +11,7 @@ services:
     depends_on:
       - database
   database:
-    image: mysql
+    image: mysql:8.0.34
     restart: always
     ports:
       - 3306:3306
@@ -22,7 +22,7 @@ services:
       MYSQL_ROOT_PASSWORD: 1234
     volumes:
       - mysql-data:/var/lib/mysql
-      - ./booking-movie_5-12.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./data.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   mysql-data:
